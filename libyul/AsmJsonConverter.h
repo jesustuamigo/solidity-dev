@@ -33,6 +33,8 @@
 namespace solidity::yul
 {
 
+struct Dialect;
+
 /**
  * Converter of the yul AST into JSON format
  */
@@ -41,7 +43,7 @@ class AsmJsonConverter: public boost::static_visitor<Json>
 public:
 	/// Create a converter to JSON for any block of inline assembly
 	/// @a _sourceIndex to be used to abbreviate source name in the source locations
-	explicit AsmJsonConverter(std::optional<size_t> _sourceIndex): m_sourceIndex(_sourceIndex) {}
+	explicit AsmJsonConverter(Dialect const&, std::optional<size_t> _sourceIndex): m_sourceIndex(_sourceIndex) {}
 
 	Json operator()(Block const& _node) const;
 	Json operator()(NameWithDebugData const& _node) const;
