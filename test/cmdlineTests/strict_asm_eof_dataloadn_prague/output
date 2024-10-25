@@ -17,7 +17,7 @@ Binary representation:
 ef0001010004020001000904002d000080ffffd1000d5f5260205ff348656c6c6f2c20576f726c6421
 
 Text representation:
-  auxdataloadn(0)
+  auxdataloadn{0}
   0x00
   mstore
   0x20
