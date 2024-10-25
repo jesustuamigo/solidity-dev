@@ -342,7 +342,7 @@ std::string AssemblyItem::toAssemblyText(Assembly const& _assembly) const
 		break;
 	case AuxDataLoadN:
 		assertThrow(data() <= std::numeric_limits<size_t>::max(), AssemblyException, "Invalid auxdataloadn argument.");
-		text = "auxdataloadn(" +  std::to_string(static_cast<size_t>(data())) + ")";
+		text = "auxdataloadn{" +  std::to_string(static_cast<size_t>(data())) + "}";
 		break;
 	}
 	if (m_jumpType == JumpType::IntoFunction || m_jumpType == JumpType::OutOfFunction)
