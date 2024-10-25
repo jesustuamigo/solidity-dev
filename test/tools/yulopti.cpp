@@ -91,7 +91,7 @@ public:
 		try
 		{
 			auto ast = yul::Parser(errorReporter, m_dialect).parse(_charStream);
-			if (!m_astRoot || errorReporter.hasErrors())
+			if (!ast || errorReporter.hasErrors())
 			{
 				std::cerr << "Error parsing source." << std::endl;
 				printErrors(_charStream, errors);
