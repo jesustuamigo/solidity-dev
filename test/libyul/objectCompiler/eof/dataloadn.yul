@@ -9,12 +9,12 @@ object "a" {
 }
 
 // ====
-// bytecodeFormat: >=EOFv1
 // EVMVersion: >=prague
+// bytecodeFormat: >=EOFv1
 // ----
 // Assembly:
 //     /* "source":56:71   */
-//   auxdataloadn(0)
+//   auxdataloadn{0}
 //     /* "source":53:54   */
 //   0x00
 //     /* "source":46:72   */
