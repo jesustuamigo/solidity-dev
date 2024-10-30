@@ -307,17 +307,7 @@ std::vector<std::optional<BuiltinFunctionForEVM>> createBuiltins(langutil::EVMVe
 			"datacopy",
 			3,
 			0,
-			SideEffects{
-				false,               // movable
-				true,                // movableApartFromEffects
-				false,               // canBeRemoved
-				false,               // canBeRemovedIfNotMSize
-				true,                // cannotLoop
-				SideEffects::None,   // otherState
-				SideEffects::None,   // storage
-				SideEffects::Write,  // memory
-				SideEffects::None    // transientStorage
-			},
+			EVMDialect::sideEffectsOfInstruction(evmasm::Instruction::CODECOPY),
 			ControlFlowSideEffects::fromInstruction(evmasm::Instruction::CODECOPY),
 			{},
 			[](
