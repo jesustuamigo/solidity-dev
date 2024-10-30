@@ -55,6 +55,8 @@ enum AssemblyItemType
 	/// Loads 32 bytes from static auxiliary data of EOF data section. The offset does *not* have to be always from the beginning
 	/// of the data EOF section. More details here: https://github.com/ipsilon/eof/blob/main/spec/eof.md#data-section-lifecycle
 	AuxDataLoadN,
+	EOFCreate, ///< Creates new contract using subcontainer as initcode
+	ReturnContract, ///< Returns new container (with auxiliary data filled in) to be deployed
 	VerbatimBytecode ///< Contains data that is inserted into the bytecode code section without modification.
 };
 
@@ -63,6 +65,7 @@ enum class Precision { Precise , Approximate };
 class Assembly;
 class AssemblyItem;
 using AssemblyItems = std::vector<AssemblyItem>;
+using ContainerID = uint8_t;
 
 class AssemblyItem
 {
@@ -85,12 +88,29 @@ public:
 		else
 			m_data = std::make_shared<u256>(std::move(_data));
 	}
+
+	explicit AssemblyItem(AssemblyItemType _type, Instruction _instruction, u256 _data = 0, langutil::DebugData::ConstPtr _debugData = langutil::DebugData::create()):
+		m_type(_type),
+		m_instruction(_instruction),
+		m_data(std::make_shared<u256>(std::move(_data))),
+		m_debugData(std::move(_debugData))
+	{}
+
 	explicit AssemblyItem(bytes _verbatimData, size_t _arguments, size_t _returnVariables):
 		m_type(VerbatimBytecode),
 		m_instruction{},
 		m_verbatimBytecode{{_arguments, _returnVariables, std::move(_verbatimData)}},
 		m_debugData{langutil::DebugData::create()}
 	{}
+
+	static AssemblyItem eofCreate(ContainerID _containerID, langutil::DebugData::ConstPtr _debugData = langutil::DebugData::create())
+	{
+		return AssemblyItem(EOFCreate, Instruction::EOFCREATE, _containerID, std::move(_debugData));
+	}
+	static AssemblyItem returnContract(ContainerID _containerID, langutil::DebugData::ConstPtr _debugData = langutil::DebugData::create())
+	{
+		return AssemblyItem(ReturnContract, Instruction::RETURNCONTRACT, _containerID, std::move(_debugData));
+	}
 
 	AssemblyItem(AssemblyItem const&) = default;
 	AssemblyItem(AssemblyItem&&) = default;
@@ -122,8 +142,17 @@ public:
 
 	bytes const& verbatimData() const { assertThrow(m_type == VerbatimBytecode, util::Exception, ""); return std::get<2>(*m_verbatimBytecode); }
 
-	/// @returns the instruction of this item (only valid if type() == Operation)
-	Instruction instruction() const { assertThrow(m_type == Operation, util::Exception, ""); return m_instruction; }
+	/// @returns true if the item has m_instruction properly set.
+	bool hasInstruction() const
+	{
+		return m_type == Operation || m_type == EOFCreate || m_type == ReturnContract;
+	}
+	/// @returns the instruction of this item (only valid if type() == Operation || EOFCreate || ReturnContract)
+	Instruction instruction() const
+	{
+		solAssert(hasInstruction());
+		return m_instruction;
+	}
 
 	/// @returns true if the type and data of the items are equal.
 	bool operator==(AssemblyItem const& _other) const
