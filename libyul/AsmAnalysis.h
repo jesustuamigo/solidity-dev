@@ -30,6 +30,7 @@
 
 #include <libyul/backends/evm/AbstractAssembly.h>
 #include <libyul/backends/evm/EVMDialect.h>
+#include <libyul/Object.h>
 
 #include <functional>
 #include <list>
@@ -61,13 +62,13 @@ public:
 		langutil::ErrorReporter& _errorReporter,
 		Dialect const& _dialect,
 		ExternalIdentifierAccess::Resolver _resolver = ExternalIdentifierAccess::Resolver(),
-		std::set<std::string> _dataNames = {}
+		Object::Structure const _objectStructure = {}
 	):
 		m_resolver(std::move(_resolver)),
 		m_info(_analysisInfo),
 		m_errorReporter(_errorReporter),
 		m_dialect(_dialect),
-		m_dataNames(std::move(_dataNames))
+		m_objectStructure(std::move(_objectStructure))
 	{
 		if (EVMDialect const* evmDialect = dynamic_cast<EVMDialect const*>(&m_dialect))
 		{
@@ -84,7 +85,7 @@ public:
 	static AsmAnalysisInfo analyzeStrictAssertCorrect(
 		Dialect const& _dialect,
 		Block const& _astRoot,
-		std::set<std::string> const& _qualifiedDataNames
+		Object::Structure const _objectStructure
 	);
 
 	size_t operator()(Literal const& _literal);
@@ -120,6 +121,8 @@ private:
 	bool validateInstructions(std::string const& _instrIdentifier, langutil::SourceLocation const& _location);
 	bool validateInstructions(FunctionCall const& _functionCall);
 
+	void validateObjectStructure(langutil::SourceLocation _astRootLocation);
+
 	yul::ExternalIdentifierAccess::Resolver m_resolver;
 	Scope* m_currentScope = nullptr;
 	/// Variables that are active at the current point in assembly (as opposed to
@@ -131,7 +134,7 @@ private:
 	std::optional<uint8_t> m_eofVersion;
 	Dialect const& m_dialect;
 	/// Names of data objects to be referenced by builtin functions with literal arguments.
-	std::set<std::string> m_dataNames;
+	Object::Structure m_objectStructure;
 	ForLoop const* m_currentForLoop = nullptr;
 	/// Worst side effects encountered during analysis (including within defined functions).
 	SideEffects m_sideEffects;

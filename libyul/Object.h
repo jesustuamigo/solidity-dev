@@ -98,10 +98,32 @@ public:
 	) const override;
 	/// @returns a compact JSON representation of the AST.
 	Json toJson() const override;
+
+	/// Summarizes the structure of the subtree rooted at a given object,
+	/// in particular the paths that can be used from within to refer to nested nodes (objects and data).
+	struct Structure
+	{
+		/// The name of the object
+		std::string objectName;
+		/// Available dot-separated paths to nested objects (relative to current object).
+		std::set<std::string> objectPaths;
+		/// Available dot-separated paths to nested data entries (relative to current object).
+		std::set<std::string> dataPaths;
+
+		/// Checks if a path is available.
+		bool contains(std::string const& _path) const { return containsObject(_path) || containsData(_path); }
+		/// Checks if a path is available and leads to an object.
+		bool containsObject(std::string const& _path) const { return objectPaths.count(_path) > 0; }
+		/// Checks if a path is available and leads to a data entry.
+		bool containsData(std::string const& _path) const { return dataPaths.count(_path) > 0; }
+
+		std::set<std::string> topLevelSubObjectNames() const;
+	};
+
 	/// @returns the set of names of data objects accessible from within the code of
 	/// this object, including the name of object itself
 	/// Handles all names containing dots as reserved identifiers, not accessible as data.
-	std::set<std::string> qualifiedDataNames() const;
+	Structure summarizeStructure() const;
 
 	/// @returns vector of subIDs if possible to reach subobject with @a _qualifiedName, throws otherwise
 	/// For "B.C" should return vector of two values if success (subId of B and subId of C in B).

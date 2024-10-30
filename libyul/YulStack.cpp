@@ -166,7 +166,7 @@ bool YulStack::analyzeParsed(Object& _object)
 		m_errorReporter,
 		languageToDialect(m_language, m_evmVersion, m_eofVersion),
 		{},
-		_object.qualifiedDataNames()
+		_object.summarizeStructure()
 	);
 
 	bool success = false;

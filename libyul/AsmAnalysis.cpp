@@ -68,6 +68,8 @@ bool AsmAnalyzer::analyze(Block const& _block)
 	auto watcher = m_errorReporter.errorWatcher();
 	try
 	{
+		// FIXME: Pass location of the object name. Now it's a location of first code section in yul
+		validateObjectStructure(nativeLocationOf(_block));
 		if (!(ScopeFiller(m_info, m_errorReporter))(_block))
 			return false;
 
@@ -86,13 +88,13 @@ bool AsmAnalyzer::analyze(Block const& _block)
 
 AsmAnalysisInfo AsmAnalyzer::analyzeStrictAssertCorrect(Dialect const& _dialect, Object const& _object)
 {
-	return analyzeStrictAssertCorrect(_dialect, _object.code()->root(), _object.qualifiedDataNames());
+	return analyzeStrictAssertCorrect(_dialect, _object.code()->root(), _object.summarizeStructure());
 }
 
 AsmAnalysisInfo AsmAnalyzer::analyzeStrictAssertCorrect(
 	Dialect const& _dialect,
 	Block const& _astRoot,
-	std::set<std::string> const& _qualifiedDataNames
+	Object::Structure const _objectStructure
 )
 {
 	ErrorList errorList;
@@ -103,7 +105,7 @@ AsmAnalysisInfo AsmAnalyzer::analyzeStrictAssertCorrect(
 		errors,
 		_dialect,
 		{},
-		_qualifiedDataNames
+		std::move(_objectStructure)
 	).analyze(_astRoot);
 	yulAssert(success && !errors.hasErrors(), "Invalid assembly/yul code.");
 	return analysisInfo;
@@ -408,7 +410,7 @@ size_t AsmAnalyzer::operator()(FunctionCall const& _funCall)
 				if (functionName == "datasize" || functionName == "dataoffset")
 				{
 					auto const& argumentAsLiteral = std::get<Literal>(arg);
-					if (!m_dataNames.count(formatLiteral(argumentAsLiteral)))
+					if (!m_objectStructure.contains(formatLiteral(argumentAsLiteral)))
 						m_errorReporter.typeError(
 							3517_error,
 							nativeLocationOf(arg),
@@ -765,4 +767,17 @@ bool AsmAnalyzer::validateInstructions(evmasm::Instruction _instr, SourceLocatio
 bool AsmAnalyzer::validateInstructions(FunctionCall const& _functionCall)
 {
 	return validateInstructions(_functionCall.functionName.name.str(), nativeLocationOf(_functionCall.functionName));
+}
+
+void AsmAnalyzer::validateObjectStructure(langutil::SourceLocation _astRootLocation)
+{
+	if (m_eofVersion.has_value() && util::contains(m_objectStructure.objectName, '.')) // No dots in object name for EOF
+		m_errorReporter.syntaxError(
+			9822_error,
+			_astRootLocation,
+			fmt::format(
+				"The object name \"{objectName}\" is invalid in EOF context. Object names must not contain 'dot' character.",
+				fmt::arg("objectName", m_objectStructure.objectName)
+			)
+		);
 }
