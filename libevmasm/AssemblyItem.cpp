@@ -74,6 +74,8 @@ std::pair<std::string, std::string> AssemblyItem::nameAndData(langutil::EVMVersi
 	switch (type())
 	{
 	case Operation:
+	case EOFCreate:
+	case ReturnContract:
 		return {instructionInfo(instruction(), _evmVersion).name, m_data != nullptr ? toStringInHex(*m_data) : ""};
 	case Push:
 		return {"PUSH", toStringInHex(data())};
@@ -167,6 +169,10 @@ size_t AssemblyItem::bytesRequired(size_t _addressLength, langutil::EVMVersion _
 		return std::get<2>(*m_verbatimBytecode).size();
 	case AuxDataLoadN:
 		return 1 + 2;
+	case EOFCreate:
+		return 2;
+	case ReturnContract:
+		return 2;
 	case UndefinedItem:
 		solAssert(false);
 	}
@@ -176,7 +182,7 @@ size_t AssemblyItem::bytesRequired(size_t _addressLength, langutil::EVMVersion _
 
 size_t AssemblyItem::arguments() const
 {
-	if (type() == Operation)
+	if (hasInstruction())
 		// The latest EVMVersion is used here, since the InstructionInfo is assumed to be
 		// the same across all EVM versions except for the instruction name.
 		return static_cast<size_t>(instructionInfo(instruction(), EVMVersion()).args);
@@ -193,6 +199,8 @@ size_t AssemblyItem::returnValues() const
 	switch (m_type)
 	{
 	case Operation:
+	case EOFCreate:
+	case ReturnContract:
 		// The latest EVMVersion is used here, since the InstructionInfo is assumed to be
 		// the same across all EVM versions except for the instruction name.
 		return static_cast<size_t>(instructionInfo(instruction(), EVMVersion()).ret);
@@ -226,6 +234,8 @@ bool AssemblyItem::canBeFunctional() const
 	switch (m_type)
 	{
 	case Operation:
+	case EOFCreate:
+	case ReturnContract:
 		return !isDupInstruction(instruction()) && !isSwapInstruction(instruction());
 	case Push:
 	case PushTag:
@@ -344,6 +354,12 @@ std::string AssemblyItem::toAssemblyText(Assembly const& _assembly) const
 		assertThrow(data() <= std::numeric_limits<size_t>::max(), AssemblyException, "Invalid auxdataloadn argument.");
 		text = "auxdataloadn{" +  std::to_string(static_cast<size_t>(data())) + "}";
 		break;
+	case EOFCreate:
+		text = "eofcreate{" +  std::to_string(static_cast<size_t>(data())) + "}";
+		break;
+	case ReturnContract:
+		text = "returcontract{" +  std::to_string(static_cast<size_t>(data())) + "}";
+		break;
 	}
 	if (m_jumpType == JumpType::IntoFunction || m_jumpType == JumpType::OutOfFunction)
 	{
@@ -362,6 +378,8 @@ std::ostream& solidity::evmasm::operator<<(std::ostream& _out, AssemblyItem cons
 	switch (_item.type())
 	{
 	case Operation:
+	case EOFCreate:
+	case ReturnContract:
 		_out << " " << instructionInfo(_item.instruction(), EVMVersion()).name;
 		if (_item.instruction() == Instruction::JUMP || _item.instruction() == Instruction::JUMPI)
 			_out << "\t" << _item.getJumpTypeAsString();
