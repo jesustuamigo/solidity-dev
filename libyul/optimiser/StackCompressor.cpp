@@ -257,7 +257,11 @@ std::tuple<bool, Block> StackCompressor::run(
 	Block astRoot = std::get<Block>(ASTCopier{}(_object.code()->root()));
 	if (usesOptimizedCodeGenerator)
 	{
-		yul::AsmAnalysisInfo analysisInfo = yul::AsmAnalyzer::analyzeStrictAssertCorrect(_dialect, astRoot, _object.qualifiedDataNames());
+		yul::AsmAnalysisInfo analysisInfo = yul::AsmAnalyzer::analyzeStrictAssertCorrect(
+			_dialect,
+			astRoot,
+			_object.summarizeStructure()
+		);
 		std::unique_ptr<CFG> cfg = ControlFlowGraphBuilder::build(analysisInfo, _dialect, astRoot);
 		eliminateVariablesOptimizedCodegen(
 			_dialect,
