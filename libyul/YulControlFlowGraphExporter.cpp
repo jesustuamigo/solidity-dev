@@ -76,9 +76,7 @@ Json YulControlFlowGraphExporter::exportFunction(SSACFG const& _cfg)
 	functionJson["entry"] = "Block" + std::to_string(_cfg.entry.value);
 	static auto constexpr argsTransform = [](auto const& _arg) { return fmt::format("v{}", std::get<1>(_arg).value); };
 	functionJson["arguments"] = _cfg.arguments | ranges::views::transform(argsTransform) | ranges::to<std::vector>;
-	functionJson["returns"] = Json::array();
-	for (auto const& ret: _cfg.returns)
-		functionJson["returns"].emplace_back(ret.get().name.str());
+	functionJson["numReturns"] = _cfg.returns.size();
 	functionJson["blocks"] = exportBlock(_cfg, _cfg.entry);
 	return functionJson;
 }
