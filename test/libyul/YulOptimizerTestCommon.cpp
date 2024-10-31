@@ -434,7 +434,6 @@ YulOptimizerTestCommon::YulOptimizerTestCommon(
 			Object object(*m_optimizedObject);
 			object.setCode(std::make_shared<AST>(*m_dialect, std::get<Block>(ASTCopier{}(block))));
 			auto const unreachables = CompilabilityChecker{
-				*m_dialect,
 				object,
 				true
 			}.unreachableVariables;
