@@ -99,12 +99,7 @@ yul::Block yul::test::disambiguate(std::string const& _source)
 
 std::string yul::test::format(std::string const& _source)
 {
-	Dialect const& dialect = languageToDialect(
-		YulStack::Language::StrictAssembly,
-		solidity::test::CommonOptions::get().evmVersion(),
-		solidity::test::CommonOptions::get().eofVersion()
-	);
-	return AsmPrinter(dialect)(parse(_source).first->root());
+	return AsmPrinter::format(*parse(_source).first);
 }
 
 namespace

@@ -86,7 +86,7 @@ TestCase::TestResult YulOptimizerTest::run(std::ostream& _stream, std::string co
 	std::string printedOptimizedObject;
 	soltestAssert(optimizedObject->dialect());
 	if (optimizedObject->subObjects.empty())
-		printedOptimizedObject = AsmPrinter{*optimizedObject->dialect()}(optimizedObject->code()->root());
+		printedOptimizedObject = AsmPrinter::format(*optimizedObject->code());
 	else
 		printedOptimizedObject = optimizedObject->toString();
 

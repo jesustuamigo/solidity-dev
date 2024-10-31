@@ -42,6 +42,16 @@ using namespace solidity::langutil;
 using namespace solidity::util;
 using namespace solidity::yul;
 
+std::string AsmPrinter::format(
+	AST const& _ast,
+	std::optional<std::map<unsigned, std::shared_ptr<std::string const>>> const& _sourceIndexToName,
+	DebugInfoSelection const& _debugInfoSelection,
+	CharStreamProvider const* _soliditySourceProvider)
+{
+	return AsmPrinter{_ast.dialect(), _sourceIndexToName, _debugInfoSelection, _soliditySourceProvider}(_ast.root());
+}
+
+
 std::string AsmPrinter::operator()(Literal const& _literal)
 {
 	yulAssert(validLiteral(_literal));

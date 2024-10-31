@@ -52,12 +52,12 @@ std::string Object::toString(
 	yulAssert(dialect(), "No dialect");
 	yulAssert(debugData, "No debug data");
 
-	std::string inner = "code " + AsmPrinter(
-		*dialect(),
+	std::string inner = "code " + AsmPrinter::format(
+		*code(),
 		debugData->sourceNames,
 		_debugInfoSelection,
 		_soliditySourceProvider
-	)(code()->root());
+	);
 
 	for (auto const& obj: subObjects)
 		inner += "\n" + obj->toString(_debugInfoSelection, _soliditySourceProvider);

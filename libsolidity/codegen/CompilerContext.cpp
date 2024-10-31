@@ -444,7 +444,7 @@ void CompilerContext::appendInlineAssembly(
 		yul::Parser(errorReporter, dialect, std::move(locationOverride))
 		.parse(charStream);
 #ifdef SOL_OUTPUT_ASM
-	cout << yul::AsmPrinter(&dialect)(*parserResult) << endl;
+	std::cout << yul::AsmPrinter::format(*parserResult) << std::endl;
 #endif
 
 	auto reportError = [&](std::string const& _context)
@@ -491,9 +491,7 @@ void CompilerContext::appendInlineAssembly(
 		{
 			// Store as generated sources, but first re-parse to update the source references.
 			solAssert(m_generatedYulUtilityCode.empty(), "");
-			solAssert(obj.dialect());
-			m_generatedYulUtilityCode = yul::AsmPrinter(*obj.dialect())(obj.code()->root());
-			std::string code = yul::AsmPrinter{*obj.dialect()}(obj.code()->root());
+			m_generatedYulUtilityCode = yul::AsmPrinter::format(*obj.code());
 			langutil::CharStream charStream(m_generatedYulUtilityCode, _sourceName);
 			obj.setCode(yul::Parser(errorReporter, dialect).parse(charStream));
 			obj.analysisInfo = std::make_shared<yul::AsmAnalysisInfo>(yul::AsmAnalyzer::analyzeStrictAssertCorrect(dialect, obj));
@@ -503,8 +501,8 @@ void CompilerContext::appendInlineAssembly(
 		toBeAssembledAST = obj.code();
 
 #ifdef SOL_OUTPUT_ASM
-		cout << "After optimizer:" << endl;
-		cout << yul::AsmPrinter(&dialect)(*parserResult) << endl;
+		std::cout << "After optimizer:" << std::endl;
+		std::cout << yul::AsmPrinter::format(*parserResult) << std::endl;
 #endif
 	}
 	else if (_system)
@@ -537,7 +535,7 @@ void CompilerContext::appendInlineAssembly(
 void CompilerContext::optimizeYul(yul::Object& _object, yul::EVMDialect const& _dialect, OptimiserSettings const& _optimiserSettings, std::set<yul::YulName> const& _externalIdentifiers)
 {
 #ifdef SOL_OUTPUT_ASM
-	cout << yul::AsmPrinter(*dialect)(*_object.code) << endl;
+	std::cout << yul::AsmPrinter::format(*_object.code()) << std::endl;
 #endif
 
 	bool const isCreation = runtimeContext() != nullptr;
@@ -554,8 +552,8 @@ void CompilerContext::optimizeYul(yul::Object& _object, yul::EVMDialect const& _
 	);
 
 #ifdef SOL_OUTPUT_ASM
-	cout << "After optimizer:" << endl;
-	cout << yul::AsmPrinter(*dialect)(*object.code) << endl;
+	std::cout << "After optimizer:" << std::endl;
+	std::cout << yul::AsmPrinter::format(*_object.code()) << std::endl;
 #endif
 }
 

@@ -46,9 +46,16 @@ struct Dialect;
 class AsmPrinter
 {
 public:
+	static std::string format(
+		AST const& _ast,
+		std::optional<std::map<unsigned, std::shared_ptr<std::string const>>> const& _sourceIndexToName = {},
+		langutil::DebugInfoSelection const& _debugInfoSelection = langutil::DebugInfoSelection::Default(),
+		langutil::CharStreamProvider const* _soliditySourceProvider = nullptr
+	);
+
 	explicit AsmPrinter(
 		Dialect const&,
-		std::optional<std::map<unsigned, std::shared_ptr<std::string const>>> _sourceIndexToName = {},
+		std::optional<std::map<unsigned, std::shared_ptr<std::string const>>> const& _sourceIndexToName = {},
 		langutil::DebugInfoSelection const& _debugInfoSelection = langutil::DebugInfoSelection::Default(),
 		langutil::CharStreamProvider const* _soliditySourceProvider = nullptr
 	):
