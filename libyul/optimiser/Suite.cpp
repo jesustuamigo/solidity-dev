@@ -199,7 +199,7 @@ void OptimiserSuite::run(
 	}
 
 	_object.setCode(std::make_shared<AST>(_dialect, std::move(astRoot)));
-	_object.analysisInfo = std::make_shared<AsmAnalysisInfo>(AsmAnalyzer::analyzeStrictAssertCorrect(_dialect, _object));
+	_object.analysisInfo = std::make_shared<AsmAnalysisInfo>(AsmAnalyzer::analyzeStrictAssertCorrect(_object));
 }
 
 namespace

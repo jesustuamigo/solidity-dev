@@ -121,12 +121,12 @@ void ObjectOptimizer::overwriteWithOptimizedObject(util::h256 _cacheKey, Object&
 	yulAssert(cachedObject.dialect);
 	_object.setCode(std::make_shared<AST>(*cachedObject.dialect, ASTCopier{}.translate(*cachedObject.optimizedAST)));
 	yulAssert(_object.code());
+	yulAssert(_object.dialect());
 
 	// There's no point in caching AnalysisInfo because it references AST nodes. It can't be shared
 	// by multiple ASTs and it's easier to recalculate it than properly clone it.
 	_object.analysisInfo = std::make_shared<AsmAnalysisInfo>(
 		AsmAnalyzer::analyzeStrictAssertCorrect(
-			*cachedObject.dialect,
 			_object
 		)
 	);

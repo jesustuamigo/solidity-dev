@@ -494,7 +494,7 @@ void CompilerContext::appendInlineAssembly(
 			m_generatedYulUtilityCode = yul::AsmPrinter::format(*obj.code());
 			langutil::CharStream charStream(m_generatedYulUtilityCode, _sourceName);
 			obj.setCode(yul::Parser(errorReporter, dialect).parse(charStream));
-			obj.analysisInfo = std::make_shared<yul::AsmAnalysisInfo>(yul::AsmAnalyzer::analyzeStrictAssertCorrect(dialect, obj));
+			obj.analysisInfo = std::make_shared<yul::AsmAnalysisInfo>(yul::AsmAnalyzer::analyzeStrictAssertCorrect(obj));
 		}
 
 		analysisInfo = std::move(*obj.analysisInfo);

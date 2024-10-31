@@ -66,7 +66,7 @@ TestCase::TestResult SSAControlFlowGraphTest::run(std::ostream& _stream, std::st
 		return TestResult::FatalError;
 	}
 
-	auto info = AsmAnalyzer::analyzeStrictAssertCorrect(*m_dialect, *object);
+	auto info = AsmAnalyzer::analyzeStrictAssertCorrect(*object);
 	std::unique_ptr<ControlFlow> controlFlow = SSAControlFlowGraphBuilder::build(
 		info,
 		*m_dialect,

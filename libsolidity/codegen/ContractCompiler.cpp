@@ -945,7 +945,7 @@ bool ContractCompiler::visit(InlineAssembly const& _inlineAssembly)
 
 		// Create a modifiable copy of the code and analysis
 		object.setCode(std::make_shared<yul::AST>(_inlineAssembly.dialect(), yul::ASTCopier().translate(code->root())));
-		object.analysisInfo = std::make_shared<yul::AsmAnalysisInfo>(yul::AsmAnalyzer::analyzeStrictAssertCorrect(*dialect, object));
+		object.analysisInfo = std::make_shared<yul::AsmAnalysisInfo>(yul::AsmAnalyzer::analyzeStrictAssertCorrect(object));
 
 		m_context.optimizeYul(object, m_optimiserSettings);
 

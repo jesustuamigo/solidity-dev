@@ -86,9 +86,10 @@ bool AsmAnalyzer::analyze(Block const& _block)
 	return watcher.ok();
 }
 
-AsmAnalysisInfo AsmAnalyzer::analyzeStrictAssertCorrect(Dialect const& _dialect, Object const& _object)
+AsmAnalysisInfo AsmAnalyzer::analyzeStrictAssertCorrect(Object const& _object)
 {
-	return analyzeStrictAssertCorrect(_dialect, _object.code()->root(), _object.summarizeStructure());
+	yulAssert(_object.dialect());
+	return analyzeStrictAssertCorrect(*_object.dialect(), _object.code()->root(), _object.summarizeStructure());
 }
 
 AsmAnalysisInfo AsmAnalyzer::analyzeStrictAssertCorrect(
