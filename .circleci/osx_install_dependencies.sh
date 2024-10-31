@@ -106,7 +106,7 @@ then
   mkdir build
   cd build
   cmake -DCMAKE_OSX_ARCHITECTURES:STRING="x86_64;arm64" -DZ3_BUILD_LIBZ3_SHARED=false ..
-  make -j
+  make -j "$(nproc)"
   sudo make install
   cd ../..
   rm -rf "$z3_dir"
