@@ -92,7 +92,7 @@ include(EthOptions)
 configure_project(TESTS)
 
 if(EMSCRIPTEN)
-    set(TESTED_Z3_VERSION "4.12.1")
+    set(TESTED_Z3_VERSION "4.13.3")
     set(MINIMUM_Z3_VERSION "4.8.16")
     find_package(Z3)
     if (${Z3_FOUND})

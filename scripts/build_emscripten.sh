@@ -33,9 +33,9 @@ if (( $# != 0 )); then
     params="$(printf "%q " "${@}")"
 fi
 
-# solbuildpackpusher/solidity-buildpack-deps:emscripten-17
+# solbuildpackpusher/solidity-buildpack-deps:emscripten-19
 # NOTE: Without `safe.directory` git would assume it's not safe to operate on /root/project since it's owned by a different user.
 # See https://github.blog/2022-04-12-git-security-vulnerability-announced/
 docker run -v "$(pwd):/root/project" -w /root/project \
-    solbuildpackpusher/solidity-buildpack-deps@sha256:c57f2bfb8c15d70fe290629358dd1c73dc126e3760f443b54764797556b887d4 \
+    solbuildpackpusher/solidity-buildpack-deps@sha256:170b159c82ce70e639500551394460f01798c18a5e17b45ea91277b0cf8eae37 \
     /bin/bash -c "git config --global --add safe.directory /root/project && ./scripts/ci/build_emscripten.sh ${params}"
