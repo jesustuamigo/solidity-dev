@@ -140,7 +140,6 @@ void OptimiserSuite::run(
 		PROFILER_PROBE("StackCompressor", probe);
 		_object.setCode(std::make_shared<AST>(_dialect, std::move(astRoot)));
 		astRoot = std::get<1>(StackCompressor::run(
-			_dialect,
 			_object,
 			_optimizeStackAllocation,
 			stackCompressorMaxIterations
@@ -167,7 +166,6 @@ void OptimiserSuite::run(
 				PROFILER_PROBE("StackCompressor", probe);
 				_object.setCode(std::make_shared<AST>(_dialect, std::move(astRoot)));
 				astRoot = std::get<1>(StackCompressor::run(
-					_dialect,
 					_object,
 					_optimizeStackAllocation,
 					stackCompressorMaxIterations

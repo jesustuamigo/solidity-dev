@@ -411,7 +411,7 @@ YulOptimizerTestCommon::YulOptimizerTestCommon(
 			{
 				Object object(*m_optimizedObject);
 				object.setCode(std::make_shared<AST>(*m_dialect, std::get<Block>(ASTCopier{}(block))));
-				block = std::get<1>(StackCompressor::run(*m_dialect, object, true, maxIterations));
+				block = std::get<1>(StackCompressor::run(object, true, maxIterations));
 			}
 			BlockFlattener::run(*m_context, block);
 			return block;
