@@ -243,6 +243,7 @@ std::tuple<bool, Block> StackCompressor::run(
 	size_t _maxIterations)
 {
 	yulAssert(_object.hasCode());
+	yulAssert(_object.dialect(), "No dialect");
 	yulAssert(
 		!_object.code()->root().statements.empty() && std::holds_alternative<Block>(_object.code()->root().statements.at(0)),
 		"Need to run the function grouper before the stack compressor."
@@ -279,7 +280,7 @@ std::tuple<bool, Block> StackCompressor::run(
 		for (size_t iterations = 0; iterations < _maxIterations; iterations++)
 		{
 			Object object(_object);
-			object.setCode(std::make_shared<AST>(std::get<Block>(ASTCopier{}(astRoot))));
+			object.setCode(std::make_shared<AST>(*_object.dialect(), std::get<Block>(ASTCopier{}(astRoot))));
 			std::map<YulName, int> stackSurplus = CompilabilityChecker(_dialect, object, _optimizeStackAllocation).stackDeficit;
 			if (stackSurplus.empty())
 				return std::make_tuple(true, std::move(astRoot));

@@ -49,10 +49,11 @@ std::string Object::toString(
 ) const
 {
 	yulAssert(hasCode(), "No code");
+	yulAssert(dialect(), "No dialect");
 	yulAssert(debugData, "No debug data");
 
 	std::string inner = "code " + AsmPrinter(
-		m_dialect,
+		*dialect(),
 		debugData->sourceNames,
 		_debugInfoSelection,
 		_soliditySourceProvider
@@ -94,10 +95,11 @@ std::string ObjectDebugData::formatUseSrcComment() const
 Json Object::toJson() const
 {
 	yulAssert(hasCode(), "No code");
+	yulAssert(dialect(), "No dialect");
 
 	Json codeJson;
 	codeJson["nodeType"] = "YulCode";
-	codeJson["block"] = AsmJsonConverter(m_dialect, 0 /* sourceIndex */)(code()->root());
+	codeJson["block"] = AsmJsonConverter(*dialect(), 0 /* sourceIndex */)(code()->root());
 
 	Json subObjectsJson = Json::array();
 	for (std::shared_ptr<ObjectNode> const& subObject: subObjects)
@@ -239,4 +241,11 @@ bool Object::hasContiguousSourceIndices() const
 
 	solAssert(maxSourceIndex + 1 >= indices.size());
 	return indices.size() == 0 || indices.size() == maxSourceIndex + 1;
+}
+
+Dialect const* Object::dialect() const
+{
+	if (!m_code)
+		return nullptr;
+	return &m_code->dialect();
 }

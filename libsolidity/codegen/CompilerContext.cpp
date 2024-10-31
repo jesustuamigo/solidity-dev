@@ -481,7 +481,7 @@ void CompilerContext::appendInlineAssembly(
 	// so we essentially only optimize the ABI functions.
 	if (_optimiserSettings.runYulOptimiser && _localVariables.empty())
 	{
-		yul::Object obj{dialect};
+		yul::Object obj;
 		obj.setCode(parserResult, std::make_shared<yul::AsmAnalysisInfo>(analysisInfo));
 
 		solAssert(!dialect.providesObjectAccess());
@@ -491,8 +491,9 @@ void CompilerContext::appendInlineAssembly(
 		{
 			// Store as generated sources, but first re-parse to update the source references.
 			solAssert(m_generatedYulUtilityCode.empty(), "");
-			m_generatedYulUtilityCode = yul::AsmPrinter(obj.dialect())(obj.code()->root());
-			std::string code = yul::AsmPrinter{obj.dialect()}(obj.code()->root());
+			solAssert(obj.dialect());
+			m_generatedYulUtilityCode = yul::AsmPrinter(*obj.dialect())(obj.code()->root());
+			std::string code = yul::AsmPrinter{*obj.dialect()}(obj.code()->root());
 			langutil::CharStream charStream(m_generatedYulUtilityCode, _sourceName);
 			obj.setCode(yul::Parser(errorReporter, dialect).parse(charStream));
 			obj.analysisInfo = std::make_shared<yul::AsmAnalysisInfo>(yul::AsmAnalyzer::analyzeStrictAssertCorrect(dialect, obj));
