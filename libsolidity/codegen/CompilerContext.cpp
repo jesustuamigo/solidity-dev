@@ -544,7 +544,6 @@ void CompilerContext::optimizeYul(yul::Object& _object, OptimiserSettings const&
 	bool const isCreation = runtimeContext() != nullptr;
 	yul::GasMeter meter(*evmDialect, isCreation, _optimiserSettings.expectedExecutionsPerDeployment);
 	yul::OptimiserSuite::run(
-		*evmDialect,
 		&meter,
 		_object,
 		_optimiserSettings.optimizeStackAllocation,

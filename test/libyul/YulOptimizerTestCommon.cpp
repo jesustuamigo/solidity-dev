@@ -419,7 +419,6 @@ YulOptimizerTestCommon::YulOptimizerTestCommon(
 		{"fullSuite", [&]() {
 			GasMeter meter(dynamic_cast<EVMDialect const&>(*m_dialect), false, 200);
 			OptimiserSuite::run(
-				*m_dialect,
 				&meter,
 				*m_optimizedObject,
 				true,

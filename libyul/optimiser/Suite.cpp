@@ -89,7 +89,6 @@ using namespace solidity::yul;
 using namespace std::string_literals;
 
 void OptimiserSuite::run(
-	Dialect const& _dialect,
 	GasMeter const* _meter,
 	Object& _object,
 	bool _optimizeStackAllocation,
@@ -99,7 +98,9 @@ void OptimiserSuite::run(
 	std::set<YulName> const& _externallyUsedIdentifiers
 )
 {
-	EVMDialect const* evmDialect = dynamic_cast<EVMDialect const*>(&_dialect);
+	yulAssert(_object.dialect());
+	auto const& dialect = *_object.dialect();
+	EVMDialect const* evmDialect = dynamic_cast<EVMDialect const*>(_object.dialect());
 	bool usesOptimizedCodeGenerator =
 		_optimizeStackAllocation &&
 		evmDialect &&
@@ -111,14 +112,14 @@ void OptimiserSuite::run(
 	{
 		PROFILER_PROBE("Disambiguator", probe);
 		astRoot = std::get<Block>(Disambiguator(
-			_dialect,
+			dialect,
 			*_object.analysisInfo,
 			reservedIdentifiers
 		)(_object.code()->root()));
 	}
 
-	NameDispenser dispenser{_dialect, astRoot, reservedIdentifiers};
-	OptimiserStepContext context{_dialect, dispenser, reservedIdentifiers, _expectedExecutionsPerDeployment};
+	NameDispenser dispenser{dialect, astRoot, reservedIdentifiers};
+	OptimiserStepContext context{dialect, dispenser, reservedIdentifiers, _expectedExecutionsPerDeployment};
 
 	OptimiserSuite suite(context, Debug::None);
 
@@ -138,7 +139,7 @@ void OptimiserSuite::run(
 	if (!usesOptimizedCodeGenerator)
 	{
 		PROFILER_PROBE("StackCompressor", probe);
-		_object.setCode(std::make_shared<AST>(_dialect, std::move(astRoot)));
+		_object.setCode(std::make_shared<AST>(dialect, std::move(astRoot)));
 		astRoot = std::get<1>(StackCompressor::run(
 			_object,
 			_optimizeStackAllocation,
@@ -164,7 +165,7 @@ void OptimiserSuite::run(
 		{
 			{
 				PROFILER_PROBE("StackCompressor", probe);
-				_object.setCode(std::make_shared<AST>(_dialect, std::move(astRoot)));
+				_object.setCode(std::make_shared<AST>(dialect, std::move(astRoot)));
 				astRoot = std::get<1>(StackCompressor::run(
 					_object,
 					_optimizeStackAllocation,
@@ -174,14 +175,14 @@ void OptimiserSuite::run(
 			if (evmDialect->providesObjectAccess())
 			{
 				PROFILER_PROBE("StackLimitEvader", probe);
-				_object.setCode(std::make_shared<AST>(_dialect, std::move(astRoot)));
+				_object.setCode(std::make_shared<AST>(dialect, std::move(astRoot)));
 				astRoot = StackLimitEvader::run(suite.m_context, _object);
 			}
 		}
 		else if (evmDialect->providesObjectAccess() && _optimizeStackAllocation)
 		{
 			PROFILER_PROBE("StackLimitEvader", probe);
-			_object.setCode(std::make_shared<AST>(_dialect, std::move(astRoot)));
+			_object.setCode(std::make_shared<AST>(dialect, std::move(astRoot)));
 			astRoot = StackLimitEvader::run(suite.m_context, _object);
 		}
 	}
@@ -196,7 +197,7 @@ void OptimiserSuite::run(
 		VarNameCleaner::run(suite.m_context, astRoot);
 	}
 
-	_object.setCode(std::make_shared<AST>(_dialect, std::move(astRoot)));
+	_object.setCode(std::make_shared<AST>(dialect, std::move(astRoot)));
 	_object.analysisInfo = std::make_shared<AsmAnalysisInfo>(AsmAnalyzer::analyzeStrictAssertCorrect(_object));
 }
 
