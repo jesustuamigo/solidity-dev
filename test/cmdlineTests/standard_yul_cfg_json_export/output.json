@@ -380,8 +380,8 @@
                             "functions": {
                                 "abi_decode_tuple_": {
                                     "arguments": [
-                                        "headStart",
-                                        "dataEnd"
+                                        "v0",
+                                        "v1"
                                     ],
                                     "blocks": [
                                         {
@@ -447,8 +447,8 @@
                                 },
                                 "abi_encode_t_uint256_to_t_uint256_fromStack": {
                                     "arguments": [
-                                        "value",
-                                        "pos"
+                                        "v0",
+                                        "v1"
                                     ],
                                     "blocks": [
                                         {
@@ -485,8 +485,8 @@
                                 },
                                 "abi_encode_tuple_t_uint256__to_t_uint256__fromStack": {
                                     "arguments": [
-                                        "headStart",
-                                        "value0"
+                                        "v0",
+                                        "v1"
                                     ],
                                     "blocks": [
                                         {
@@ -569,7 +569,7 @@
                                 },
                                 "cleanup_t_rational_42_by_1": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -591,7 +591,7 @@
                                 },
                                 "cleanup_t_uint256": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -613,7 +613,7 @@
                                 },
                                 "convert_t_rational_42_by_1_to_t_uint256": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -811,7 +811,7 @@
                                 },
                                 "identity": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -908,7 +908,7 @@
                                 },
                                 "shift_right_224_unsigned": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -1324,8 +1324,8 @@
                             "functions": {
                                 "abi_decode_t_uint256_fromMemory": {
                                     "arguments": [
-                                        "offset",
-                                        "end"
+                                        "v0",
+                                        "v1"
                                     ],
                                     "blocks": [
                                         {
@@ -1365,8 +1365,8 @@
                                 },
                                 "abi_decode_tuple_": {
                                     "arguments": [
-                                        "headStart",
-                                        "dataEnd"
+                                        "v0",
+                                        "v1"
                                     ],
                                     "blocks": [
                                         {
@@ -1432,8 +1432,8 @@
                                 },
                                 "abi_decode_tuple_t_uint256_fromMemory": {
                                     "arguments": [
-                                        "headStart",
-                                        "dataEnd"
+                                        "v0",
+                                        "v1"
                                     ],
                                     "blocks": [
                                         {
@@ -1525,8 +1525,8 @@
                                 },
                                 "abi_encode_t_uint256_to_t_uint256_fromStack": {
                                     "arguments": [
-                                        "value",
-                                        "pos"
+                                        "v0",
+                                        "v1"
                                     ],
                                     "blocks": [
                                         {
@@ -1563,7 +1563,7 @@
                                 },
                                 "abi_encode_tuple__to__fromStack": {
                                     "arguments": [
-                                        "headStart"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -1597,8 +1597,8 @@
                                 },
                                 "abi_encode_tuple_t_uint256__to_t_uint256__fromStack": {
                                     "arguments": [
-                                        "headStart",
-                                        "value0"
+                                        "v0",
+                                        "v1"
                                     ],
                                     "blocks": [
                                         {
@@ -1681,7 +1681,7 @@
                                 },
                                 "cleanup_t_uint160": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -1715,7 +1715,7 @@
                                 },
                                 "cleanup_t_uint256": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -1737,7 +1737,7 @@
                                 },
                                 "convert_t_contract$_C_$19_to_t_address": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -1770,7 +1770,7 @@
                                 },
                                 "convert_t_uint160_to_t_address": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -1803,7 +1803,7 @@
                                 },
                                 "convert_t_uint160_to_t_uint160": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -1963,8 +1963,8 @@
                                 },
                                 "finalize_allocation": {
                                     "arguments": [
-                                        "memPtr",
-                                        "size"
+                                        "v0",
+                                        "v1"
                                     ],
                                     "blocks": [
                                         {
@@ -2528,7 +2528,7 @@
                                 },
                                 "identity": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -2771,7 +2771,7 @@
                                 },
                                 "round_up_to_mul_of_32": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -2824,7 +2824,7 @@
                                 },
                                 "shift_left_224": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -2858,7 +2858,7 @@
                                 },
                                 "shift_right_224_unsigned": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -2892,7 +2892,7 @@
                                 },
                                 "validator_revert_t_uint256": {
                                     "arguments": [
-                                        "value"
+                                        "v0"
                                     ],
                                     "blocks": [
                                         {
@@ -3367,8 +3367,8 @@
                                     "functions": {
                                         "abi_decode_tuple_": {
                                             "arguments": [
-                                                "headStart",
-                                                "dataEnd"
+                                                "v0",
+                                                "v1"
                                             ],
                                             "blocks": [
                                                 {
@@ -3434,8 +3434,8 @@
                                         },
                                         "abi_encode_t_uint256_to_t_uint256_fromStack": {
                                             "arguments": [
-                                                "value",
-                                                "pos"
+                                                "v0",
+                                                "v1"
                                             ],
                                             "blocks": [
                                                 {
@@ -3472,8 +3472,8 @@
                                         },
                                         "abi_encode_tuple_t_uint256__to_t_uint256__fromStack": {
                                             "arguments": [
-                                                "headStart",
-                                                "value0"
+                                                "v0",
+                                                "v1"
                                             ],
                                             "blocks": [
                                                 {
@@ -3556,7 +3556,7 @@
                                         },
                                         "cleanup_t_rational_42_by_1": {
                                             "arguments": [
-                                                "value"
+                                                "v0"
                                             ],
                                             "blocks": [
                                                 {
@@ -3578,7 +3578,7 @@
                                         },
                                         "cleanup_t_uint256": {
                                             "arguments": [
-                                                "value"
+                                                "v0"
                                             ],
                                             "blocks": [
                                                 {
@@ -3600,7 +3600,7 @@
                                         },
                                         "convert_t_rational_42_by_1_to_t_uint256": {
                                             "arguments": [
-                                                "value"
+                                                "v0"
                                             ],
                                             "blocks": [
                                                 {
@@ -3798,7 +3798,7 @@
                                         },
                                         "identity": {
                                             "arguments": [
-                                                "value"
+                                                "v0"
                                             ],
                                             "blocks": [
                                                 {
@@ -3895,7 +3895,7 @@
                                         },
                                         "shift_right_224_unsigned": {
                                             "arguments": [
-                                                "value"
+                                                "v0"
                                             ],
                                             "blocks": [
                                                 {
