@@ -94,7 +94,7 @@ void YulStack::optimize()
 	{
 		if (
 			!m_optimiserSettings.runYulOptimiser &&
-			yul::MSizeFinder::containsMSize(languageToDialect(m_language, m_evmVersion, m_eofVersion), *m_parserResult)
+			yul::MSizeFinder::containsMSize(*m_parserResult)
 		)
 			return;
 
@@ -317,7 +317,7 @@ YulStack::assembleEVMWithDeployed(std::optional<std::string_view> _deployName)
 	// it with the minimal steps required to avoid "stack too deep".
 	bool optimize = m_optimiserSettings.optimizeStackAllocation || (
 		!m_optimiserSettings.runYulOptimiser &&
-		!yul::MSizeFinder::containsMSize(languageToDialect(m_language, m_evmVersion, m_eofVersion), *m_parserResult)
+		!yul::MSizeFinder::containsMSize(*m_parserResult)
 	);
 	try
 	{
