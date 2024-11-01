@@ -68,7 +68,7 @@ function setup_foundry_project {
         "$install_function"
     fi
 
-    neutralize_via_ir
+    [[ ! -e foundry.toml ]] || neutralize_via_ir
     neutralize_version_pragmas
     popd
     echo
@@ -77,6 +77,13 @@ function setup_foundry_project {
 function install_liquity {
     sed -i -e 's|git@github.com:|https://github.com/|g' .gitmodules
     forge install
+}
+
+function install_old_uniswap {
+    openzeppelin_version=$(sed -n 's|\s\+"@openzeppelin/contracts": "\([0-9.]\+\)"|\1|p' package.json)
+    rm package.json
+    rm yarn.lock
+    npm install "@openzeppelin/contracts@${openzeppelin_version}"
 }
 
 function install_sablier {
@@ -101,11 +108,21 @@ EOF
 mkdir -p "$BENCHMARK_DIR"
 cd "$BENCHMARK_DIR"
 
-setup_foundry_project openzeppelin/ tag v5.0.2 https://github.com/OpenZeppelin/openzeppelin-contracts
-setup_foundry_project liquity/ commit 7f93a3f1781dfce2c4e0b6a7262deddd8a10e45b https://github.com/liquity/V2-gov install_liquity
-setup_foundry_project uniswap-v4/ commit ae86975b058d386c9be24e8994236f662affacdb https://github.com/Uniswap/v4-core
+setup_foundry_project openzeppelin-5.0.2/ tag v5.0.2 https://github.com/OpenZeppelin/openzeppelin-contracts
+setup_foundry_project openzeppelin-4.9.0/ tag v4.9.0 https://github.com/OpenZeppelin/openzeppelin-contracts
+setup_foundry_project openzeppelin-4.8.0/ tag v4.8.0 https://github.com/OpenZeppelin/openzeppelin-contracts
+setup_foundry_project openzeppelin-4.7.0/ tag v4.7.0 https://github.com/OpenZeppelin/openzeppelin-contracts
+
+setup_foundry_project liquity-2024-10-30/ commit 7f93a3f1781dfce2c4e0b6a7262deddd8a10e45b https://github.com/liquity/V2-gov install_liquity
+
+setup_foundry_project uniswap-v4-2024-06-06/ commit ae86975b058d386c9be24e8994236f662affacdb https://github.com/Uniswap/v4-core
+setup_foundry_project uniswap-v4-2022-06-16/ commit 9aeddf76e1b8646908fbcc7519c882bf458b794d https://github.com/Uniswap/v4-core install_old_uniswap
+
+setup_foundry_project farcaster-3.1.0/ tag v3.1.0 https://github.com/farcasterxyz/contracts
+
 # NOTE: Can't select the tag with `git clone` because a branch of the same name exists.
-setup_foundry_project seaport/ commit tags/1.6 https://github.com/ProjectOpenSea/seaport
-setup_foundry_project eigenlayer/ tag v0.3.0-holesky-rewards https://github.com/Layr-Labs/eigenlayer-contracts
-setup_foundry_project farcaster/ tag v3.1.0 https://github.com/farcasterxyz/contracts
-setup_foundry_project sablier-v2/ tag v1.1.2 https://github.com/sablier-labs/v2-core install_sablier
+setup_foundry_project seaport-1.6/ commit tags/1.6 https://github.com/ProjectOpenSea/seaport
+
+setup_foundry_project eigenlayer-0.3.0/ tag v0.3.0-holesky-rewards https://github.com/Layr-Labs/eigenlayer-contracts
+
+setup_foundry_project sablier-v2-1.1.2/ tag v1.1.2 https://github.com/sablier-labs/v2-core install_sablier
