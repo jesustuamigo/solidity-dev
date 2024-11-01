@@ -77,9 +77,11 @@ function benchmark_project {
 benchmarks=(
     # Fastest ones first so that we get *some* output quickly
     openzeppelin
+    liquity
     uniswap-v4
     eigenlayer
     seaport
+    farcaster
     sablier-v2
 )
 

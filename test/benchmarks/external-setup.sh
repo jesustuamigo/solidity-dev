@@ -74,6 +74,11 @@ function setup_foundry_project {
     echo
 }
 
+function install_liquity {
+    sed -i -e 's|git@github.com:|https://github.com/|g' .gitmodules
+    forge install
+}
+
 function install_sablier {
     # NOTE: To avoid hard-coding dependency versions here we'd have to install them from npm
     forge install --no-commit \
@@ -97,8 +102,10 @@ mkdir -p "$BENCHMARK_DIR"
 cd "$BENCHMARK_DIR"
 
 setup_foundry_project openzeppelin/ tag v5.0.2 https://github.com/OpenZeppelin/openzeppelin-contracts
+setup_foundry_project liquity/ commit 7f93a3f1781dfce2c4e0b6a7262deddd8a10e45b https://github.com/liquity/V2-gov install_liquity
 setup_foundry_project uniswap-v4/ commit ae86975b058d386c9be24e8994236f662affacdb https://github.com/Uniswap/v4-core
 # NOTE: Can't select the tag with `git clone` because a branch of the same name exists.
 setup_foundry_project seaport/ commit tags/1.6 https://github.com/ProjectOpenSea/seaport
 setup_foundry_project eigenlayer/ tag v0.3.0-holesky-rewards https://github.com/Layr-Labs/eigenlayer-contracts
+setup_foundry_project farcaster/ tag v3.1.0 https://github.com/farcasterxyz/contracts
 setup_foundry_project sablier-v2/ tag v1.1.2 https://github.com/sablier-labs/v2-core install_sablier
