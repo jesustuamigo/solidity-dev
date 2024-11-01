@@ -84,9 +84,9 @@ benchmarks=(
     openzeppelin-4.8.0     # compiles via IR with solc >=0.8.10
     uniswap-v4-2024-06-06  # compiles via IR with solc >=0.8.24
     eigenlayer-0.3.0       # compiles via IR with solc >=0.8.18
+    sablier-v2-1.2.0       # compiles via IR with solc >=0.8.28 (maybe >=0.8.26)
     seaport-1.6            # StackTooDeep via IR
     farcaster-3.1.0        # StackTooDeep via IR
-    sablier-v2-1.1.2       # StackTooDeep via IR
 )
 
 mkdir -p "$BENCHMARK_DIR"

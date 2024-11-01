@@ -89,17 +89,15 @@ function install_old_uniswap {
 function install_sablier {
     # NOTE: To avoid hard-coding dependency versions here we'd have to install them from npm
     forge install --no-commit \
-        foundry-rs/forge-std@v1.5.6 \
-        OpenZeppelin/openzeppelin-contracts@v4.9.2 \
-        PaulRBerg/prb-math@v4.0.2 \
-        PaulRBerg/prb-test@v0.6.4 \
+        foundry-rs/forge-std@v1.8.2 \
+        OpenZeppelin/openzeppelin-contracts@v5.0.2 \
+        PaulRBerg/prb-math@v4.0.3 \
         evmcheb/solarray@a547630 \
-        Vectorized/solady@v0.0.129
+        Vectorized/solady@v0.0.208
    cat <<EOF > remappings.txt
 @openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
 forge-std/=lib/forge-std/
 @prb/math/=lib/prb-math/
-@prb/test/=lib/prb-test/
 solarray/=lib/solarray/
 solady/=lib/solady/
 EOF
@@ -125,4 +123,4 @@ setup_foundry_project seaport-1.6/ commit tags/1.6 https://github.com/ProjectOpe
 
 setup_foundry_project eigenlayer-0.3.0/ tag v0.3.0-holesky-rewards https://github.com/Layr-Labs/eigenlayer-contracts
 
-setup_foundry_project sablier-v2-1.1.2/ tag v1.1.2 https://github.com/sablier-labs/v2-core install_sablier
+setup_foundry_project sablier-v2-1.2.0/ tag v1.2.0 https://github.com/sablier-labs/v2-core install_sablier
