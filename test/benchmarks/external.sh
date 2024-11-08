@@ -65,7 +65,7 @@ function benchmark_project {
         > /dev/null \
         2> "../stderr-${project}-${pipeline}.log" || true
 
-    printf '| %-20s | %8s | %6d s | %9d MiB | %9d |\n' \
+    printf '| %-21s | %8s | %6d s | %9d MiB | %9d |\n' \
         "$project" \
         "$pipeline" \
         "$(jq '(.user + .sys) | round' "$time_file")" \
@@ -76,18 +76,24 @@ function benchmark_project {
 
 benchmarks=(
     # Fastest ones first so that we get *some* output quickly
-    openzeppelin
-    uniswap-v4
-    eigenlayer
-    seaport
-    sablier-v2
+    uniswap-v4-2022-06-16  # compiles via IR with solc >=0.8.12
+    openzeppelin-5.0.2     # compiles via IR with solc >=0.8.26
+    openzeppelin-4.9.0     # compiles via IR with solc 0.8.10-0.8.14 and >=0.8.26
+    liquity-2024-10-30     # compiles via IR with solc >=0.8.24
+    openzeppelin-4.7.0     # compiles via IR with solc >=0.8.10
+    openzeppelin-4.8.0     # compiles via IR with solc >=0.8.10
+    uniswap-v4-2024-06-06  # compiles via IR with solc >=0.8.24
+    eigenlayer-0.3.0       # compiles via IR with solc >=0.8.18
+    sablier-v2-1.2.0       # compiles via IR with solc >=0.8.28 (maybe >=0.8.26)
+    seaport-1.6            # StackTooDeep via IR
+    farcaster-3.1.0        # StackTooDeep via IR
 )
 
 mkdir -p "$BENCHMARK_DIR"
 cd "$BENCHMARK_DIR"
 
-echo "|         File         | Pipeline |   Time   | Memory (peak) | Exit code |"
-echo "|----------------------|----------|---------:|--------------:|----------:|"
+echo "|         File          | Pipeline |   Time   | Memory (peak) | Exit code |"
+echo "|-----------------------|----------|---------:|--------------:|----------:|"
 
 for project in "${benchmarks[@]}"; do
     benchmark_project legacy "$project"
