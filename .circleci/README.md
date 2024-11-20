@@ -2,7 +2,7 @@
 
 ### Docker images
 
-The docker images are build locally on the developer machine:
+The docker images are built locally on the developer machine:
 
 ```sh
 cd .circleci/docker/
