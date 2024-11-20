@@ -147,12 +147,17 @@ void Parser::fetchDebugDataFromComment()
 {
 	solAssert(m_sourceNames.has_value(), "");
 
+	std::string_view commentLiteral = m_scanner->currentCommentLiteral();
+	if (commentLiteral.empty())
+	{
+		m_astIDFromComment = std::nullopt;
+		return;
+	}
 	static std::regex const tagRegex = std::regex(
 		R"~~((?:^|\s+)(@[a-zA-Z0-9\-_]+)(?:\s+|$))~~", // tag, e.g: @src
 		std::regex_constants::ECMAScript | std::regex_constants::optimize
 	);
 
-	std::string_view commentLiteral = m_scanner->currentCommentLiteral();
 	std::match_results<std::string_view::const_iterator> match;
 
 	langutil::SourceLocation originLocation = m_locationFromComment;
