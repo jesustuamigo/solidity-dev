@@ -193,6 +193,12 @@ public:
 	bool experimentalSolidity() const { return m_experimentalSolidity; }
 
 private:
+	void referencedSourceUnits(
+		std::set<SourceUnit const*>& _referencedSourceUnits,
+		bool _recurse,
+		std::set<SourceUnit const*>& _skipList
+	) const;
+
 	std::optional<std::string> m_licenseString;
 	std::vector<ASTPointer<ASTNode>> m_nodes;
 	bool m_experimentalSolidity = false;
