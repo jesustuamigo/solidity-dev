@@ -1458,6 +1458,7 @@ jobs:
             - run:
                 name: Install Python 2 and make it the default
                 command: |
+                  sudo apt update
                   # python is used by node-gyp to build native modules (needed for Colony).
                   # In the 14.x image node-gyp still requires Python 2.
                   sudo apt install python2 --assume-yes --no-install-recommends
