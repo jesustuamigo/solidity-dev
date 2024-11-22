@@ -183,6 +183,9 @@ enum class Instruction: uint8_t
 	LOG4,                     ///< Makes a log entry; 4 topics.
 
 	DATALOADN = 0xd1,         ///< load data from EOF data section
+
+	RJUMP = 0xe0,             ///< relative jump
+	RJUMPI = 0xe1,            ///< conditional relative jump
 	EOFCREATE = 0xec,         ///< create a new account with associated container code.
 	RETURNCONTRACT = 0xee,    ///< return container to be deployed with axiliary data filled in.
 	CREATE = 0xf0,            ///< create a new account with associated code
@@ -298,7 +301,9 @@ enum class Tier
 	// NOTE: Tiers should be ordered by cost, since we sometimes perform comparisons between them.
 	Zero = 0,   // 0, Zero
 	Base,       // 2, Quick
+	RJump,      // 2, RJump
 	VeryLow,    // 3, Fastest
+	RJumpI,     // 4,
 	Low,        // 5, Fast
 	Mid,        // 8, Mid
 	High,       // 10, Slow
