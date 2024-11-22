@@ -566,7 +566,7 @@ BuiltinFunctionForEVM EVMDialect::createVerbatimFunction(size_t _arguments, size
 		1 + _arguments,
 		_returnVariables,
 		SideEffects::worst(),
-		ControlFlowSideEffects{},
+		ControlFlowSideEffects::worst(), // Worst control flow side effects because verbatim can do anything.
 		std::vector<std::optional<LiteralKind>>{LiteralKind::String} + std::vector<std::optional<LiteralKind>>(_arguments),
 		[=](
 			FunctionCall const& _call,

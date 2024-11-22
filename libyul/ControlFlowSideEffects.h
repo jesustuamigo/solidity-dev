@@ -68,6 +68,12 @@ struct ControlFlowSideEffects
 
 		return controlFlowSideEffects;
 	}
+
+	/// @returns the worst-case control flow side effects.
+	static ControlFlowSideEffects worst()
+	{
+		return ControlFlowSideEffects{true, true, true};
+	}
 };
 
 }
