@@ -57,6 +57,8 @@ enum AssemblyItemType
 	AuxDataLoadN,
 	EOFCreate, ///< Creates new contract using subcontainer as initcode
 	ReturnContract, ///< Returns new container (with auxiliary data filled in) to be deployed
+	RelativeJump, ///< Jumps to relative position accordingly to its argument
+	ConditionalRelativeJump, ///< Same as RelativeJump but takes condition from the stack
 	VerbatimBytecode ///< Contains data that is inserted into the bytecode code section without modification.
 };
 
@@ -111,20 +113,32 @@ public:
 	{
 		return AssemblyItem(ReturnContract, Instruction::RETURNCONTRACT, _containerID, std::move(_debugData));
 	}
+	static AssemblyItem relativeJumpTo(AssemblyItem _tag, langutil::DebugData::ConstPtr _debugData = langutil::DebugData::create())
+	{
+		solAssert(_tag.type() == Tag);
+		return AssemblyItem(RelativeJump, Instruction::RJUMP, _tag.data(), _debugData);
+	}
+	static AssemblyItem conditionalRelativeJumpTo(AssemblyItem _tag, langutil::DebugData::ConstPtr _debugData = langutil::DebugData::create())
+	{
+		solAssert(_tag.type() == Tag);
+		return AssemblyItem(ConditionalRelativeJump, Instruction::RJUMPI, _tag.data(), _debugData);
+	}
 
 	AssemblyItem(AssemblyItem const&) = default;
 	AssemblyItem(AssemblyItem&&) = default;
 	AssemblyItem& operator=(AssemblyItem const&) = default;
 	AssemblyItem& operator=(AssemblyItem&&) = default;
 
-	AssemblyItem tag() const { assertThrow(m_type == PushTag || m_type == Tag, util::Exception, ""); return AssemblyItem(Tag, data()); }
-	AssemblyItem pushTag() const { assertThrow(m_type == PushTag || m_type == Tag, util::Exception, ""); return AssemblyItem(PushTag, data()); }
+	AssemblyItem tag() const { solAssert(m_type == PushTag || m_type == Tag || m_type == RelativeJump || m_type == ConditionalRelativeJump); return AssemblyItem(Tag, data()); }
+	AssemblyItem pushTag() const { solAssert(m_type == PushTag || m_type == Tag || m_type == RelativeJump || m_type == ConditionalRelativeJump); return AssemblyItem(PushTag, data()); }
 	/// Converts the tag to a subassembly tag. This has to be called in order to move a tag across assemblies.
 	/// @param _subId the identifier of the subassembly the tag is taken from.
 	AssemblyItem toSubAssemblyTag(size_t _subId) const;
 	/// @returns splits the data of the push tag into sub assembly id and actual tag id.
 	/// The sub assembly id of non-foreign push tags is -1.
 	std::pair<size_t, size_t> splitForeignPushTag() const;
+	/// @returns relative jump target tag ID. Asserts that it is not foreign tag.
+	size_t relativeJumpTagID() const;
 	/// Sets sub-assembly part and tag for a push tag.
 	void setPushTagSubIdAndTag(size_t _subId, size_t _tag);
 
@@ -145,9 +159,14 @@ public:
 	/// @returns true if the item has m_instruction properly set.
 	bool hasInstruction() const
 	{
-		return m_type == Operation || m_type == EOFCreate || m_type == ReturnContract;
+		return
+			m_type == Operation ||
+			m_type == EOFCreate ||
+			m_type == ReturnContract ||
+			m_type == RelativeJump ||
+			m_type == ConditionalRelativeJump;
 	}
-	/// @returns the instruction of this item (only valid if type() == Operation || EOFCreate || ReturnContract)
+	/// @returns the instruction of this item (only valid if hasInstruction returns true)
 	Instruction instruction() const
 	{
 		solAssert(hasInstruction());

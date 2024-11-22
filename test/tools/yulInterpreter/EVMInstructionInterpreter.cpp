@@ -490,6 +490,8 @@ u256 EVMInstructionInterpreter::eval(
 	case Instruction::DATALOADN:
 	case Instruction::EOFCREATE:
 	case Instruction::RETURNCONTRACT:
+	case Instruction::RJUMP:
+	case Instruction::RJUMPI:
 		solUnimplemented("EOF not yet supported by Yul interpreter.");
 	}
 

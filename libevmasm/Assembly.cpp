@@ -1396,6 +1396,7 @@ LinkerObject const& Assembly::assembleEOF() const
 
 	m_tagPositionsInBytecode = std::vector<size_t>(m_usedTags, std::numeric_limits<size_t>::max());
 	std::map<size_t, uint16_t> dataSectionRef;
+	std::map<size_t, size_t> tagRef;
 
 	for (auto&& [codeSectionIndex, codeSection]: m_codeSections | ranges::views::enumerate)
 	{
@@ -1412,7 +1413,9 @@ LinkerObject const& Assembly::assembleEOF() const
 				solAssert(
 					item.instruction() != Instruction::DATALOADN &&
 					item.instruction() != Instruction::RETURNCONTRACT &&
-					item.instruction() != Instruction::EOFCREATE
+					item.instruction() != Instruction::EOFCREATE &&
+					item.instruction() != Instruction::RJUMP &&
+					item.instruction() != Instruction::RJUMPI
 				);
 				solAssert(!(item.instruction() >= Instruction::PUSH0 && item.instruction() <= Instruction::PUSH32));
 				ret.bytecode += assembleOperation(item);
@@ -1425,6 +1428,14 @@ LinkerObject const& Assembly::assembleEOF() const
 				auto const [pushLibraryAddressBytecode, linkRef] = assemblePushLibraryAddress(item, ret.bytecode.size());
 				ret.bytecode += pushLibraryAddressBytecode;
 				ret.linkReferences.insert(linkRef);
+				break;
+			}
+			case RelativeJump:
+			case ConditionalRelativeJump:
+			{
+				ret.bytecode.push_back(static_cast<uint8_t>(item.instruction()));
+				tagRef[ret.bytecode.size()] = item.relativeJumpTagID();
+				appendBigEndianUint16(ret.bytecode, 0u);
 				break;
 			}
 			case EOFCreate:
@@ -1463,6 +1474,18 @@ LinkerObject const& Assembly::assembleEOF() const
 		}
 
 		setBigEndianUint16(ret.bytecode, codeSectionSizePositions[codeSectionIndex], ret.bytecode.size() - sectionStart);
+	}
+
+	for (auto const& [refPos, tagId]: tagRef)
+	{
+		solAssert(tagId < m_tagPositionsInBytecode.size(), "Reference to non-existing tag.");
+		size_t tagPos = m_tagPositionsInBytecode[tagId];
+		solAssert(tagPos != std::numeric_limits<size_t>::max(), "Reference to tag without position.");
+
+		ptrdiff_t const relativeJumpOffset = static_cast<ptrdiff_t>(tagPos) - (static_cast<ptrdiff_t>(refPos) + 2);
+		solRequire(-0x8000 <= relativeJumpOffset && relativeJumpOffset <= 0x7FFF, AssemblyException, "Relative jump too far");
+		solAssert(relativeJumpOffset < -2 || 0 <= relativeJumpOffset, "Relative jump offset into immediate argument.");
+		setBigEndianUint16(ret.bytecode, refPos, static_cast<size_t>(static_cast<uint16_t>(relativeJumpOffset)));
 	}
 
 	for (auto i: referencedSubIds)

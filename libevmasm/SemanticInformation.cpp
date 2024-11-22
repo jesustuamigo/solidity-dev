@@ -303,7 +303,13 @@ bool SemanticInformation::isSwapInstruction(AssemblyItem const& _item)
 
 bool SemanticInformation::isJumpInstruction(AssemblyItem const& _item)
 {
-	return _item == Instruction::JUMP || _item == Instruction::JUMPI;
+	return
+		_item == Instruction::JUMP ||
+		_item == Instruction::JUMPI ||
+		_item == Instruction::RJUMP ||
+		_item == Instruction::RJUMPI ||
+		_item.type() == RelativeJump ||
+		_item.type() == ConditionalRelativeJump;
 }
 
 bool SemanticInformation::altersControlFlow(AssemblyItem const& _item)
@@ -317,6 +323,8 @@ bool SemanticInformation::altersControlFlow(AssemblyItem const& _item)
 	// continue on the next instruction
 	case Instruction::JUMP:
 	case Instruction::JUMPI:
+	case Instruction::RJUMP:
+	case Instruction::RJUMPI:
 	case Instruction::RETURN:
 	case Instruction::SELFDESTRUCT:
 	case Instruction::STOP:
@@ -613,6 +621,8 @@ bool SemanticInformation::invalidInPureFunctions(Instruction _instruction)
 
 bool SemanticInformation::invalidInViewFunctions(Instruction _instruction)
 {
+	// Relative jumps cannot jump out of the current code section of EOF so they are valid in view functions
+	// (under the assumption that every Solidity function actually gets its own code section).
 	switch (_instruction)
 	{
 	case Instruction::SSTORE:

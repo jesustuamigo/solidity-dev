@@ -62,11 +62,19 @@ AssemblyItem AssemblyItem::toSubAssemblyTag(size_t _subId) const
 
 std::pair<size_t, size_t> AssemblyItem::splitForeignPushTag() const
 {
-	assertThrow(m_type == PushTag || m_type == Tag, util::Exception, "");
+	solAssert(m_type == PushTag || m_type == Tag || m_type == RelativeJump || m_type == ConditionalRelativeJump);
 	u256 combined = u256(data());
 	size_t subId = static_cast<size_t>((combined >> 64) - 1);
 	size_t tag = static_cast<size_t>(combined & 0xffffffffffffffffULL);
 	return std::make_pair(subId, tag);
+}
+
+size_t AssemblyItem::relativeJumpTagID() const
+{
+	solAssert(m_type == RelativeJump || m_type == ConditionalRelativeJump);
+	auto const [subId, tagId] = splitForeignPushTag();
+	solAssert(subId == std::numeric_limits<size_t>::max(), "Relative jump to sub");
+	return tagId;
 }
 
 std::pair<std::string, std::string> AssemblyItem::nameAndData(langutil::EVMVersion _evmVersion) const
@@ -76,6 +84,8 @@ std::pair<std::string, std::string> AssemblyItem::nameAndData(langutil::EVMVersi
 	case Operation:
 	case EOFCreate:
 	case ReturnContract:
+	case RelativeJump:
+	case ConditionalRelativeJump:
 		return {instructionInfo(instruction(), _evmVersion).name, m_data != nullptr ? toStringInHex(*m_data) : ""};
 	case Push:
 		return {"PUSH", toStringInHex(data())};
@@ -115,7 +125,8 @@ std::pair<std::string, std::string> AssemblyItem::nameAndData(langutil::EVMVersi
 
 void AssemblyItem::setPushTagSubIdAndTag(size_t _subId, size_t _tag)
 {
-	assertThrow(m_type == PushTag || m_type == Tag, util::Exception, "");
+	solAssert(m_type == PushTag || m_type == Tag || m_type == RelativeJump || m_type == ConditionalRelativeJump);
+	solAssert(!(m_type == RelativeJump || m_type == ConditionalRelativeJump) || _subId == std::numeric_limits<size_t>::max());
 	u256 data = _tag;
 	if (_subId != std::numeric_limits<size_t>::max())
 		data |= (u256(_subId) + 1) << 64;
@@ -167,6 +178,8 @@ size_t AssemblyItem::bytesRequired(size_t _addressLength, langutil::EVMVersion _
 	}
 	case VerbatimBytecode:
 		return std::get<2>(*m_verbatimBytecode).size();
+	case RelativeJump:
+	case ConditionalRelativeJump:
 	case AuxDataLoadN:
 		return 1 + 2;
 	case EOFCreate:
@@ -201,6 +214,8 @@ size_t AssemblyItem::returnValues() const
 	case Operation:
 	case EOFCreate:
 	case ReturnContract:
+	case RelativeJump:
+	case ConditionalRelativeJump:
 		// The latest EVMVersion is used here, since the InstructionInfo is assumed to be
 		// the same across all EVM versions except for the instruction name.
 		return static_cast<size_t>(instructionInfo(instruction(), EVMVersion()).ret);
@@ -236,6 +251,8 @@ bool AssemblyItem::canBeFunctional() const
 	case Operation:
 	case EOFCreate:
 	case ReturnContract:
+	case RelativeJump:
+	case ConditionalRelativeJump:
 		return !isDupInstruction(instruction()) && !isSwapInstruction(instruction());
 	case Push:
 	case PushTag:
@@ -360,6 +377,12 @@ std::string AssemblyItem::toAssemblyText(Assembly const& _assembly) const
 	case ReturnContract:
 		text = "returcontract{" +  std::to_string(static_cast<size_t>(data())) + "}";
 		break;
+	case RelativeJump:
+		text = "rjump{" + std::string("tag_") + std::to_string(relativeJumpTagID()) + "}";
+		break;
+	case ConditionalRelativeJump:
+		text = "rjumpi{" + std::string("tag_") + std::to_string(relativeJumpTagID()) + "}";
+		break;
 	}
 	if (m_jumpType == JumpType::IntoFunction || m_jumpType == JumpType::OutOfFunction)
 	{
@@ -380,6 +403,8 @@ std::ostream& solidity::evmasm::operator<<(std::ostream& _out, AssemblyItem cons
 	case Operation:
 	case EOFCreate:
 	case ReturnContract:
+	case RelativeJump:
+	case ConditionalRelativeJump:
 		_out << " " << instructionInfo(_item.instruction(), EVMVersion()).name;
 		if (_item.instruction() == Instruction::JUMP || _item.instruction() == Instruction::JUMPI)
 			_out << "\t" << _item.getJumpTypeAsString();

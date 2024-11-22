@@ -106,14 +106,31 @@ void EthAssemblyAdapter::appendJump(int _stackDiffAfter, JumpType _jumpType)
 
 void EthAssemblyAdapter::appendJumpTo(LabelID _labelId, int _stackDiffAfter, JumpType _jumpType)
 {
-	appendLabelReference(_labelId);
-	appendJump(_stackDiffAfter, _jumpType);
+	if (m_assembly.supportsRelativeJumps())
+	{
+		m_assembly.append(evmasm::AssemblyItem::relativeJumpTo(evmasm::AssemblyItem(evmasm::Tag, _labelId)));
+		yulAssert(_jumpType == JumpType::Ordinary);
+		m_assembly.adjustDeposit(_stackDiffAfter);
+	}
+	else
+	{
+		appendLabelReference(_labelId);
+		appendJump(_stackDiffAfter, _jumpType);
+	}
 }
 
 void EthAssemblyAdapter::appendJumpToIf(LabelID _labelId, JumpType _jumpType)
 {
-	appendLabelReference(_labelId);
-	appendJumpInstruction(evmasm::Instruction::JUMPI, _jumpType);
+	if (m_assembly.supportsRelativeJumps())
+	{
+		m_assembly.append(evmasm::AssemblyItem::conditionalRelativeJumpTo(evmasm::AssemblyItem(evmasm::Tag, _labelId)));
+		yulAssert(_jumpType == JumpType::Ordinary);
+	}
+	else
+	{
+		appendLabelReference(_labelId);
+		appendJumpInstruction(evmasm::Instruction::JUMPI, _jumpType);
+	}
 }
 
 void EthAssemblyAdapter::appendAssemblySize()

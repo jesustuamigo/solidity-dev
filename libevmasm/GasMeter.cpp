@@ -272,6 +272,8 @@ unsigned GasMeter::runGas(Instruction _instruction, langutil::EVMVersion _evmVer
 	{
 	case Tier::Zero:        return GasCosts::tier0Gas;
 	case Tier::Base:        return GasCosts::tier1Gas;
+	case Tier::RJump:       return GasCosts::tier1Gas;
+	case Tier::RJumpI:      return GasCosts::rjumpiGas;
 	case Tier::VeryLow:     return GasCosts::tier2Gas;
 	case Tier::Low:         return GasCosts::tier3Gas;
 	case Tier::Mid:         return GasCosts::tier4Gas;

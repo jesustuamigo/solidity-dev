@@ -177,6 +177,7 @@ namespace GasCosts
 		return _evmVersion >= langutil::EVMVersion::istanbul() ? 16 : 68;
 	}
 	static unsigned const copyGas = 3;
+	static unsigned const rjumpiGas = 4;
 }
 
 /**
