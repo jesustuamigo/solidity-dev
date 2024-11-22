@@ -149,11 +149,11 @@ struct OptimiserSettings
 	/// Constant optimizer, which tries to find better representations that satisfy the given
 	/// size/cost-trade-off.
 	bool runConstantOptimiser = false;
-	/// Perform more efficient stack allocation for variables during code generation from Yul to bytecode.
-	bool simpleCounterForLoopUncheckedIncrement = false;
-	/// Yul optimiser with default settings. Will only run on certain parts of the code for now.
-	bool optimizeStackAllocation = false;
 	/// Allow unchecked arithmetic when incrementing the counter of certain kinds of 'for' loop
+	bool simpleCounterForLoopUncheckedIncrement = false;
+	/// Perform more efficient stack allocation for variables during code generation from Yul to bytecode.
+	bool optimizeStackAllocation = false;
+	/// Yul optimiser with default settings. Will only run on certain parts of the code for now.
 	bool runYulOptimiser = false;
 	/// Sequence of optimisation steps to be performed by Yul optimiser.
 	/// Note that there are some hard-coded steps in the optimiser and you cannot disable
