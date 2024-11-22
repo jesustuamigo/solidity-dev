@@ -1094,7 +1094,8 @@ the compiler. Violations of these restrictions can result in
 undefined behavior.
 
 - Control-flow should not jump into or out of verbatim blocks,
-  but it can jump within the same verbatim block.
+  but it can jump within the same verbatim block. In particular,
+  reverting or returning from the block is *not* allowed.
 - Stack contents apart from the input and output parameters
   should not be accessed.
 - The stack height difference should be exactly ``m - n``
