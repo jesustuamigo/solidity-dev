@@ -134,7 +134,7 @@ extension ``.so`` on Linux, ``.dll`` on Windows systems and ``.dylib`` on macOS.
 
 For running SMT tests, the ``z3`` executable must be present in ``PATH``.
 A few SMT tests use ``Eldarica`` instead of ``z3``.
-These requry its executable (``eld``) to be present in ``PATH`` for the tests to pass.
+These require its executable (``eld``) to be present in ``PATH`` for the tests to pass.
 However, if ``Eldarica`` is not found, these tests will be automatically skipped.
 
 If ``z3`` is not present on your system, you should disable the
