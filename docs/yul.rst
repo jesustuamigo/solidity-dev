@@ -1069,7 +1069,7 @@ by two, without the optimizer touching the constant two, you can use
     let double := verbatim_1i_1o(hex"600202", x)
 
 This code will result in a ``dup1`` opcode to retrieve ``x``
-(the optimizer might directly re-use result of the
+(the optimizer might directly reuse result of the
 ``calldataload`` opcode, though)
 directly followed by ``600202``. The code is assumed to
 consume the copied value of ``x`` and produce the result
