@@ -503,15 +503,6 @@ defaults:
         MAKEFLAGS: -j5
         CPUs: 5
 
-  - base_python_small: &base_python_small
-      docker:
-        - image: cimg/python:3.6
-      resource_class: small
-      environment: &base_python_small_env
-        TERM: xterm
-        MAKEFLAGS: -j 2
-        CPUs: 2
-
   - base_ubuntu_clang: &base_ubuntu_clang
       docker:
         - image: << pipeline.parameters.ubuntu-clang-ossfuzz-docker-image >>
@@ -853,7 +844,7 @@ defaults:
 jobs:
 
   chk_spelling:
-    <<: *base_python_small
+    <<: *base_ubuntu2404_small
     steps:
       - checkout
       - attach_workspace:
@@ -864,11 +855,7 @@ jobs:
             pip install --user codespell
       - run:
           name: Check spelling
-          command: |
-            ~/.local/bin/codespell \
-              --skip "*.enc,.git,Dockerfile*,LICENSE,codespell_whitelist.txt,codespell_ignored_lines.txt,deps" \
-              --ignore-words scripts/codespell_whitelist.txt \
-              --exclude-file scripts/codespell_ignored_lines.txt
+          command: ~/.local/bin/codespell
       - matrix_notify_failure_unless_pr
 
   chk_docs_examples:
@@ -906,7 +893,7 @@ jobs:
       - matrix_notify_failure_unless_pr
 
   chk_errorcodes:
-    <<: *base_python_small
+    <<: *base_ubuntu2404_small
     steps:
       - checkout
       - run:
