@@ -1609,9 +1609,35 @@ Json StandardCompiler::compileYul(InputsAndSettings _inputsAndSettings)
 	std::string const& sourceName = _inputsAndSettings.sources.begin()->first;
 	std::string const& sourceContents = _inputsAndSettings.sources.begin()->second;
 
-	// Inconsistent state - stop here to receive error reports from users
-	if (!stack.parseAndAnalyze(sourceName, sourceContents) && !stack.hasErrors())
-		solAssert(false, "No error reported, but parsing/analysis failed.");
+	std::string contractName;
+	bool const wildcardMatchesExperimental = true;
+	MachineAssemblyObject object;
+	MachineAssemblyObject deployedObject;
+
+	bool successful = stack.parseAndAnalyze(sourceName, sourceContents);
+	if (!successful)
+		// Inconsistent state - stop here to receive error reports from users
+		solAssert(stack.hasErrors(), "No error reported, but parsing/analysis failed.");
+	else
+	{
+		contractName = stack.parserResult()->name;
+		if (isArtifactRequested(_inputsAndSettings.outputSelection, sourceName, contractName, "ir", wildcardMatchesExperimental))
+			output["contracts"][sourceName][contractName]["ir"] = stack.print();
+
+		if (isArtifactRequested(_inputsAndSettings.outputSelection, sourceName, contractName, "ast", wildcardMatchesExperimental))
+		{
+			Json sourceResult;
+			sourceResult["id"] = 0;
+			sourceResult["ast"] = stack.astJson();
+			output["sources"][sourceName] = sourceResult;
+		}
+		stack.optimize();
+		std::tie(object, deployedObject) = stack.assembleWithDeployed();
+		if (object.bytecode)
+			object.bytecode->link(_inputsAndSettings.libraries);
+		if (deployedObject.bytecode)
+			deployedObject.bytecode->link(_inputsAndSettings.libraries);
+	}
 
 	for (auto const& error: stack.errors())
 	{
@@ -1627,30 +1653,6 @@ Json StandardCompiler::compileYul(InputsAndSettings _inputsAndSettings)
 	}
 	if (stack.hasErrors())
 		return output;
-
-	std::string contractName = stack.parserResult()->name;
-
-	bool const wildcardMatchesExperimental = true;
-	if (isArtifactRequested(_inputsAndSettings.outputSelection, sourceName, contractName, "ir", wildcardMatchesExperimental))
-		output["contracts"][sourceName][contractName]["ir"] = stack.print();
-
-	if (isArtifactRequested(_inputsAndSettings.outputSelection, sourceName, contractName, "ast", wildcardMatchesExperimental))
-	{
-		Json sourceResult;
-		sourceResult["id"] = 0;
-		sourceResult["ast"] = stack.astJson();
-		output["sources"][sourceName] = sourceResult;
-	}
-	stack.optimize();
-
-	MachineAssemblyObject object;
-	MachineAssemblyObject deployedObject;
-	std::tie(object, deployedObject) = stack.assembleWithDeployed();
-
-	if (object.bytecode)
-		object.bytecode->link(_inputsAndSettings.libraries);
-	if (deployedObject.bytecode)
-		deployedObject.bytecode->link(_inputsAndSettings.libraries);
 
 	for (auto&& [kind, isDeployed]: {make_pair("bytecode"s, false), make_pair("deployedBytecode"s, true)})
 		if (isArtifactRequested(

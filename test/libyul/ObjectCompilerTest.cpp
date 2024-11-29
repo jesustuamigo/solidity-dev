@@ -71,18 +71,22 @@ TestCase::TestResult ObjectCompilerTest::run(std::ostream& _stream, std::string 
 		OptimiserSettings::preset(m_optimisationPreset),
 		DebugInfoSelection::All()
 	);
-	if (!stack.parseAndAnalyze("source", m_source))
+	bool successful = stack.parseAndAnalyze("source", m_source);
+	MachineAssemblyObject obj;
+	if (successful)
+	{
+		stack.optimize();
+		obj = stack.assemble(YulStack::Machine::EVM);
+	}
+	if (stack.hasErrors())
 	{
 		AnsiColorized(_stream, _formatted, {formatting::BOLD, formatting::RED}) << _linePrefix << "Error parsing source." << std::endl;
 		SourceReferenceFormatter{_stream, stack, true, false}
 			.printErrorInformation(stack.errors());
 		return TestResult::FatalError;
 	}
-	stack.optimize();
-
-	MachineAssemblyObject obj = stack.assemble(YulStack::Machine::EVM);
-	solAssert(obj.bytecode, "");
-	solAssert(obj.sourceMappings, "");
+	solAssert(obj.bytecode);
+	solAssert(obj.sourceMappings);
 
 	m_obtainedResult = "Assembly:\n" + obj.assembly->assemblyString(stack.debugInfoSelection());
 	if (obj.bytecode->bytecode.empty())

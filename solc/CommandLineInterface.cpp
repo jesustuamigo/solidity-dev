@@ -1232,9 +1232,10 @@ void CommandLineInterface::assembleYul(yul::YulStack::Language _language, yul::Y
 
 	bool successful = true;
 	std::map<std::string, yul::YulStack> yulStacks;
-	for (auto const& src: m_fileReader.sourceUnits())
+	std::map<std::string, yul::MachineAssemblyObject> objects;
+	for (auto const& [sourceUnitName, yulSource]: m_fileReader.sourceUnits())
 	{
-		auto& stack = yulStacks[src.first] = yul::YulStack(
+		auto& stack = yulStacks[sourceUnitName] = yul::YulStack(
 			m_options.output.evmVersion,
 			m_options.output.eofVersion,
 			_language,
@@ -1244,20 +1245,28 @@ void CommandLineInterface::assembleYul(yul::YulStack::Language _language, yul::Y
 				DebugInfoSelection::Default()
 		);
 
-		if (!stack.parseAndAnalyze(src.first, src.second))
-			successful = false;
+		successful = successful && stack.parseAndAnalyze(sourceUnitName, yulSource);
+		if (!successful)
+			solAssert(stack.hasErrors(), "No error reported, but parsing/analysis failed.");
 		else
-			stack.optimize();
-
-		if (successful && m_options.compiler.outputs.asmJson)
 		{
-			std::shared_ptr<yul::Object> result = stack.parserResult();
-			if (result && !result->hasContiguousSourceIndices())
+			if (
+				m_options.compiler.outputs.asmJson &&
+				stack.parserResult() &&
+				!stack.parserResult()->hasContiguousSourceIndices()
+			)
 				solThrow(
 					CommandLineExecutionError,
 					"Generating the assembly JSON output was not possible. "
 					"Source indices provided in the @use-src annotation in the Yul input do not start at 0 or are not contiguous."
 				);
+
+			stack.optimize();
+
+			yul::MachineAssemblyObject object = stack.assemble(_targetMachine);
+			if (object.bytecode)
+				object.bytecode->link(m_options.linker.libraries);
+			objects.insert({sourceUnitName, std::move(object)});
 		}
 	}
 
@@ -1281,13 +1290,14 @@ void CommandLineInterface::assembleYul(yul::YulStack::Language _language, yul::Y
 		solThrow(CommandLineExecutionError, "");
 	}
 
-	for (auto const& src: m_fileReader.sourceUnits())
+	for (auto const& [sourceUnitName, yulSource]: m_fileReader.sourceUnits())
 	{
 		solAssert(_targetMachine == yul::YulStack::Machine::EVM);
 		std::string machine = "EVM";
-		sout() << std::endl << "======= " << src.first << " (" << machine << ") =======" << std::endl;
+		sout() << std::endl << "======= " << sourceUnitName << " (" << machine << ") =======" << std::endl;
 
-		yul::YulStack& stack = yulStacks[src.first];
+		yul::YulStack const& stack = yulStacks[sourceUnitName];
+		yul::MachineAssemblyObject const& object = objects[sourceUnitName];
 
 		if (m_options.compiler.outputs.irOptimized)
 		{
@@ -1296,10 +1306,6 @@ void CommandLineInterface::assembleYul(yul::YulStack::Language _language, yul::Y
 			sout() << std::endl << "Pretty printed source:" << std::endl;
 			sout() << stack.print() << std::endl;
 		}
-
-		yul::MachineAssemblyObject object;
-		object = stack.assemble(_targetMachine);
-		object.bytecode->link(m_options.linker.libraries);
 
 		if (m_options.compiler.outputs.binary)
 		{

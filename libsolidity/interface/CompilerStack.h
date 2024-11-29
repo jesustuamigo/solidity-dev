@@ -579,6 +579,7 @@ private:
 	) const;
 
 	void reportUnimplementedFeatureError(langutil::UnimplementedFeatureError const& _error);
+	void reportIRPostAnalysisError(langutil::Error const* _error);
 
 	ReadCallback::Callback m_readFile;
 	OptimiserSettings m_optimiserSettings;

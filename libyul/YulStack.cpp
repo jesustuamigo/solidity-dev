@@ -249,9 +249,14 @@ MachineAssemblyObject YulStack::assemble(Machine _machine)
 std::pair<MachineAssemblyObject, MachineAssemblyObject>
 YulStack::assembleWithDeployed(std::optional<std::string_view> _deployName)
 {
+	yulAssert(m_charStream);
+
 	auto [creationAssembly, deployedAssembly] = assembleEVMWithDeployed(_deployName);
-	yulAssert(creationAssembly, "");
-	yulAssert(m_charStream, "");
+	if (!creationAssembly)
+	{
+		yulAssert(!deployedAssembly);
+		return {MachineAssemblyObject{}, MachineAssemblyObject{}};
+	}
 
 	MachineAssemblyObject creationObject;
 	MachineAssemblyObject deployedObject;
@@ -285,6 +290,7 @@ YulStack::assembleWithDeployed(std::optional<std::string_view> _deployName)
 	catch (UnimplementedFeatureError const& _error)
 	{
 		reportUnimplementedFeatureError(_error);
+		return {MachineAssemblyObject{}, MachineAssemblyObject{}};
 	}
 
 	return {std::move(creationObject), std::move(deployedObject)};
@@ -341,9 +347,10 @@ YulStack::assembleEVMWithDeployed(std::optional<std::string_view> _deployName)
 	catch (UnimplementedFeatureError const& _error)
 	{
 		reportUnimplementedFeatureError(_error);
+		return {nullptr, nullptr};
 	}
 
-	return {std::make_shared<evmasm::Assembly>(assembly), {}};
+	return {std::make_shared<evmasm::Assembly>(assembly), nullptr};
 }
 
 std::string YulStack::print() const
@@ -415,6 +422,6 @@ std::shared_ptr<Object> YulStack::parserResult() const
 
 void YulStack::reportUnimplementedFeatureError(UnimplementedFeatureError const& _error)
 {
-	solAssert(_error.comment(), "Unimplemented feature errors must include a message for the user");
+	yulAssert(_error.comment(), "Errors must include a message for the user.");
 	m_errorReporter.unimplementedFeatureError(1920_error, _error.sourceLocation(), *_error.comment());
 }
