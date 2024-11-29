@@ -287,6 +287,11 @@ YulStack::assembleWithDeployed(std::optional<std::string_view> _deployName)
 			);
 		}
 	}
+	catch (Error const& _error)
+	{
+		m_errorReporter.codeGenerationError(_error);
+		return {MachineAssemblyObject{}, MachineAssemblyObject{}};
+	}
 	catch (UnimplementedFeatureError const& _error)
 	{
 		reportUnimplementedFeatureError(_error);
@@ -343,6 +348,11 @@ YulStack::assembleEVMWithDeployed(std::optional<std::string_view> _deployName)
 			evmasm::Assembly& runtimeAssembly = assembly.sub(*subIndex);
 			return {std::make_shared<evmasm::Assembly>(assembly), std::make_shared<evmasm::Assembly>(runtimeAssembly)};
 		}
+	}
+	catch (Error const& _error)
+	{
+		m_errorReporter.codeGenerationError(_error);
+		return {nullptr, nullptr};
 	}
 	catch (UnimplementedFeatureError const& _error)
 	{

@@ -120,6 +120,9 @@ public:
 
 	void unimplementedFeatureError(ErrorId _error, SourceLocation const& _location, std::string const& _description);
 
+	void codeGenerationError(ErrorId _error, SourceLocation const& _location, std::string const& _description);
+	void codeGenerationError(Error const& _error);
+
 	ErrorList const& errors() const;
 
 	void clear();
