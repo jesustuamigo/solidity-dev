@@ -120,7 +120,7 @@ KnownState::StoreOperation KnownState::feedItem(AssemblyItem const& _item, bool 
 	}
 	else if (_item.type() != Operation)
 	{
-		assertThrow(_item.deposit() == 1, InvalidDeposit, "");
+		solAssert(_item.deposit() == 1);
 		if (_item.pushedValue())
 			// only available after assembly stage, should not be used for optimisation
 			setStackElement(++m_stackHeight, m_expressionClasses->find(*_item.pushedValue()));
@@ -194,7 +194,7 @@ KnownState::StoreOperation KnownState::feedItem(AssemblyItem const& _item, bool 
 					resetStorage();
 				if (invMem || invStor)
 					m_sequenceNumber += 2; // Increment by two because it can read and write
-				assertThrow(info.ret <= 1, InvalidDeposit, "");
+				solAssert(info.ret <= 1);
 				if (info.ret == 1)
 					setStackElement(
 						m_stackHeight + static_cast<int>(_item.deposit()),

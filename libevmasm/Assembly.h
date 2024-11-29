@@ -127,8 +127,8 @@ public:
 	void appendToAuxiliaryData(bytes const& _data) { m_auxiliaryData += _data; }
 
 	int deposit() const { return m_deposit; }
-	void adjustDeposit(int _adjustment) { m_deposit += _adjustment; assertThrow(m_deposit >= 0, InvalidDeposit, ""); }
-	void setDeposit(int _deposit) { m_deposit = _deposit; assertThrow(m_deposit >= 0, InvalidDeposit, ""); }
+	void adjustDeposit(int _adjustment) { m_deposit += _adjustment; solAssert(m_deposit >= 0); }
+	void setDeposit(int _deposit) { m_deposit = _deposit; solAssert(m_deposit >= 0); }
 	std::string const& name() const { return m_name; }
 
 	/// Changes the source location used for each appended item.
