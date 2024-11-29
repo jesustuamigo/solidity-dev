@@ -1442,13 +1442,19 @@ LinkerObject const& Assembly::assembleEOF() const
 			case EOFCreate:
 			{
 				ret.bytecode.push_back(static_cast<uint8_t>(Instruction::EOFCREATE));
-				ret.bytecode.push_back(static_cast<uint8_t>(item.data()));
+				solAssert(item.data() <= std::numeric_limits<ContainerID>::max());
+				auto const containerID = static_cast<ContainerID>(item.data());
+				solAssert(subIdsReplacements.count(containerID) == 1);
+				ret.bytecode.push_back(subIdsReplacements.at(containerID));
 				break;
 			}
 			case ReturnContract:
 			{
 				ret.bytecode.push_back(static_cast<uint8_t>(Instruction::RETURNCONTRACT));
-				ret.bytecode.push_back(static_cast<uint8_t>(item.data()));
+				solAssert(item.data() <= std::numeric_limits<ContainerID>::max());
+				auto const containerID = static_cast<ContainerID>(item.data());
+				solAssert(subIdsReplacements.count(containerID) == 1);
+				ret.bytecode.push_back(subIdsReplacements.at(containerID));
 				break;
 			}
 			case VerbatimBytecode:
