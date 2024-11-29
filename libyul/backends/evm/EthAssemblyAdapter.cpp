@@ -145,6 +145,31 @@ std::pair<std::shared_ptr<AbstractAssembly>, AbstractAssembly::SubID> EthAssembl
 	return {std::make_shared<EthAssemblyAdapter>(*assembly), static_cast<size_t>(sub.data())};
 }
 
+AbstractAssembly::FunctionID EthAssemblyAdapter::registerFunction(uint8_t _args, uint8_t _rets)
+{
+	return m_assembly.createFunction(_args, _rets);
+}
+
+void EthAssemblyAdapter::beginFunction(AbstractAssembly::FunctionID _functionID)
+{
+	m_assembly.beginFunction(_functionID);
+}
+
+void EthAssemblyAdapter::endFunction()
+{
+	m_assembly.endFunction();
+}
+
+void EthAssemblyAdapter::appendFunctionReturn()
+{
+	m_assembly.appendFunctionReturn();
+}
+
+void EthAssemblyAdapter::appendFunctionCall(FunctionID _functionID)
+{
+	m_assembly.appendFunctionCall(_functionID);
+}
+
 void EthAssemblyAdapter::appendEOFCreate(ContainerID _containerID)
 {
 	m_assembly.appendEOFCreate(_containerID);

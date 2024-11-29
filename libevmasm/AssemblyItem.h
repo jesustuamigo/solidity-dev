@@ -108,6 +108,27 @@ public:
 		m_debugData{langutil::DebugData::create()}
 	{}
 
+	static AssemblyItem functionCall(uint16_t _functionID, uint8_t _args, uint8_t _rets, langutil::DebugData::ConstPtr _debugData = langutil::DebugData::create())
+	{
+		// TODO: Make this constructor this way that it's impossible to create it without setting functions signature.
+		// It can be done by template constructor with Instruction as template parameter i.e. Same for JumpF below.
+		AssemblyItem result(CallF, Instruction::CALLF, _functionID, _debugData);
+		solAssert(_args <= 127 && _rets <= 127);
+		result.m_functionSignature = {_args, _rets};
+		return result;
+	}
+	static AssemblyItem jumpToFunction(uint16_t _functionID, uint8_t _args, uint8_t _rets, langutil::DebugData::ConstPtr _debugData = langutil::DebugData::create())
+	{
+		AssemblyItem result(JumpF, Instruction::JUMPF, _functionID, _debugData);
+		solAssert(_args <= 127 && _rets <= 128);
+		result.m_functionSignature = {_args, _rets};
+		return result;
+	}
+	static AssemblyItem functionReturn(langutil::DebugData::ConstPtr _debugData = langutil::DebugData::create())
+	{
+		return AssemblyItem(RetF, Instruction::RETF, 0, std::move(_debugData));
+	}
+
 	static AssemblyItem eofCreate(ContainerID _containerID, langutil::DebugData::ConstPtr _debugData = langutil::DebugData::create())
 	{
 		return AssemblyItem(EOFCreate, Instruction::EOFCREATE, _containerID, std::move(_debugData));
@@ -146,7 +167,7 @@ public:
 	void setPushTagSubIdAndTag(size_t _subId, size_t _tag);
 
 	AssemblyItemType type() const { return m_type; }
-	u256 const& data() const { assertThrow(m_type != Operation, util::Exception, ""); return *m_data; }
+	u256 const& data() const { solAssert(m_type != Operation && m_data != nullptr); return *m_data; }
 	void setData(u256 const& _data) { assertThrow(m_type != Operation, util::Exception, ""); m_data = std::make_shared<u256>(_data); }
 
 	/// This function is used in `Assembly::assemblyJSON`.
@@ -269,12 +290,30 @@ public:
 
 	void setImmutableOccurrences(size_t _n) const { m_immutableOccurrences = _n; }
 
+	struct FunctionSignature
+	{
+		/// Number of EOF function arguments. must be less than 127
+		uint8_t argsNum;
+		/// Number of EOF function return values. Must be less than 128. 128(0x80) means that it's non-returning.
+		uint8_t retsNum;
+
+		bool canContinue() const { return retsNum != 0x80;}
+	};
+
+	FunctionSignature const& functionSignature() const
+	{
+		solAssert(m_type == CallF || m_type == JumpF);
+		solAssert(m_functionSignature.has_value());
+		return *m_functionSignature;
+	}
+
 private:
 	size_t opcodeCount() const noexcept;
 
 	AssemblyItemType m_type;
 	Instruction m_instruction; ///< Only valid if m_type == Operation
 	std::shared_ptr<u256> m_data; ///< Only valid if m_type != Operation
+	std::optional<FunctionSignature> m_functionSignature; ///< Only valid if m_type == CallF or JumpF
 	/// If m_type == VerbatimBytecode, this holds number of arguments, number of
 	/// return variables and verbatim bytecode.
 	std::optional<std::tuple<size_t, size_t, bytes>> m_verbatimBytecode;

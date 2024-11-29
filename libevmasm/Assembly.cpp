@@ -407,9 +407,15 @@ void Assembly::assemblyStream(
 		f.feed(i, _debugInfoSelection);
 	f.flush();
 
-	// Implementing this requires introduction of CALLF, RETF and JUMPF
-	if (m_codeSections.size() > 1)
-		solUnimplemented("Add support for more code sections");
+	for (size_t i = 1; i < m_codeSections.size(); ++i)
+	{
+		_out << std::endl << _prefix << "code_section_" << i << ": assembly {\n";
+		Functionalizer codeSectionF(_out, _prefix + "    ", _sourceCodes, *this);
+		for (auto const& item: m_codeSections[i].items)
+			codeSectionF.feed(item, _debugInfoSelection);
+		codeSectionF.flush();
+		_out << _prefix << "}" << std::endl;
+	}
 
 	if (!m_data.empty() || !m_subs.empty())
 	{
@@ -694,6 +700,49 @@ AssemblyItem Assembly::namedTag(std::string const& _name, size_t _params, size_t
 	else
 		m_namedTags[_name] = {static_cast<size_t>(newTag().data()), _sourceID, _params, _returns};
 	return AssemblyItem{Tag, m_namedTags.at(_name).id};
+}
+
+AssemblyItem Assembly::newFunctionCall(uint16_t _functionID) const
+{
+	solAssert(_functionID < m_codeSections.size(), "Call to undeclared function.");
+	solAssert(_functionID > 0, "Cannot call section 0");
+	auto const& section = m_codeSections.at(_functionID);
+	if (section.outputs != 0x80)
+		return AssemblyItem::functionCall(_functionID, section.inputs, section.outputs);
+	else
+		return AssemblyItem::jumpToFunction(_functionID, section.inputs, section.outputs);
+}
+
+AssemblyItem Assembly::newFunctionReturn() const
+{
+	solAssert(m_currentCodeSection != 0, "Appending function return without begin function.");
+	return AssemblyItem::functionReturn();
+}
+
+uint16_t Assembly::createFunction(uint8_t _args, uint8_t _rets)
+{
+	size_t functionID = m_codeSections.size();
+	solRequire(functionID < 1024, AssemblyException, "Too many functions for EOF");
+	solAssert(m_currentCodeSection == 0, "Functions need to be declared from the main block.");
+	solAssert(_rets <= 0x80, "Too many function returns.");
+	solAssert(_args <= 127, "Too many function inputs.");
+	m_codeSections.emplace_back(CodeSection{_args, _rets, {}});
+	return static_cast<uint16_t>(functionID);
+}
+
+void Assembly::beginFunction(uint16_t _functionID)
+{
+	solAssert(m_currentCodeSection == 0, "Attempted to begin a function before ending the last one.");
+	solAssert(_functionID != 0, "Attempt to begin a function with id 0");
+	solAssert(_functionID < m_codeSections.size(), "Attempt to begin an undeclared function.");
+	auto& section = m_codeSections.at(_functionID);
+	solAssert(section.items.empty(), "Function already defined.");
+	m_currentCodeSection = _functionID;
+}
+void Assembly::endFunction()
+{
+	solAssert(m_currentCodeSection != 0, "End function without begin function.");
+	m_currentCodeSection = 0;
 }
 
 AssemblyItem Assembly::newPushLibraryAddress(std::string const& _identifier)
@@ -1402,6 +1451,7 @@ LinkerObject const& Assembly::assembleEOF() const
 	for (auto&& [codeSectionIndex, codeSection]: m_codeSections | ranges::views::enumerate)
 	{
 		auto const sectionStart = ret.bytecode.size();
+		solAssert(!codeSection.items.empty(), "Empty code section.");
 		for (AssemblyItem const& item: codeSection.items)
 		{
 			// store position of the invalid jump destination
@@ -1416,7 +1466,10 @@ LinkerObject const& Assembly::assembleEOF() const
 					item.instruction() != Instruction::RETURNCONTRACT &&
 					item.instruction() != Instruction::EOFCREATE &&
 					item.instruction() != Instruction::RJUMP &&
-					item.instruction() != Instruction::RJUMPI
+					item.instruction() != Instruction::RJUMPI &&
+					item.instruction() != Instruction::CALLF &&
+					item.instruction() != Instruction::JUMPF &&
+					item.instruction() != Instruction::RETF
 				);
 				solAssert(!(item.instruction() >= Instruction::PUSH0 && item.instruction() <= Instruction::PUSH32));
 				ret.bytecode += assembleOperation(item);
@@ -1475,6 +1528,26 @@ LinkerObject const& Assembly::assembleEOF() const
 				appendBigEndianUint16(ret.bytecode, item.data());
 				break;
 			}
+			case CallF:
+			case JumpF:
+			{
+				ret.bytecode.push_back(static_cast<uint8_t>(item.instruction()));
+				solAssert(item.data() <= std::numeric_limits<uint16_t>::max(), "Invalid callf/jumpf index value.");
+				size_t const index = static_cast<uint16_t>(item.data());
+				solAssert(index < m_codeSections.size());
+				solAssert(item.functionSignature().argsNum <= 127);
+				solAssert(item.type() == JumpF || item.functionSignature().retsNum <= 127);
+				solAssert(item.type() == CallF || item.functionSignature().retsNum <= 128);
+				solAssert(m_codeSections[index].inputs == item.functionSignature().argsNum);
+				solAssert(m_codeSections[index].outputs == item.functionSignature().retsNum);
+				// If CallF the function can continue.
+				solAssert(item.type() == JumpF || item.functionSignature().canContinue());
+				appendBigEndianUint16(ret.bytecode, item.data());
+				break;
+			}
+			case RetF:
+				ret.bytecode.push_back(static_cast<uint8_t>(Instruction::RETF));
+				break;
 			default:
 				solAssert(false, "Unexpected opcode while assembling.");
 			}

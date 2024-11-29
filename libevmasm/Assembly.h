@@ -65,9 +65,17 @@ public:
 	}
 
 	std::optional<uint8_t> eofVersion() const { return m_eofVersion; }
+	bool supportsFunctions() const { return m_eofVersion.has_value(); }
 	bool supportsRelativeJumps() const { return m_eofVersion.has_value(); }
 	AssemblyItem newTag() { assertThrow(m_usedTags < 0xffffffff, AssemblyException, ""); return AssemblyItem(Tag, m_usedTags++); }
 	AssemblyItem newPushTag() { assertThrow(m_usedTags < 0xffffffff, AssemblyException, ""); return AssemblyItem(PushTag, m_usedTags++); }
+
+	AssemblyItem newFunctionCall(uint16_t _functionID) const;
+	AssemblyItem newFunctionReturn() const;
+	uint16_t createFunction(uint8_t _args, uint8_t _rets);
+	void beginFunction(uint16_t _functionID);
+	void endFunction();
+
 	/// Returns a tag identified by the given name. Creates it if it does not yet exist.
 	AssemblyItem namedTag(std::string const& _name, size_t _params, size_t _returns, std::optional<uint64_t> _sourceID);
 	AssemblyItem newData(bytes const& _data) { util::h256 h(util::keccak256(util::asString(_data))); m_data[h] = _data; return AssemblyItem(PushData, h); }
@@ -109,6 +117,17 @@ public:
 	{
 		solAssert(_containerId < m_subs.size(), "Return undefined container ID.");
 		return append(AssemblyItem::returnContract(_containerId));
+	}
+
+	AssemblyItem appendFunctionCall(uint16_t _functionID)
+	{
+		return append(newFunctionCall(_functionID));
+	}
+
+	AssemblyItem appendFunctionReturn()
+	{
+		solAssert(m_currentCodeSection != 0, "Appending function return without begin function.");
+		return append(newFunctionReturn());
 	}
 
 	AssemblyItem appendJump() { auto ret = append(newPushTag()); append(Instruction::JUMP); return ret; }
