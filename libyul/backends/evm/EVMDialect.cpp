@@ -209,6 +209,9 @@ std::vector<std::optional<BuiltinFunctionForEVM>> createBuiltins(langutil::EVMVe
 			opcode != evmasm::Instruction::DATALOADN &&
 			opcode != evmasm::Instruction::EOFCREATE &&
 			opcode != evmasm::Instruction::RETURNCONTRACT &&
+			opcode != evmasm::Instruction::CALLF &&
+			opcode != evmasm::Instruction::JUMPF &&
+			opcode != evmasm::Instruction::RETF &&
 			_evmVersion.hasOpcode(opcode, _eofVersion) &&
 			!prevRandaoException(name)
 		)

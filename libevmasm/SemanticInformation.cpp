@@ -397,6 +397,8 @@ bool SemanticInformation::isDeterministic(AssemblyItem const& _item)
 	case Instruction::RETURNDATACOPY: // depends on previous calls
 	case Instruction::RETURNDATASIZE:
 	case Instruction::EOFCREATE:
+	case Instruction::CALLF:
+	case Instruction::JUMPF:
 		return false;
 	default:
 		return true;
