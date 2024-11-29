@@ -41,7 +41,7 @@ using namespace solidity::frontend;
 using namespace solidity::frontend::test;
 
 ControlFlowGraphTest::ControlFlowGraphTest(std::string const& _filename):
-	TestCase(_filename)
+	EVMVersionRestrictedTestCase(_filename)
 {
 	m_source = m_reader.source();
 	auto dialectName = m_reader.stringSetting("dialect", "evm");

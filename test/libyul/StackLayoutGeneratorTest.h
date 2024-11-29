@@ -27,7 +27,7 @@ struct Dialect;
 namespace test
 {
 
-class StackLayoutGeneratorTest: public solidity::frontend::test::TestCase
+class StackLayoutGeneratorTest: public frontend::test::EVMVersionRestrictedTestCase
 {
 public:
 	static std::unique_ptr<TestCase> create(Config const& _config)

@@ -264,7 +264,6 @@ object "a" {
 }
 
 // ====
-// EVMVersion: >=prague
 // bytecodeFormat: >=EOFv1
 // ----
 // SyntaxError 1305: (22-101): Too many subobjects in "a". At most 256 subobjects allowed when compiling to EOF
