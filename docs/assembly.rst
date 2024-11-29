@@ -257,6 +257,8 @@ starting from where this pointer points at and update it.
 There is no guarantee that the memory has not been used before and thus
 you cannot assume that its contents are zero bytes.
 There is no built-in mechanism to release or free allocated memory.
+Solidity does not guarantee and does not require that the values in memory
+are placed at positions aligned to a multiple of any value.
 Here is an assembly snippet you can use for allocating memory that follows the process outlined above:
 
 .. code-block:: yul
