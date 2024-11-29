@@ -59,6 +59,9 @@ enum AssemblyItemType
 	ReturnContract, ///< Returns new container (with auxiliary data filled in) to be deployed
 	RelativeJump, ///< Jumps to relative position accordingly to its argument
 	ConditionalRelativeJump, ///< Same as RelativeJump but takes condition from the stack
+	CallF, ///< Jumps to a returning EOF function, adding a new frame to the return stack.
+	JumpF, ///< Jumps to a returning or non-returning EOF function without changing the return stack.
+	RetF, ///< Returns from an EOF function, removing a frame from the return stack.
 	VerbatimBytecode ///< Contains data that is inserted into the bytecode code section without modification.
 };
 
@@ -164,7 +167,10 @@ public:
 			m_type == EOFCreate ||
 			m_type == ReturnContract ||
 			m_type == RelativeJump ||
-			m_type == ConditionalRelativeJump;
+			m_type == ConditionalRelativeJump ||
+			m_type == CallF ||
+			m_type == JumpF ||
+			m_type == RetF;
 	}
 	/// @returns the instruction of this item (only valid if hasInstruction returns true)
 	Instruction instruction() const
