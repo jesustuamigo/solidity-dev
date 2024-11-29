@@ -52,6 +52,9 @@ non-persistent area where function arguments are stored, and behaves mostly like
     Now ``memory`` and ``calldata`` are allowed in all functions regardless of their visibility.
 
 .. note::
+    Constructor parameters cannot use ``calldata`` as their data location.
+
+.. note::
     Prior to version 0.5.0 the data location could be omitted, and would default to different locations
     depending on the kind of variable, function type, etc., but all complex types must now give an explicit
     data location.
