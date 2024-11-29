@@ -247,13 +247,13 @@ private:
 	std::shared_ptr<std::string const> sharedSourceName(std::string const& _name) const;
 
 	/// Returns EOF header bytecode | code section sizes offsets | data section size offset
-	std::tuple<bytes, std::vector<size_t>, size_t> createEOFHeader(std::set<uint16_t> const& _referencedSubIds) const;
+	std::tuple<bytes, std::vector<size_t>, size_t> createEOFHeader(std::set<ContainerID> const& _referencedSubIds) const;
 
 	LinkerObject const& assembleLegacy() const;
 	LinkerObject const& assembleEOF() const;
 
 	/// Returns map from m_subs to an index of subcontainer in the final EOF bytecode
-	std::map<uint16_t, uint16_t> findReferencedContainers() const;
+	std::map<ContainerID, ContainerID> findReferencedContainers() const;
 	/// Returns max AuxDataLoadN offset for the assembly.
 	std::optional<uint16_t> findMaxAuxDataLoadNOffset() const;
 

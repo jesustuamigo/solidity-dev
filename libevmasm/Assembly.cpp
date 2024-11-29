@@ -924,7 +924,7 @@ void appendBigEndianUint16(bytes& _dest, ValueT _value)
 }
 }
 
-std::tuple<bytes, std::vector<size_t>, size_t> Assembly::createEOFHeader(std::set<uint16_t> const& _referencedSubIds) const
+std::tuple<bytes, std::vector<size_t>, size_t> Assembly::createEOFHeader(std::set<ContainerID> const& _referencedSubIds) const
 {
 	bytes retBytecode;
 	std::vector<size_t> codeSectionSizePositions;
@@ -1330,9 +1330,9 @@ LinkerObject const& Assembly::assembleLegacy() const
 	return ret;
 }
 
-std::map<uint16_t, uint16_t> Assembly::findReferencedContainers() const
+std::map<ContainerID, ContainerID> Assembly::findReferencedContainers() const
 {
-	std::set<uint16_t> referencedSubcontainersIds;
+	std::set<ContainerID> referencedSubcontainersIds;
 	solAssert(m_subs.size() <= 0x100); // According to EOF spec
 
 	for (auto&& codeSection: m_codeSections)
@@ -1344,12 +1344,13 @@ std::map<uint16_t, uint16_t> Assembly::findReferencedContainers() const
 				referencedSubcontainersIds.insert(containerId);
 			}
 
-	std::map<uint16_t, uint16_t> replacements;
+	std::map<ContainerID, ContainerID> replacements;
 	uint8_t nUnreferenced = 0;
 	for (uint8_t i = 0; i < static_cast<uint16_t>(m_subs.size()); ++i)
 	{
-		if (referencedSubcontainersIds.count(i) > 0)
-			replacements[i] = static_cast<uint16_t>(i - nUnreferenced);
+		solAssert(i <= std::numeric_limits<ContainerID>::max());
+		if (referencedSubcontainersIds.count(static_cast<ContainerID>(i)) > 0)
+			replacements[static_cast<ContainerID>(i)] = static_cast<ContainerID>(i - nUnreferenced);
 		else
 			nUnreferenced++;
 	}
