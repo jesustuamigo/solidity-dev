@@ -281,7 +281,7 @@ AssemblyItem Assembly::createAssemblyItemFromJSON(Json const& _json, std::vector
 			result = item;
 		}
 		else
-			solThrow(InvalidOpcode, "Invalid opcode: " + name);
+			solThrow(AssemblyImportException, "Invalid opcode (" + name + ")");
 	}
 	result.setLocation(location);
 	result.m_modifierDepth = modifierDepth;
@@ -1236,7 +1236,7 @@ LinkerObject const& Assembly::assembleLegacy() const
 			ret.bytecode += assembleTag(item, ret.bytecode.size(), true);
 			break;
 		default:
-			assertThrow(false, InvalidOpcode, "Unexpected opcode while assembling.");
+			solAssert(false, "Unexpected opcode while assembling.");
 		}
 	}
 
@@ -1469,7 +1469,7 @@ LinkerObject const& Assembly::assembleEOF() const
 				break;
 			}
 			default:
-				solThrow(InvalidOpcode, "Unexpected opcode while assembling.");
+				solAssert(false, "Unexpected opcode while assembling.");
 			}
 		}
 

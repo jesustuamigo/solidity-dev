@@ -1220,10 +1220,6 @@ Json StandardCompiler::importEVMAssembly(StandardCompiler::InputsAndSettings _in
 	{
 		return formatFatalError(Error::Type::Exception, "Assembly import error: " + std::string(e.what()));
 	}
-	catch (evmasm::InvalidOpcode const& e)
-	{
-		return formatFatalError(Error::Type::Exception, "Assembly import error: " + std::string(e.what()));
-	}
 	catch (...)
 	{
 		return formatError(
