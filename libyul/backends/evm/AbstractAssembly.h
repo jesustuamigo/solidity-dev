@@ -57,6 +57,7 @@ public:
 	using LabelID = size_t;
 	using SubID = size_t;
 	using ContainerID = uint8_t;
+	using FunctionID = uint16_t;
 	enum class JumpType { Ordinary, IntoFunction, OutOfFunction };
 
 	virtual ~AbstractAssembly() = default;
@@ -101,6 +102,26 @@ public:
 	virtual void appendAssemblySize() = 0;
 	/// Creates a new sub-assembly, which can be referenced using dataSize and dataOffset.
 	virtual std::pair<std::shared_ptr<AbstractAssembly>, SubID> createSubAssembly(bool _creation, std::string _name = "") = 0;
+
+	/// Registers a new function with given signature and returns its ID.
+	/// The function is initially empty and its body must be filled with instructions.
+	virtual FunctionID registerFunction(uint8_t _args, uint8_t _rets) = 0;
+	/// Selects a function as a target for newly appended instructions.
+	/// May only be called after the main code section is already filled and
+	/// must not be called when another function is already selected.
+	/// Filling the same function more than once is not allowed.
+	/// @a endFunction() must be called at the end to finalize the function.
+	virtual void beginFunction(FunctionID _functionID) = 0;
+	/// Finalizes the process of filling a function body and switches back to the main code section.
+	/// Must not be called if no function is selected.
+	/// Must be called after filling the main yul section
+	virtual void endFunction() = 0;
+	/// Appends function call to a function under given ID
+	virtual void appendFunctionCall(FunctionID _functionID) = 0;
+	/// Appends an instruction that returns values from the current function.
+	/// Only allowed inside a function body.
+	virtual void appendFunctionReturn() = 0;
+
 	/// Appends the offset of the given sub-assembly or data.
 	virtual void appendDataOffset(std::vector<SubID> const& _subPath) = 0;
 	/// Appends the size of the given sub-assembly or data.

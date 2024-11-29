@@ -24,6 +24,7 @@
 #include <libyul/backends/evm/ControlFlowGraphBuilder.h>
 #include <libyul/backends/evm/StackHelpers.h>
 #include <libyul/backends/evm/StackLayoutGenerator.h>
+#include <libyul/backends/evm/EVMDialect.h>
 #include <libyul/Object.h>
 #include <liblangutil/SourceReferenceFormatter.h>
 
@@ -45,7 +46,7 @@ using namespace solidity::frontend;
 using namespace solidity::frontend::test;
 
 StackLayoutGeneratorTest::StackLayoutGeneratorTest(std::string const& _filename):
-	TestCase(_filename)
+	EVMVersionRestrictedTestCase(_filename)
 {
 	m_source = m_reader.source();
 	auto dialectName = m_reader.stringSetting("dialect", "evm");
@@ -229,7 +230,12 @@ TestCase::TestResult StackLayoutGeneratorTest::run(std::ostream& _stream, std::s
 	std::ostringstream output;
 
 	std::unique_ptr<CFG> cfg = ControlFlowGraphBuilder::build(*analysisInfo, *m_dialect, object->code()->root());
-	StackLayout stackLayout = StackLayoutGenerator::run(*cfg);
+
+	bool simulateFunctionsWithJumps = true;
+	if (auto const* evmDialect = dynamic_cast<EVMDialect const*>(m_dialect))
+		simulateFunctionsWithJumps = !evmDialect->eofVersion().has_value();
+
+	StackLayout stackLayout = StackLayoutGenerator::run(*cfg, simulateFunctionsWithJumps);
 
 	output << "digraph CFG {\nnodesep=0.7;\nnode[shape=box];\n\n";
 	StackLayoutPrinter printer{output, stackLayout};

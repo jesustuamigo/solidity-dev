@@ -231,6 +231,9 @@ bool SemanticInformation::breaksCSEAnalysisBlock(AssemblyItem const& _item, bool
 	case PushDeployTimeAddress:
 	case AssignImmutable:
 	case VerbatimBytecode:
+	case CallF:
+	case JumpF:
+	case RetF:
 		return true;
 	case Push:
 	case PushTag:
@@ -301,17 +304,6 @@ bool SemanticInformation::isSwapInstruction(AssemblyItem const& _item)
 	return evmasm::isSwapInstruction(_item.instruction());
 }
 
-bool SemanticInformation::isJumpInstruction(AssemblyItem const& _item)
-{
-	return
-		_item == Instruction::JUMP ||
-		_item == Instruction::JUMPI ||
-		_item == Instruction::RJUMP ||
-		_item == Instruction::RJUMPI ||
-		_item.type() == RelativeJump ||
-		_item.type() == ConditionalRelativeJump;
-}
-
 bool SemanticInformation::altersControlFlow(AssemblyItem const& _item)
 {
 	if (!_item.hasInstruction())
@@ -331,6 +323,9 @@ bool SemanticInformation::altersControlFlow(AssemblyItem const& _item)
 	case Instruction::INVALID:
 	case Instruction::REVERT:
 	case Instruction::RETURNCONTRACT:
+	case Instruction::CALLF:
+	case Instruction::JUMPF:
+	case Instruction::RETF:
 		return true;
 	default:
 		return false;
@@ -397,6 +392,8 @@ bool SemanticInformation::isDeterministic(AssemblyItem const& _item)
 	case Instruction::RETURNDATACOPY: // depends on previous calls
 	case Instruction::RETURNDATASIZE:
 	case Instruction::EOFCREATE:
+	case Instruction::CALLF:
+	case Instruction::JUMPF:
 		return false;
 	default:
 		return true;

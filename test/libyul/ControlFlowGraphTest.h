@@ -27,7 +27,7 @@ struct Dialect;
 namespace test
 {
 
-class ControlFlowGraphTest: public solidity::frontend::test::TestCase
+class ControlFlowGraphTest: public frontend::test::EVMVersionRestrictedTestCase
 {
 public:
 	static std::unique_ptr<TestCase> create(Config const& _config)
