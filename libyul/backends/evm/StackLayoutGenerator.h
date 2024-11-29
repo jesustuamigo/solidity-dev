@@ -55,18 +55,18 @@ public:
 		std::vector<YulName> variableChoices;
 	};
 
-	static StackLayout run(CFG const& _cfg);
+	static StackLayout run(CFG const& _cfg, bool _simulateFunctionsWithJumps);
 	/// @returns a map from function names to the stack too deep errors occurring in that function.
 	/// Requires @a _cfg to be a control flow graph generated from disambiguated Yul.
 	/// The empty string is mapped to the stack too deep errors of the main entry point.
-	static std::map<YulName, std::vector<StackTooDeep>> reportStackTooDeep(CFG const& _cfg);
+	static std::map<YulName, std::vector<StackTooDeep>> reportStackTooDeep(CFG const& _cfg, bool _simulateFunctionsWithJumps);
 	/// @returns all stack too deep errors in the function named @a _functionName.
 	/// Requires @a _cfg to be a control flow graph generated from disambiguated Yul.
 	/// If @a _functionName is empty, the stack too deep errors of the main entry point are reported instead.
-	static std::vector<StackTooDeep> reportStackTooDeep(CFG const& _cfg, YulName _functionName);
+	static std::vector<StackTooDeep> reportStackTooDeep(CFG const& _cfg, YulName _functionName, bool _simulateFunctionsWithJumps);
 
 private:
-	StackLayoutGenerator(StackLayout& _context, CFG::FunctionInfo const* _functionInfo);
+	StackLayoutGenerator(StackLayout& _context, CFG::FunctionInfo const* _functionInfo, bool _simulateFunctionsWithJumps);
 
 	/// @returns the optimal entry stack layout, s.t. @a _operation can be applied to it and
 	/// the result can be transformed to @a _exitStack with minimal stack shuffling.
@@ -116,6 +116,8 @@ private:
 
 	StackLayout& m_layout;
 	CFG::FunctionInfo const* m_currentFunctionInfo = nullptr;
+	/// True if it simulates functions with jumps. False otherwise. True for legacy bytecode
+	bool m_simulateFunctionsWithJumps = true;
 };
 
 }

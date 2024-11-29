@@ -248,11 +248,15 @@ std::tuple<bool, Block> StackCompressor::run(
 		"Need to run the function grouper before the stack compressor."
 	);
 	bool usesOptimizedCodeGenerator = false;
+	bool simulateFunctionsWithJumps = true;
 	if (auto evmDialect = dynamic_cast<EVMDialect const*>(&_dialect))
+	{
 		usesOptimizedCodeGenerator =
 			_optimizeStackAllocation &&
 			evmDialect->evmVersion().canOverchargeGasForCall() &&
 			evmDialect->providesObjectAccess();
+		simulateFunctionsWithJumps = !evmDialect->eofVersion().has_value();
+	}
 	bool allowMSizeOptimization = !MSizeFinder::containsMSize(_dialect, _object.code()->root());
 	Block astRoot = std::get<Block>(ASTCopier{}(_object.code()->root()));
 	if (usesOptimizedCodeGenerator)
@@ -266,7 +270,7 @@ std::tuple<bool, Block> StackCompressor::run(
 		eliminateVariablesOptimizedCodegen(
 			_dialect,
 			astRoot,
-			StackLayoutGenerator::reportStackTooDeep(*cfg),
+			StackLayoutGenerator::reportStackTooDeep(*cfg, simulateFunctionsWithJumps),
 			allowMSizeOptimization
 		);
 	}
