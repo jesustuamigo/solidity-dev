@@ -1346,7 +1346,7 @@ std::map<ContainerID, ContainerID> Assembly::findReferencedContainers() const
 
 	std::map<ContainerID, ContainerID> replacements;
 	uint8_t nUnreferenced = 0;
-	for (uint8_t i = 0; i < static_cast<uint16_t>(m_subs.size()); ++i)
+	for (size_t i = 0; i < m_subs.size(); ++i)
 	{
 		solAssert(i <= std::numeric_limits<ContainerID>::max());
 		if (referencedSubcontainersIds.count(static_cast<ContainerID>(i)) > 0)
