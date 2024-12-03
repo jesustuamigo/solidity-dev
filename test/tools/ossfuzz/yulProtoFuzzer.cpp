@@ -80,10 +80,7 @@ DEFINE_PROTO_FUZZER(Program const& _input)
 
 	// TODO: Add EOF support
 	// Optimize
-	YulOptimizerTestCommon optimizerTest(
-		stack.parserResult(),
-		EVMDialect::strictAssemblyForEVMObjects(version, std::nullopt)
-	);
+	YulOptimizerTestCommon optimizerTest(stack.parserResult());
 	optimizerTest.setStep(optimizerTest.randomOptimiserStep(_input.step()));
 	auto const* astRoot = optimizerTest.run();
 	yulAssert(astRoot != nullptr, "Optimiser error.");
