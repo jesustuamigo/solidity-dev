@@ -93,14 +93,15 @@ bool MSizeFinder::containsMSize(Dialect const& _dialect, Block const& _ast)
 	return finder.m_msizeFound;
 }
 
-bool MSizeFinder::containsMSize(Dialect const& _dialect, Object const& _object)
+bool MSizeFinder::containsMSize(Object const& _object)
 {
-	if (containsMSize(_dialect, _object.code()->root()))
+	yulAssert(_object.dialect());
+	if (containsMSize(*_object.dialect(), _object.code()->root()))
 		return true;
 
 	for (std::shared_ptr<ObjectNode> const& node: _object.subObjects)
 		if (auto const* object = dynamic_cast<Object const*>(node.get()))
-			if (containsMSize(_dialect, *object))
+			if (containsMSize(*object))
 				return true;
 
 	return false;

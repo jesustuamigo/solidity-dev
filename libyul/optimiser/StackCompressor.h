@@ -47,7 +47,6 @@ public:
 	/// Try to remove local variables until the AST is compilable.
 	/// @returns tuple with true if it was successful as first element, second element is the modified AST.
 	static std::tuple<bool, Block> run(
-		Dialect const& _dialect,
 		Object const& _object,
 		bool _optimizeStackAllocation,
 		size_t _maxIterations

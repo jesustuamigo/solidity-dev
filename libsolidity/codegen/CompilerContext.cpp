@@ -444,7 +444,7 @@ void CompilerContext::appendInlineAssembly(
 		yul::Parser(errorReporter, dialect, std::move(locationOverride))
 		.parse(charStream);
 #ifdef SOL_OUTPUT_ASM
-	cout << yul::AsmPrinter(&dialect)(*parserResult) << endl;
+	std::cout << yul::AsmPrinter::format(*parserResult) << std::endl;
 #endif
 
 	auto reportError = [&](std::string const& _context)
@@ -481,29 +481,28 @@ void CompilerContext::appendInlineAssembly(
 	// so we essentially only optimize the ABI functions.
 	if (_optimiserSettings.runYulOptimiser && _localVariables.empty())
 	{
-		yul::Object obj{dialect};
+		yul::Object obj;
 		obj.setCode(parserResult, std::make_shared<yul::AsmAnalysisInfo>(analysisInfo));
 
 		solAssert(!dialect.providesObjectAccess());
-		optimizeYul(obj, dialect, _optimiserSettings, externallyUsedIdentifiers);
+		optimizeYul(obj, _optimiserSettings, externallyUsedIdentifiers);
 
 		if (_system)
 		{
 			// Store as generated sources, but first re-parse to update the source references.
 			solAssert(m_generatedYulUtilityCode.empty(), "");
-			m_generatedYulUtilityCode = yul::AsmPrinter(obj.dialect())(obj.code()->root());
-			std::string code = yul::AsmPrinter{obj.dialect()}(obj.code()->root());
+			m_generatedYulUtilityCode = yul::AsmPrinter::format(*obj.code());
 			langutil::CharStream charStream(m_generatedYulUtilityCode, _sourceName);
 			obj.setCode(yul::Parser(errorReporter, dialect).parse(charStream));
-			obj.analysisInfo = std::make_shared<yul::AsmAnalysisInfo>(yul::AsmAnalyzer::analyzeStrictAssertCorrect(dialect, obj));
+			obj.analysisInfo = std::make_shared<yul::AsmAnalysisInfo>(yul::AsmAnalyzer::analyzeStrictAssertCorrect(obj));
 		}
 
 		analysisInfo = std::move(*obj.analysisInfo);
 		toBeAssembledAST = obj.code();
 
 #ifdef SOL_OUTPUT_ASM
-		cout << "After optimizer:" << endl;
-		cout << yul::AsmPrinter(&dialect)(*parserResult) << endl;
+		std::cout << "After optimizer:" << std::endl;
+		std::cout << yul::AsmPrinter::format(*parserResult) << std::endl;
 #endif
 	}
 	else if (_system)
@@ -533,16 +532,18 @@ void CompilerContext::appendInlineAssembly(
 }
 
 
-void CompilerContext::optimizeYul(yul::Object& _object, yul::EVMDialect const& _dialect, OptimiserSettings const& _optimiserSettings, std::set<yul::YulName> const& _externalIdentifiers)
+void CompilerContext::optimizeYul(yul::Object& _object, OptimiserSettings const& _optimiserSettings, std::set<yul::YulName> const& _externalIdentifiers)
 {
+	yulAssert(_object.dialect());
+	auto const* evmDialect = dynamic_cast<yul::EVMDialect const*>(_object.dialect());
+	yulAssert(evmDialect);
 #ifdef SOL_OUTPUT_ASM
-	cout << yul::AsmPrinter(*dialect)(*_object.code) << endl;
+	std::cout << yul::AsmPrinter::format(*_object.code()) << std::endl;
 #endif
 
 	bool const isCreation = runtimeContext() != nullptr;
-	yul::GasMeter meter(_dialect, isCreation, _optimiserSettings.expectedExecutionsPerDeployment);
+	yul::GasMeter meter(*evmDialect, isCreation, _optimiserSettings.expectedExecutionsPerDeployment);
 	yul::OptimiserSuite::run(
-		_dialect,
 		&meter,
 		_object,
 		_optimiserSettings.optimizeStackAllocation,
@@ -553,8 +554,8 @@ void CompilerContext::optimizeYul(yul::Object& _object, yul::EVMDialect const& _
 	);
 
 #ifdef SOL_OUTPUT_ASM
-	cout << "After optimizer:" << endl;
-	cout << yul::AsmPrinter(*dialect)(*object.code) << endl;
+	std::cout << "After optimizer:" << std::endl;
+	std::cout << yul::AsmPrinter::format(*_object.code()) << std::endl;
 #endif
 }
 

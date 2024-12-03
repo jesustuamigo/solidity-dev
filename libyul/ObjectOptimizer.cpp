@@ -90,7 +90,6 @@ void ObjectOptimizer::optimize(Object& _object, Settings const& _settings, bool 
 	}
 
 	OptimiserSuite::run(
-		dialect,
 		meter.get(),
 		_object,
 		_settings.optimizeStackAllocation,
@@ -118,15 +117,15 @@ void ObjectOptimizer::overwriteWithOptimizedObject(util::h256 _cacheKey, Object&
 	CachedObject const& cachedObject = m_cachedObjects.at(_cacheKey);
 
 	yulAssert(cachedObject.optimizedAST);
-	_object.setCode(std::make_shared<AST>(ASTCopier{}.translate(*cachedObject.optimizedAST)));
+	yulAssert(cachedObject.dialect);
+	_object.setCode(std::make_shared<AST>(*cachedObject.dialect, ASTCopier{}.translate(*cachedObject.optimizedAST)));
 	yulAssert(_object.code());
+	yulAssert(_object.dialect());
 
 	// There's no point in caching AnalysisInfo because it references AST nodes. It can't be shared
 	// by multiple ASTs and it's easier to recalculate it than properly clone it.
-	yulAssert(cachedObject.dialect);
 	_object.analysisInfo = std::make_shared<AsmAnalysisInfo>(
 		AsmAnalyzer::analyzeStrictAssertCorrect(
-			*cachedObject.dialect,
 			_object
 		)
 	);

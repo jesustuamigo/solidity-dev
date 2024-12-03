@@ -149,7 +149,7 @@ class MSizeFinder: public ASTWalker
 {
 public:
 	static bool containsMSize(Dialect const& _dialect, Block const& _ast);
-	static bool containsMSize(Dialect const& _dialect, Object const& _object);
+	static bool containsMSize(Object const& _object);
 
 	using ASTWalker::operator();
 	void operator()(FunctionCall const& _funCall) override;

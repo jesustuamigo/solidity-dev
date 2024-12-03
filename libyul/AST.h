@@ -36,6 +36,8 @@
 namespace solidity::yul
 {
 
+struct Dialect;
+
 struct NameWithDebugData { langutil::DebugData::ConstPtr debugData; YulName name; };
 using NameWithDebugDataList = std::vector<NameWithDebugData>;
 
@@ -103,10 +105,12 @@ struct Leave { langutil::DebugData::ConstPtr debugData; };
 class AST
 {
 public:
-	explicit AST(Block _root): m_root(std::move(_root)) {}
+	AST(Dialect const& _dialect, Block _root): m_dialect(_dialect), m_root(std::move(_root)) {}
 
-	[[nodiscard]] Block const& root() const { return m_root; }
+	Dialect const& dialect() const { return m_dialect; }
+	Block const& root() const { return m_root; }
 private:
+	Dialect const& m_dialect;
 	Block m_root;
 };
 

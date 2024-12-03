@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include <libyul/AsmPrinter.h>
 #include <libyul/ASTForward.h>
+#include <libyul/AsmPrinter.h>
 
 #include <liblangutil/CharStreamProvider.h>
 #include <liblangutil/DebugInfoSelection.h>
@@ -91,7 +91,6 @@ struct ObjectDebugData
 class Object: public ObjectNode
 {
 public:
-	explicit Object(Dialect const& _dialect): m_dialect(_dialect) {}
 	/// @returns a (parseable) string representation.
 	std::string toString(
 		langutil::DebugInfoSelection const& _debugInfoSelection = langutil::DebugInfoSelection::Default(),
@@ -162,10 +161,9 @@ public:
 	/// @returns the name of the special metadata data object.
 	static std::string metadataName() { return ".metadata"; }
 
-	Dialect const& dialect() const { return m_dialect; }
+	Dialect const* dialect() const;
 
 private:
-	Dialect const& m_dialect;
 	std::shared_ptr<AST const> m_code;
 };
 

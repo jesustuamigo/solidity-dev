@@ -143,7 +143,6 @@ Block StackLimitEvader::run(
 	else
 	{
 		run(_context, astRoot, CompilabilityChecker{
-			_context.dialect,
 			_object,
 			true,
 		}.unreachableVariables);

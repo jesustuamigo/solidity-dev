@@ -410,8 +410,8 @@ YulOptimizerTestCommon::YulOptimizerTestCommon(
 			size_t maxIterations = 16;
 			{
 				Object object(*m_optimizedObject);
-				object.setCode(std::make_shared<AST>(std::get<Block>(ASTCopier{}(block))));
-				block = std::get<1>(StackCompressor::run(*m_dialect, object, true, maxIterations));
+				object.setCode(std::make_shared<AST>(*m_dialect, std::get<Block>(ASTCopier{}(block))));
+				block = std::get<1>(StackCompressor::run(object, true, maxIterations));
 			}
 			BlockFlattener::run(*m_context, block);
 			return block;
@@ -419,7 +419,6 @@ YulOptimizerTestCommon::YulOptimizerTestCommon(
 		{"fullSuite", [&]() {
 			GasMeter meter(dynamic_cast<EVMDialect const&>(*m_dialect), false, 200);
 			OptimiserSuite::run(
-				*m_dialect,
 				&meter,
 				*m_optimizedObject,
 				true,
@@ -433,9 +432,8 @@ YulOptimizerTestCommon::YulOptimizerTestCommon(
 			auto block = disambiguate();
 			updateContext(block);
 			Object object(*m_optimizedObject);
-			object.setCode(std::make_shared<AST>(std::get<Block>(ASTCopier{}(block))));
+			object.setCode(std::make_shared<AST>(*m_dialect, std::get<Block>(ASTCopier{}(block))));
 			auto const unreachables = CompilabilityChecker{
-				*m_dialect,
 				object,
 				true
 			}.unreachableVariables;
@@ -500,7 +498,7 @@ bool YulOptimizerTestCommon::runStep()
 	if (m_namedSteps.count(m_optimizerStep))
 	{
 		auto block = m_namedSteps[m_optimizerStep]();
-		m_optimizedObject->setCode(std::make_shared<AST>(std::move(block)));
+		m_optimizedObject->setCode(std::make_shared<AST>(*m_dialect, std::move(block)));
 	}
 	else
 		return false;
