@@ -999,10 +999,10 @@ std::optional<Json> CompilerStack::yulCFGJson(std::string const& _contractName) 
 	// keep it around when compiling a large project containing many contracts.
 	Contract const& currentContract = contract(_contractName);
 	yulAssert(currentContract.contract);
-	yulAssert(currentContract.yulIR.has_value() == currentContract.contract->canBeDeployed());
-	if (!currentContract.yulIR)
+	yulAssert(currentContract.yulIROptimized.has_value() == currentContract.contract->canBeDeployed());
+	if (!currentContract.yulIROptimized)
 		return std::nullopt;
-	return loadGeneratedIR(*currentContract.yulIR).cfgJson();
+	return loadGeneratedIR(*currentContract.yulIROptimized).cfgJson();
 }
 
 std::optional<std::string> const& CompilerStack::yulIROptimized(std::string const& _contractName) const
