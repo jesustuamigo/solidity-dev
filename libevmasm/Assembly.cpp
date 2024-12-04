@@ -90,7 +90,7 @@ void Assembly::importAssemblyItemsFromJSON(Json const& _code, std::vector<std::s
 	solAssert(m_codeSections.size() == 1);
 	solAssert(m_codeSections[0].items.empty());
 	// TODO: Add support for EOF and more than one code sections.
-	solUnimplementedAssert(!m_eofVersion.has_value(), "Assembly output for EOF is not yet implemented.");
+	solUnimplementedAssert(!m_eofVersion.has_value(), "Assembly import for EOF is not yet implemented.");
 	solRequire(_code.is_array(), AssemblyImportException, "Supplied JSON is not an array.");
 	for (auto jsonItemIter = std::begin(_code); jsonItemIter != std::end(_code); ++jsonItemIter)
 	{
@@ -452,7 +452,7 @@ Json Assembly::assemblyJSON(std::map<std::string, unsigned> const& _sourceIndice
 	Json root;
 	root[".code"] = Json::array();
 	Json& code = root[".code"];
-    // TODO: support EOF
+	// TODO: support EOF
 	solUnimplementedAssert(!m_eofVersion.has_value(), "Assembly output for EOF is not yet implemented.");
 	solAssert(m_codeSections.size() == 1);
 	for (AssemblyItem const& item: m_codeSections.front().items)
