@@ -1521,10 +1521,9 @@ LinkerObject const& Assembly::assembleEOF() const
 	auto const subIdsReplacements = findReferencedContainers();
 	auto const referencedSubIds = keys(subIdsReplacements);
 
-	solRequire(!m_codeSections.empty(), AssemblyException, "Expected at least one code section.");
-	solRequire(
+	solAssert(!m_codeSections.empty(), "Expected at least one code section.");
+	solAssert(
 		m_codeSections.front().inputs == 0 && m_codeSections.front().outputs == 0 && m_codeSections.front().nonReturning,
-		AssemblyException,
 		"Expected the first code section to have zero inputs and be non-returning."
 	);
 
@@ -1660,7 +1659,8 @@ LinkerObject const& Assembly::assembleEOF() const
 		solAssert(tagPos != std::numeric_limits<size_t>::max(), "Reference to tag without position.");
 
 		ptrdiff_t const relativeJumpOffset = static_cast<ptrdiff_t>(tagPos) - (static_cast<ptrdiff_t>(refPos) + 2);
-		solRequire(-0x8000 <= relativeJumpOffset && relativeJumpOffset <= 0x7FFF, AssemblyException, "Relative jump too far");
+		// This cannot happen in practice because we'll run into section size limit first.
+		solAssert(-0x8000 <= relativeJumpOffset && relativeJumpOffset <= 0x7FFF, "Relative jump too far");
 		solAssert(relativeJumpOffset < -2 || 0 <= relativeJumpOffset, "Relative jump offset into immediate argument.");
 		setBigEndianUint16(ret.bytecode, refPos, static_cast<size_t>(static_cast<uint16_t>(relativeJumpOffset)));
 	}
