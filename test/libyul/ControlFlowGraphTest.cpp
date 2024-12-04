@@ -24,8 +24,8 @@
 #include <libyul/backends/evm/ControlFlowGraphBuilder.h>
 #include <libyul/backends/evm/StackHelpers.h>
 #include <libyul/Object.h>
+#include <libyul/YulStack.h>
 
-#include <libsolutil/AnsiColorized.h>
 #include <libsolutil/Visitor.h>
 
 #ifdef ISOLTEST
@@ -45,11 +45,7 @@ ControlFlowGraphTest::ControlFlowGraphTest(std::string const& _filename):
 {
 	m_source = m_reader.source();
 	auto dialectName = m_reader.stringSetting("dialect", "evm");
-	m_dialect = &dialect(
-		dialectName,
-		solidity::test::CommonOptions::get().evmVersion(),
-		solidity::test::CommonOptions::get().eofVersion()
-	);
+	soltestAssert(dialectName == "evm"); // We only have one dialect now
 	m_expectation = m_reader.simpleExpectations();
 }
 
@@ -201,20 +197,24 @@ private:
 
 TestCase::TestResult ControlFlowGraphTest::run(std::ostream& _stream, std::string const& _linePrefix, bool const _formatted)
 {
-	ErrorList errors;
-	auto [object, analysisInfo] = parse(m_source, *m_dialect, errors);
-	if (!object || !analysisInfo || Error::containsErrors(errors))
+	YulStack yulStack = parseYul(m_source);
+	solUnimplementedAssert(yulStack.parserResult()->subObjects.empty(), "Tests with subobjects not supported.");
+	if (yulStack.hasErrors())
 	{
-		AnsiColorized(_stream, _formatted, {formatting::BOLD, formatting::RED}) << _linePrefix << "Error parsing source." << std::endl;
+		printYulErrors(yulStack, _stream, _linePrefix, _formatted);
 		return TestResult::FatalError;
 	}
 
 	std::ostringstream output;
 
-	std::unique_ptr<CFG> cfg = ControlFlowGraphBuilder::build(*analysisInfo, *m_dialect, object->code()->root());
+	std::unique_ptr<CFG> cfg = ControlFlowGraphBuilder::build(
+		*yulStack.parserResult()->analysisInfo,
+		yulStack.dialect(),
+		yulStack.parserResult()->code()->root()
+	);
 
 	output << "digraph CFG {\nnodesep=0.7;\nnode[shape=box];\n\n";
-	ControlFlowGraphPrinter printer{output, *m_dialect};
+	ControlFlowGraphPrinter printer{output, yulStack.dialect()};
 	printer(*cfg->entry);
 	for (auto function: cfg->functions)
 		printer(cfg->functionInfo.at(function));

@@ -22,6 +22,7 @@
 #include <test/Common.h>
 
 #include <test/libsolidity/ErrorCheck.h>
+#include <test/libyul/Common.h>
 
 #include <liblangutil/DebugInfoSelection.h>
 #include <liblangutil/Scanner.h>
@@ -53,42 +54,14 @@ namespace solidity::yul::test
 namespace
 {
 
-std::pair<bool, ErrorList> parse(std::string const& _source)
-{
-	YulStack asmStack(
-		solidity::test::CommonOptions::get().evmVersion(),
-		solidity::test::CommonOptions::get().eofVersion(),
-		YulStack::Language::StrictAssembly,
-		solidity::frontend::OptimiserSettings::none(),
-		DebugInfoSelection::All()
-	);
-	bool success = asmStack.parseAndAnalyze("source", _source);
-	return {success, asmStack.errors()};
-}
-
 std::optional<Error> parseAndReturnFirstError(std::string const& _source, bool _allowWarningsAndInfos = true)
 {
-	bool success;
-	ErrorList errors;
-	tie(success, errors) = parse(_source);
-	if (!success)
-	{
-		BOOST_REQUIRE_EQUAL(errors.size(), 1);
-		return *errors.front();
-	}
-	else
-	{
-		// If success is true, there might still be an error in the assembly stage.
-		if (_allowWarningsAndInfos && !Error::containsErrors(errors))
-			return {};
-		else if (!errors.empty())
-		{
-			if (!_allowWarningsAndInfos)
-				BOOST_CHECK_EQUAL(errors.size(), 1);
-			return *errors.front();
-		}
-	}
-	return {};
+	YulStack yulStack = parseYul(_source, "source", OptimiserSettings::none());
+	if (!yulStack.hasErrorsWarningsOrInfos() || (!yulStack.hasErrors() && _allowWarningsAndInfos))
+		return {};
+
+	BOOST_REQUIRE_EQUAL(yulStack.errors().size(), 1);
+	return *yulStack.errors().front();
 }
 
 bool successParse(std::string const& _source, bool _allowWarningsAndInfos = true)

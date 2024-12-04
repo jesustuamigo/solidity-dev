@@ -25,8 +25,7 @@
 
 #include <libyul/AsmAnalysis.h>
 #include <libyul/Object.h>
-
-#include <libsolutil/AnsiColorized.h>
+#include <libyul/YulStack.h>
 
 #ifdef ISOLTEST
 #include <boost/process.hpp>
@@ -48,29 +47,25 @@ SSAControlFlowGraphTest::SSAControlFlowGraphTest(std::string const& _filename): 
 {
 	m_source = m_reader.source();
 	auto dialectName = m_reader.stringSetting("dialect", "evm");
-	m_dialect = &dialect(
-		dialectName,
-		solidity::test::CommonOptions::get().evmVersion(),
-		solidity::test::CommonOptions::get().eofVersion()
-	);
+	soltestAssert(dialectName == "evm"); // We only have one dialect now
 	m_expectation = m_reader.simpleExpectations();
 }
 
 TestCase::TestResult SSAControlFlowGraphTest::run(std::ostream& _stream, std::string const& _linePrefix, bool const _formatted)
 {
-	ErrorList errors;
-	auto [object, analysisInfo] = parse(m_source, *m_dialect, errors);
-	if (!object || !analysisInfo || Error::containsErrors(errors))
+	YulStack yulStack = parseYul(m_source);
+	solUnimplementedAssert(yulStack.parserResult()->subObjects.empty(), "Tests with subobjects not supported.");
+
+	if (yulStack.hasErrors())
 	{
-		AnsiColorized(_stream, _formatted, {formatting::BOLD, formatting::RED}) << _linePrefix << "Error parsing source." << std::endl;
+		printYulErrors(yulStack, _stream, _linePrefix, _formatted);
 		return TestResult::FatalError;
 	}
 
-	auto info = AsmAnalyzer::analyzeStrictAssertCorrect(*object);
 	std::unique_ptr<ControlFlow> controlFlow = SSAControlFlowGraphBuilder::build(
-		info,
-		*m_dialect,
-		object->code()->root()
+		*yulStack.parserResult()->analysisInfo,
+		yulStack.dialect(),
+		yulStack.parserResult()->code()->root()
 	);
 	ControlFlowLiveness liveness(*controlFlow);
 	m_obtainedResult = controlFlow->toDot(&liveness);

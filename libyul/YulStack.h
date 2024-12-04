@@ -139,6 +139,7 @@ public:
 	/// @returns the errors generated during parsing, analysis (and potentially assembly).
 	langutil::ErrorList const& errors() const { return m_errors; }
 	bool hasErrors() const { return m_errorReporter.hasErrors(); }
+	bool hasErrorsWarningsOrInfos() const { return m_errorReporter.hasErrorsWarningsOrInfos(); }
 
 	/// Pretty-print the input after having parsed it.
 	std::string print() const;
@@ -149,6 +150,8 @@ public:
 
 	/// Return the parsed and analyzed object.
 	std::shared_ptr<Object> parserResult() const;
+
+	Dialect const& dialect() const;
 
 	langutil::DebugInfoSelection debugInfoSelection() const { return m_debugInfoSelection; }
 
