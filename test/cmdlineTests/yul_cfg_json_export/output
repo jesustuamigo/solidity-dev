@@ -41,6 +41,12 @@ Yul Control Flow Graph:
                         ]
                     }
                 ],
+                "liveness": {
+                    "in": [],
+                    "out": [
+                        "v0"
+                    ]
+                },
                 "type": "BuiltinCall"
             },
             {
@@ -87,6 +93,12 @@ Yul Control Flow Graph:
                         "out": []
                     }
                 ],
+                "liveness": {
+                    "in": [
+                        "v0"
+                    ],
+                    "out": []
+                },
                 "type": "BuiltinCall"
             },
             {
@@ -104,6 +116,10 @@ Yul Control Flow Graph:
                         "out": []
                     }
                 ],
+                "liveness": {
+                    "in": [],
+                    "out": []
+                },
                 "type": "BuiltinCall"
             }
         ],
@@ -168,6 +184,12 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [],
+                        "out": [
+                            "v0"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -185,6 +207,10 @@ Yul Control Flow Graph:
                             "out": []
                         }
                     ],
+                    "liveness": {
+                        "in": [],
+                        "out": []
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -228,6 +254,14 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v0"
+                        ],
+                        "out": [
+                            "v0"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -238,7 +272,11 @@ Yul Control Flow Graph:
                         "type": "Jump"
                     },
                     "id": "Block4",
-                    "instructions": []
+                    "instructions": [],
+                    "liveness": {
+                        "in": [],
+                        "out": []
+                    }
                 },
                 {
                     "exit": {
@@ -259,6 +297,14 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v0"
+                        ],
+                        "out": [
+                            "v0"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -309,6 +355,14 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v0"
+                        ],
+                        "out": [
+                            "v0"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -326,6 +380,10 @@ Yul Control Flow Graph:
                             "out": []
                         }
                     ],
+                    "liveness": {
+                        "in": [],
+                        "out": []
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -351,6 +409,12 @@ Yul Control Flow Graph:
                             "out": []
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v0"
+                        ],
+                        "out": []
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -368,6 +432,10 @@ Yul Control Flow Graph:
                             "out": []
                         }
                     ],
+                    "liveness": {
+                        "in": [],
+                        "out": []
+                    },
                     "type": "BuiltinCall"
                 }
             ],
@@ -421,6 +489,12 @@ Yul Control Flow Graph:
                         ]
                     }
                 ],
+                "liveness": {
+                    "in": [],
+                    "out": [
+                        "v0"
+                    ]
+                },
                 "type": "BuiltinCall"
             },
             {
@@ -467,6 +541,12 @@ Yul Control Flow Graph:
                         "out": []
                     }
                 ],
+                "liveness": {
+                    "in": [
+                        "v0"
+                    ],
+                    "out": []
+                },
                 "type": "BuiltinCall"
             },
             {
@@ -484,6 +564,10 @@ Yul Control Flow Graph:
                         "out": []
                     }
                 ],
+                "liveness": {
+                    "in": [],
+                    "out": []
+                },
                 "type": "BuiltinCall"
             }
         ],
@@ -548,6 +632,12 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [],
+                        "out": [
+                            "v0"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -565,6 +655,10 @@ Yul Control Flow Graph:
                             "out": []
                         }
                     ],
+                    "liveness": {
+                        "in": [],
+                        "out": []
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -608,6 +702,14 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v0"
+                        ],
+                        "out": [
+                            "v0"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -618,7 +720,11 @@ Yul Control Flow Graph:
                         "type": "Jump"
                     },
                     "id": "Block4",
-                    "instructions": []
+                    "instructions": [],
+                    "liveness": {
+                        "in": [],
+                        "out": []
+                    }
                 },
                 {
                     "exit": {
@@ -639,6 +745,14 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v0"
+                        ],
+                        "out": [
+                            "v0"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -689,6 +803,14 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v0"
+                        ],
+                        "out": [
+                            "v0"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -706,6 +828,10 @@ Yul Control Flow Graph:
                             "out": []
                         }
                     ],
+                    "liveness": {
+                        "in": [],
+                        "out": []
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -770,6 +896,16 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v0"
+                        ],
+                        "out": [
+                            "v0",
+                            "v18",
+                            "v24"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -787,6 +923,10 @@ Yul Control Flow Graph:
                             "out": []
                         }
                     ],
+                    "liveness": {
+                        "in": [],
+                        "out": []
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -850,6 +990,16 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v0",
+                            "v18",
+                            "v24"
+                        ],
+                        "out": [
+                            "v41"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -893,6 +1043,10 @@ Yul Control Flow Graph:
                             "out": []
                         }
                     ],
+                    "liveness": {
+                        "in": [],
+                        "out": []
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -994,6 +1148,14 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v41"
+                        ],
+                        "out": [
+                            "v46"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -1043,6 +1205,10 @@ Yul Control Flow Graph:
                             "out": []
                         }
                     ],
+                    "liveness": {
+                        "in": [],
+                        "out": []
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -1055,7 +1221,15 @@ Yul Control Flow Graph:
                         "type": "ConditionalJump"
                     },
                     "id": "Block18",
-                    "instructions": []
+                    "instructions": [],
+                    "liveness": {
+                        "in": [
+                            "v46"
+                        ],
+                        "out": [
+                            "v46"
+                        ]
+                    }
                 },
                 {
                     "exit": {
@@ -1104,6 +1278,10 @@ Yul Control Flow Graph:
                             "out": []
                         }
                     ],
+                    "liveness": {
+                        "in": [],
+                        "out": []
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -1152,6 +1330,12 @@ Yul Control Flow Graph:
                             "out": []
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v95"
+                        ],
+                        "out": []
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -1183,6 +1367,14 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v46"
+                        ],
+                        "out": [
+                            "v46"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -1280,6 +1472,17 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v46",
+                            "v71"
+                        ],
+                        "out": [
+                            "v46",
+                            "v71",
+                            "v77"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -1299,6 +1502,15 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v46"
+                        ],
+                        "out": [
+                            "v46",
+                            "v68"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -1351,6 +1563,16 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v46",
+                            "v71",
+                            "v77"
+                        ],
+                        "out": [
+                            "v46"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -1394,6 +1616,10 @@ Yul Control Flow Graph:
                             "out": []
                         }
                     ],
+                    "liveness": {
+                        "in": [],
+                        "out": []
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -1415,6 +1641,14 @@ Yul Control Flow Graph:
                             ]
                         }
                     ],
+                    "liveness": {
+                        "in": [
+                            "v46"
+                        ],
+                        "out": [
+                            "v93"
+                        ]
+                    },
                     "type": "BuiltinCall"
                 },
                 {
@@ -1432,6 +1666,10 @@ Yul Control Flow Graph:
                             "out": []
                         }
                     ],
+                    "liveness": {
+                        "in": [],
+                        "out": []
+                    },
                     "type": "BuiltinCall"
                 }
             ],
@@ -1477,6 +1715,12 @@ Yul Control Flow Graph:
                                 ]
                             }
                         ],
+                        "liveness": {
+                            "in": [],
+                            "out": [
+                                "v0"
+                            ]
+                        },
                         "type": "BuiltinCall"
                     },
                     {
@@ -1523,6 +1767,12 @@ Yul Control Flow Graph:
                                 "out": []
                             }
                         ],
+                        "liveness": {
+                            "in": [
+                                "v0"
+                            ],
+                            "out": []
+                        },
                         "type": "BuiltinCall"
                     },
                     {
@@ -1540,6 +1790,10 @@ Yul Control Flow Graph:
                                 "out": []
                             }
                         ],
+                        "liveness": {
+                            "in": [],
+                            "out": []
+                        },
                         "type": "BuiltinCall"
                     }
                 ],
@@ -1604,6 +1858,12 @@ Yul Control Flow Graph:
                                     ]
                                 }
                             ],
+                            "liveness": {
+                                "in": [],
+                                "out": [
+                                    "v0"
+                                ]
+                            },
                             "type": "BuiltinCall"
                         },
                         {
@@ -1621,6 +1881,10 @@ Yul Control Flow Graph:
                                     "out": []
                                 }
                             ],
+                            "liveness": {
+                                "in": [],
+                                "out": []
+                            },
                             "type": "BuiltinCall"
                         },
                         {
@@ -1664,6 +1928,14 @@ Yul Control Flow Graph:
                                     ]
                                 }
                             ],
+                            "liveness": {
+                                "in": [
+                                    "v0"
+                                ],
+                                "out": [
+                                    "v0"
+                                ]
+                            },
                             "type": "BuiltinCall"
                         },
                         {
@@ -1674,7 +1946,11 @@ Yul Control Flow Graph:
                                 "type": "Jump"
                             },
                             "id": "Block4",
-                            "instructions": []
+                            "instructions": [],
+                            "liveness": {
+                                "in": [],
+                                "out": []
+                            }
                         },
                         {
                             "exit": {
@@ -1695,6 +1971,14 @@ Yul Control Flow Graph:
                                     ]
                                 }
                             ],
+                            "liveness": {
+                                "in": [
+                                    "v0"
+                                ],
+                                "out": [
+                                    "v0"
+                                ]
+                            },
                             "type": "BuiltinCall"
                         },
                         {
@@ -1745,6 +2029,14 @@ Yul Control Flow Graph:
                                     ]
                                 }
                             ],
+                            "liveness": {
+                                "in": [
+                                    "v0"
+                                ],
+                                "out": [
+                                    "v0"
+                                ]
+                            },
                             "type": "BuiltinCall"
                         },
                         {
@@ -1762,6 +2054,10 @@ Yul Control Flow Graph:
                                     "out": []
                                 }
                             ],
+                            "liveness": {
+                                "in": [],
+                                "out": []
+                            },
                             "type": "BuiltinCall"
                         },
                         {
@@ -1787,6 +2083,12 @@ Yul Control Flow Graph:
                                     "out": []
                                 }
                             ],
+                            "liveness": {
+                                "in": [
+                                    "v0"
+                                ],
+                                "out": []
+                            },
                             "type": "BuiltinCall"
                         },
                         {
@@ -1804,6 +2106,10 @@ Yul Control Flow Graph:
                                     "out": []
                                 }
                             ],
+                            "liveness": {
+                                "in": [],
+                                "out": []
+                            },
                             "type": "BuiltinCall"
                         }
                     ],
