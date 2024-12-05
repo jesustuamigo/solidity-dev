@@ -16,8 +16,6 @@ assignees: ''
     - [Stack Overflow](https://ethereum.stackexchange.com/)
 - Ensure the issue isn't already reported.
 - The issue should be reproducible with the latest solidity version; however, this isn't a hard requirement and being reproducible with an older version is sufficient.
-
-*Delete the above section and the instructions in the sections below before submitting*
 -->
 
 ## Description
