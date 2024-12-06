@@ -776,6 +776,7 @@ bool AsmAnalyzer::validateInstructions(evmasm::Instruction _instr, SourceLocatio
 		_instr == evmasm::Instruction::CALL ||
 		_instr == evmasm::Instruction::CALLCODE ||
 		_instr == evmasm::Instruction::DELEGATECALL ||
+		_instr == evmasm::Instruction::STATICCALL ||
 		_instr == evmasm::Instruction::SELFDESTRUCT ||
 		_instr == evmasm::Instruction::JUMP ||
 		_instr == evmasm::Instruction::JUMPI ||
