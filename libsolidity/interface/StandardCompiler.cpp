@@ -1235,8 +1235,6 @@ Json StandardCompiler::importEVMAssembly(StandardCompiler::InputsAndSettings _in
 			creationJSON["functionDebugData"] = formatFunctionDebugData(stack.object(sourceName).functionDebugData);
 		if (evmCreationArtifactRequested("linkReferences"))
 			creationJSON["linkReferences"] = formatLinkReferences(stack.object(sourceName).linkReferences);
-		if (evmCreationArtifactRequested("generatedSources"))
-			creationJSON["generatedSources"] = {};
 		evmData["bytecode"] = creationJSON;
 	}
 
@@ -1265,8 +1263,6 @@ Json StandardCompiler::importEVMAssembly(StandardCompiler::InputsAndSettings _in
 			deployedJSON["linkReferences"] = formatLinkReferences(stack.runtimeObject(sourceName).linkReferences);
 		if (evmDeployedArtifactRequested("immutableReferences"))
 			deployedJSON["immutableReferences"] = formatImmutableReferences(stack.runtimeObject(sourceName).immutableReferences);
-		if (evmDeployedArtifactRequested("generatedSources"))
-			deployedJSON["generatedSources"] = {};
 		evmData["deployedBytecode"] = deployedJSON;
 	}
 
@@ -1691,8 +1687,6 @@ Json StandardCompiler::compileYul(InputsAndSettings _inputsAndSettings)
 					bytecodeJSON["linkReferences"] = formatLinkReferences(selectedObject.bytecode->linkReferences);
 				if (isDeployed && evmArtifactRequested(kind, "immutableReferences"))
 					bytecodeJSON["immutableReferences"] = formatImmutableReferences(selectedObject.bytecode->immutableReferences);
-				if (evmArtifactRequested(kind, "generatedSources"))
-					bytecodeJSON["generatedSources"] = Json::array();
 				output["contracts"][sourceName][contractName]["evm"][kind] = bytecodeJSON;
 			}
 		}
