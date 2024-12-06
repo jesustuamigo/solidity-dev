@@ -46,6 +46,7 @@
 #include <fstream>
 #include <limits>
 #include <iterator>
+#include <stack>
 
 using namespace solidity;
 using namespace solidity::evmasm;
@@ -971,6 +972,93 @@ void appendBigEndianUint16(bytes& _dest, ValueT _value)
 	assertThrow(_value <= 0xFFFF, AssemblyException, "");
 	appendBigEndian(_dest, 2, static_cast<size_t>(_value));
 }
+
+// Calculates maximum stack height for given code section. According to EIP5450 https://eips.ethereum.org/EIPS/eip-5450
+uint16_t calculateMaxStackHeight(Assembly::CodeSection const& _section)
+{
+	static auto constexpr UNVISITED = std::numeric_limits<size_t>::max();
+
+	AssemblyItems const& items = _section.items;
+	solAssert(!items.empty());
+	uint16_t overallMaxHeight = _section.inputs;
+	std::stack<size_t> worklist;
+	std::vector<size_t> maxStackHeights(items.size(), UNVISITED);
+
+	// Init first item stack height to number of inputs to the code section
+	// maxStackHeights stores stack height for an item before the item execution
+	maxStackHeights[0] = _section.inputs;
+	// Push first item index to the worklist
+	worklist.push(0u);
+	while (!worklist.empty())
+	{
+		size_t idx = worklist.top();
+		worklist.pop();
+		AssemblyItem const& item = items[idx];
+		size_t stackHeightChange = item.deposit();
+		size_t currentMaxHeight = maxStackHeights[idx];
+		solAssert(currentMaxHeight != UNVISITED);
+
+		std::vector<size_t> successors;
+
+		// Add next instruction to successors for non-control-flow-changing instructions
+		if (
+			!(item.hasInstruction() && SemanticInformation::terminatesControlFlow(item.instruction())) &&
+			item.type() != RelativeJump &&
+			item.type() != RetF &&
+			item.type() != JumpF
+		)
+		{
+			solAssert(idx < items.size() - 1, "No terminating instruction.");
+			successors.emplace_back(idx + 1);
+		}
+
+		// Add jumps destinations to successors
+		// TODO: Remember to add RJUMPV when it is supported.
+		if (item.type() == RelativeJump || item.type() == ConditionalRelativeJump)
+		{
+			auto const tagIt = std::find(items.begin(), items.end(), item.tag());
+			solAssert(tagIt != items.end(), "Tag not found.");
+			successors.emplace_back(static_cast<size_t>(std::distance(items.begin(), tagIt)));
+			// If backward jump the successor must be already visited.
+			solAssert(idx <= successors.back() || maxStackHeights[successors.back()] != UNVISITED);
+		}
+
+		solRequire(
+			currentMaxHeight + stackHeightChange <= std::numeric_limits<uint16_t>::max(),
+			AssemblyException,
+			"Stack overflow in EOF function."
+		);
+		overallMaxHeight = std::max(overallMaxHeight, static_cast<uint16_t>(currentMaxHeight + stackHeightChange));
+		currentMaxHeight += stackHeightChange;
+
+		// Set stack height for all instruction successors
+		for (size_t successor: successors)
+		{
+			solAssert(successor < maxStackHeights.size());
+			// Set stack height for newly visited
+			if (maxStackHeights[successor] == UNVISITED)
+			{
+				maxStackHeights[successor] = currentMaxHeight;
+				worklist.push(successor);
+			}
+			else
+			{
+				solAssert(successor < maxStackHeights.size());
+				// For backward jump successor stack height must be equal
+				if (successor < idx)
+					solAssert(maxStackHeights[successor] == currentMaxHeight, "Stack height mismatch.");
+
+				// If successor stack height is smaller update it and recalculate
+				if (currentMaxHeight > maxStackHeights[successor])
+				{
+					maxStackHeights[successor] = currentMaxHeight;
+					worklist.push(successor);
+				}
+			}
+		}
+	}
+	return overallMaxHeight;
+}
 }
 
 std::tuple<bytes, std::vector<size_t>, size_t> Assembly::createEOFHeader(std::set<ContainerID> const& _referencedSubIds) const
@@ -1015,8 +1103,7 @@ std::tuple<bytes, std::vector<size_t>, size_t> Assembly::createEOFHeader(std::se
 	{
 		retBytecode.push_back(codeSection.inputs);
 		retBytecode.push_back(codeSection.outputs);
-		// TODO: Add stack height calculation
-		appendBigEndianUint16(retBytecode, 0xFFFFu);
+		appendBigEndianUint16(retBytecode, calculateMaxStackHeight(codeSection));
 	}
 
 	return {retBytecode, codeSectionSizePositions, dataSectionSizePosition};
