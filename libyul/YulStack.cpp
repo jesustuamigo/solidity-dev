@@ -62,6 +62,7 @@ bool YulStack::parse(std::string const& _sourceName, std::string const& _source)
 	catch (UnimplementedFeatureError const& _error)
 	{
 		reportUnimplementedFeatureError(_error);
+		return false;
 	}
 
 	if (!m_errorReporter.hasErrors())

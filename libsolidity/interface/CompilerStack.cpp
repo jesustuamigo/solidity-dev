@@ -419,6 +419,7 @@ bool CompilerStack::parse()
 	catch (UnimplementedFeatureError const& _error)
 	{
 		reportUnimplementedFeatureError(_error);
+		return false;
 	}
 
 	return true;
