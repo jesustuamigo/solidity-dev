@@ -37,7 +37,7 @@
 namespace solidity::yul
 {
 
-struct Dialect;
+class Dialect;
 
 struct NameWithDebugData { langutil::DebugData::ConstPtr debugData; YulName name; };
 using NameWithDebugDataList = std::vector<NameWithDebugData>;

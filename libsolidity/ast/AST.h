@@ -49,7 +49,7 @@ namespace solidity::yul
 {
 // Forward-declaration to <yul/AST.h>
 class AST;
-struct Dialect;
+class Dialect;
 }
 
 namespace solidity::frontend

@@ -57,8 +57,9 @@ struct BuiltinFunction
 	}
 };
 
-struct Dialect
+class Dialect
 {
+public:
 	/// Noncopiable.
 	Dialect(Dialect const&) = delete;
 	Dialect& operator=(Dialect const&) = delete;

@@ -28,7 +28,7 @@
 namespace solidity::yul
 {
 
-struct Dialect;
+class Dialect;
 
 /**
  * Finds all calls to a function of a given name using an ASTModifier.

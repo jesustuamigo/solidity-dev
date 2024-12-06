@@ -33,7 +33,7 @@
 
 namespace solidity::yul
 {
-struct Dialect;
+class Dialect;
 
 /**
  * Optimiser component that removes assignments to variables that are not used

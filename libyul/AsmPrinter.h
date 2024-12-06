@@ -37,7 +37,7 @@
 namespace solidity::yul
 {
 
-struct Dialect;
+class Dialect;
 
 /**
  * Converts a parsed Yul AST into readable string representation.

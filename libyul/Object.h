@@ -36,7 +36,7 @@
 
 namespace solidity::yul
 {
-struct Dialect;
+class Dialect;
 struct AsmAnalysisInfo;
 
 using SourceNameMap = std::map<unsigned, std::shared_ptr<std::string const>>;

@@ -33,7 +33,7 @@
 namespace solidity::yul
 {
 
-struct Dialect;
+class Dialect;
 
 /**
  * Converter of the yul AST into JSON format

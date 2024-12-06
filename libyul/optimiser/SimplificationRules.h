@@ -40,7 +40,7 @@
 namespace solidity::yul
 {
 struct AssignedValue;
-struct Dialect;
+class Dialect;
 class EVMDialect;
 class Pattern;
 

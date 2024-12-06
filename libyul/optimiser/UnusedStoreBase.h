@@ -31,7 +31,7 @@
 
 namespace solidity::yul
 {
-struct Dialect;
+class Dialect;
 
 /**
  * Base class for both UnusedAssignEliminator and UnusedStoreEliminator.

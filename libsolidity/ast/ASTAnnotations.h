@@ -39,7 +39,7 @@ namespace solidity::yul
 {
 struct AsmAnalysisInfo;
 struct Identifier;
-struct Dialect;
+class Dialect;
 }
 
 namespace solidity::frontend

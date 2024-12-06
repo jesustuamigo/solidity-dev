@@ -31,7 +31,7 @@
 
 namespace solidity::yul
 {
-struct Dialect;
+class Dialect;
 
 /**
  * Specific AST walker that determines side-effect free-ness and movability of code.
