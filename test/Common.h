@@ -29,6 +29,11 @@
 #include <boost/program_options.hpp>
 #include <boost/test/unit_test.hpp>
 
+namespace solidity::yul
+{
+class EVMDialect;
+}
+
 namespace solidity::test
 {
 
@@ -66,6 +71,7 @@ struct CommonOptions
 
 	langutil::EVMVersion evmVersion() const;
 	std::optional<uint8_t> eofVersion() const { return m_eofVersion; }
+	yul::EVMDialect const& evmDialect() const;
 
 	virtual void addOptions();
 	// @returns true if the program should continue, false if it should exit immediately without

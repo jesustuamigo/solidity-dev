@@ -39,6 +39,7 @@
 #include <fstream>
 
 using namespace solidity;
+using namespace solidity::test;
 using namespace solidity::util;
 using namespace solidity::langutil;
 using namespace solidity::yul;
@@ -67,10 +68,10 @@ TestCase::TestResult YulInterpreterTest::run(std::ostream& _stream, std::string 
 bool YulInterpreterTest::parse(std::ostream& _stream, std::string const& _linePrefix, bool const _formatted)
 {
 	YulStack stack(
-		solidity::test::CommonOptions::get().evmVersion(),
-		solidity::test::CommonOptions::get().eofVersion(),
+		CommonOptions::get().evmVersion(),
+		CommonOptions::get().eofVersion(),
 		YulStack::Language::StrictAssembly,
-		solidity::frontend::OptimiserSettings::none(),
+		OptimiserSettings::none(),
 		DebugInfoSelection::All()
 	);
 	if (stack.parseAndAnalyze("", m_source))
@@ -98,8 +99,7 @@ std::string YulInterpreterTest::interpret()
 	{
 		Interpreter::run(
 			state,
-			EVMDialect::strictAssemblyForEVMObjects(solidity::test::CommonOptions::get().evmVersion(),
-				solidity::test::CommonOptions::get().eofVersion()),
+			CommonOptions::get().evmDialect(),
 			m_ast->root(),
 			/*disableExternalCalls=*/ !m_simulateExternalCallsToSelf,
 			/*disableMemoryTracing=*/ false

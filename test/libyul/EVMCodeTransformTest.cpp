@@ -32,6 +32,7 @@
 #include <libsolutil/AnsiColorized.h>
 
 using namespace solidity;
+using namespace solidity::test;
 using namespace solidity::util;
 using namespace solidity::langutil;
 using namespace solidity::yul;
@@ -67,13 +68,12 @@ TestCase::TestResult EVMCodeTransformTest::run(std::ostream& _stream, std::strin
 		return TestResult::FatalError;
 	}
 
-	evmasm::Assembly assembly{solidity::test::CommonOptions::get().evmVersion(), false, std::nullopt, {}};
+	evmasm::Assembly assembly{CommonOptions::get().evmVersion(), false, std::nullopt, {}};
 	EthAssemblyAdapter adapter(assembly);
 	EVMObjectCompiler::compile(
 		*stack.parserResult(),
 		adapter,
-		EVMDialect::strictAssemblyForEVMObjects(solidity::test::CommonOptions::get().evmVersion(),
-			solidity::test::CommonOptions::get().eofVersion()),
+		CommonOptions::get().evmDialect(),
 		m_stackOpt,
 		std::nullopt
 	);
