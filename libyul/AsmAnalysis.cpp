@@ -354,7 +354,7 @@ size_t AsmAnalyzer::operator()(FunctionCall const& _funCall)
 		validateInstructions(_funCall);
 		m_sideEffects += builtin->sideEffects;
 	}
-	else if (m_currentScope->lookup(YulName{std::string(resolveFunctionName(_funCall.functionName, m_dialect))}, GenericVisitor{
+	else if (m_currentScope->lookup(YulName{resolveFunctionName(_funCall.functionName, m_dialect)}, GenericVisitor{
 		[&](Scope::Variable const&)
 		{
 			m_errorReporter.typeError(

@@ -563,7 +563,7 @@ std::vector<SSACFG::ValueId> SSAControlFlowGraphBuilder::visitFunctionCall(Funct
 		}
 		else
 		{
-			YulName const functionName{std::string(resolveFunctionName(_call.functionName, m_dialect))};
+			YulName const functionName{resolveFunctionName(_call.functionName, m_dialect)};
 			Scope::Function const& function = lookupFunction(functionName);
 			auto const* definition = findFunctionDefinition(&function);
 			yulAssert(definition);
