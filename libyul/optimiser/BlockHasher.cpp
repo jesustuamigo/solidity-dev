@@ -66,7 +66,6 @@ void ASTHasherBase::hashFunctionCall(FunctionCall const& _funCall)
 		{
 			hash64(compileTimeLiteralHash("UserDefined"));
 			hash64(_identifier.name.hash());
-			hash64(_funCall.arguments.size());
 		}
 	};
 	std::visit(visitor, _funCall.functionName);
