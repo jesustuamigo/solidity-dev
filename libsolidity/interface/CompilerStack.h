@@ -578,8 +578,12 @@ private:
 		FunctionDefinition const& _function
 	) const;
 
-	void reportUnimplementedFeatureError(langutil::UnimplementedFeatureError const& _error);
-	void reportIRPostAnalysisError(langutil::Error const* _error);
+	void reportUnimplementedFeatureError(
+		langutil::UnimplementedFeatureError const& _error,
+		ContractDefinition const* _contractDefinition = nullptr
+	);
+	void reportCodeGenerationError(langutil::Error const& _error, ContractDefinition const* _contractDefinition);
+	void reportIRPostAnalysisError(langutil::Error const* _error, ContractDefinition const* _contractDefinition);
 
 	ReadCallback::Callback m_readFile;
 	OptimiserSettings m_optimiserSettings;

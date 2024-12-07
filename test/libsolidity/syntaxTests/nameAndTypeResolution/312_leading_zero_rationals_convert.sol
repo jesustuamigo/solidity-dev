@@ -8,4 +8,4 @@ contract A {
     }
 }
 // ----
-// UnimplementedFeatureError 1834: Not yet implemented - FixedPointType.
+// UnimplementedFeatureError 1834: (0-289): Not yet implemented - FixedPointType.

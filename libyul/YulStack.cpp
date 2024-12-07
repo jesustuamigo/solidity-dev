@@ -439,6 +439,9 @@ Dialect const& YulStack::dialect() const
 
 void YulStack::reportUnimplementedFeatureError(UnimplementedFeatureError const& _error)
 {
+	yulAssert(m_charStream);
 	yulAssert(_error.comment(), "Errors must include a message for the user.");
+	if (_error.sourceLocation().sourceName)
+		yulAssert(*_error.sourceLocation().sourceName == m_charStream->name());
 	m_errorReporter.unimplementedFeatureError(1920_error, _error.sourceLocation(), *_error.comment());
 }

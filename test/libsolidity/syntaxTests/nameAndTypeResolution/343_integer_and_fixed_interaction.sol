@@ -6,4 +6,4 @@ contract test {
 // ----
 // Warning 2072: (50-58): Unused local variable.
 // Warning 2018: (20-89): Function state mutability can be restricted to pure
-// UnimplementedFeatureError 1834: Not yet implemented - FixedPointType.
+// UnimplementedFeatureError 1834: (0-91): Not yet implemented - FixedPointType.
