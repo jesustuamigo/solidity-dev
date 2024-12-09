@@ -35,6 +35,7 @@
 
 
 using namespace solidity;
+using namespace solidity::test;
 using namespace solidity::util;
 using namespace solidity::langutil;
 using namespace solidity::yul;
@@ -83,12 +84,9 @@ FunctionSideEffects::FunctionSideEffects(std::string const& _filename):
 
 TestCase::TestResult FunctionSideEffects::run(std::ostream& _stream, std::string const& _linePrefix, bool _formatted)
 {
-	auto const& dialect = EVMDialect::strictAssemblyForEVMObjects(
-		solidity::test::CommonOptions::get().evmVersion(),
-		solidity::test::CommonOptions::get().eofVersion()
-	);
+	auto const& dialect = CommonOptions::get().evmDialect();
 	Object obj;
-	auto parsingResult = yul::test::parse(m_source);
+	auto parsingResult = parse(m_source);
 	obj.setCode(parsingResult.first, parsingResult.second);
 	if (!obj.hasCode())
 		BOOST_THROW_EXCEPTION(std::runtime_error("Parsing input failed."));

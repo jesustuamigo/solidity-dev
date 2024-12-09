@@ -25,6 +25,7 @@
 #include <liblangutil/Scanner.h>
 #include <libsolutil/AnsiColorized.h>
 
+using namespace solidity::test;
 using namespace solidity::util;
 using namespace solidity::langutil;
 using namespace solidity::yul;
@@ -141,10 +142,7 @@ StackShufflingTest::StackShufflingTest(std::string const& _filename):
 
 TestCase::TestResult StackShufflingTest::run(std::ostream& _stream, std::string const& _linePrefix, bool _formatted)
 {
-	auto const& dialect = EVMDialect::strictAssemblyForEVMObjects(
-		solidity::test::CommonOptions::get().evmVersion(),
-		solidity::test::CommonOptions::get().eofVersion()
-	);
+	auto const& dialect = CommonOptions::get().evmDialect();
 	if (!parse(m_source))
 	{
 		AnsiColorized(_stream, _formatted, {formatting::BOLD, formatting::RED}) << _linePrefix << "Error parsing source." << std::endl;

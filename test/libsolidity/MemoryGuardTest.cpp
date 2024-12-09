@@ -59,7 +59,7 @@ TestCase::TestResult MemoryGuardTest::run(std::ostream& _stream, std::string con
 	m_obtainedResult.clear();
 	for (std::string contractName: compiler().contractNames())
 	{
-		auto const& dialect = EVMDialect::strictAssemblyForEVMObjects(CommonOptions::get().evmVersion(), CommonOptions::get().eofVersion());
+		auto const& dialect = CommonOptions::get().evmDialect();
 		ErrorList errors;
 		std::optional<std::string> const& ir = compiler().yulIR(contractName);
 		solAssert(ir);
