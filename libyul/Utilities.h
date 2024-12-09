@@ -30,7 +30,7 @@
 namespace solidity::yul
 {
 
-struct Dialect;
+class Dialect;
 class EVMDialect;
 struct BuiltinFunction;
 struct BuiltinFunctionForEVM;

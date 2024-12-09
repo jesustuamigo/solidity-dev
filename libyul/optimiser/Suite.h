@@ -36,7 +36,7 @@ namespace solidity::yul
 {
 
 struct AsmAnalysisInfo;
-struct Dialect;
+class Dialect;
 class GasMeter;
 class Object;
 

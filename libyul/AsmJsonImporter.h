@@ -32,7 +32,7 @@
 namespace solidity::yul
 {
 
-struct Dialect;
+class Dialect;
 
 /**
  * Component that imports an AST from json format to the internal format

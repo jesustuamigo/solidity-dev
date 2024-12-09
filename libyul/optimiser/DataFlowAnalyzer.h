@@ -37,7 +37,7 @@
 
 namespace solidity::yul
 {
-struct Dialect;
+class Dialect;
 struct SideEffects;
 class KnowledgeBase;
 

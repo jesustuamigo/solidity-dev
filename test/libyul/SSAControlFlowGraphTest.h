@@ -24,7 +24,7 @@
 
 namespace solidity::yul
 {
-struct Dialect;
+class Dialect;
 
 namespace test
 {
