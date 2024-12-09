@@ -118,7 +118,7 @@ private:
 	void expectValidIdentifier(YulName _identifier, langutil::SourceLocation const& _location);
 
 	bool validateInstructions(evmasm::Instruction _instr, langutil::SourceLocation const& _location);
-	bool validateInstructions(std::string const& _instrIdentifier, langutil::SourceLocation const& _location);
+	bool validateInstructions(std::string_view _instrIdentifier, langutil::SourceLocation const& _location);
 	bool validateInstructions(FunctionCall const& _functionCall);
 
 	void validateObjectStructure(langutil::SourceLocation _astRootLocation);

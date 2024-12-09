@@ -54,11 +54,12 @@ public:
 	);
 
 	explicit AsmPrinter(
-		Dialect const&,
+		Dialect const& _dialect,
 		std::optional<std::map<unsigned, std::shared_ptr<std::string const>>> const& _sourceIndexToName = {},
 		langutil::DebugInfoSelection const& _debugInfoSelection = langutil::DebugInfoSelection::Default(),
 		langutil::CharStreamProvider const* _soliditySourceProvider = nullptr
 	):
+		m_dialect(_dialect),
 		m_debugInfoSelection(_debugInfoSelection),
 		m_soliditySourceProvider(_soliditySourceProvider)
 	{
@@ -69,6 +70,7 @@ public:
 
 	std::string operator()(Literal const& _literal);
 	std::string operator()(Identifier const& _identifier);
+	std::string operator()(BuiltinName const& _builtin);
 	std::string operator()(ExpressionStatement const& _expr);
 	std::string operator()(Assignment const& _assignment);
 	std::string operator()(VariableDeclaration const& _variableDeclaration);
@@ -99,6 +101,7 @@ private:
 		return formatDebugData(_node.debugData, !isExpression);
 	}
 
+	Dialect const& m_dialect;
 	std::map<std::string, unsigned> m_nameToSourceIndex;
 	langutil::SourceLocation m_lastLocation = {};
 	langutil::DebugInfoSelection m_debugInfoSelection = {};
