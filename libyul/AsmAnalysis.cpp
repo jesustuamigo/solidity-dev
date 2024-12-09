@@ -783,10 +783,12 @@ bool AsmAnalyzer::validateInstructions(evmasm::Instruction _instr, SourceLocatio
 		_instr == evmasm::Instruction::JUMPI ||
 		_instr == evmasm::Instruction::PC ||
 		_instr == evmasm::Instruction::CREATE ||
+		_instr == evmasm::Instruction::CREATE2 ||
 		_instr == evmasm::Instruction::CODESIZE ||
 		_instr == evmasm::Instruction::CODECOPY ||
 		_instr == evmasm::Instruction::EXTCODESIZE ||
 		_instr == evmasm::Instruction::EXTCODECOPY ||
+		_instr == evmasm::Instruction::EXTCODEHASH ||
 		_instr == evmasm::Instruction::GAS
 	))
 	{
