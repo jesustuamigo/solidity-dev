@@ -1015,6 +1015,7 @@ std::string IRGenerator::deployCode(ContractDefinition const& _contract)
 
 	if (eof)
 	{
+		t("library", _contract.isLibrary());
 		t("auxDataStart", std::to_string(CompilerUtils::generalPurposeMemoryStart));
 		solAssert(m_context.reservedMemorySize() <= 0xFFFF, "Reserved memory size exceeded maximum allowed EOF data section size.");
 		t("auxDataSize", std::to_string(m_context.reservedMemorySize()));
