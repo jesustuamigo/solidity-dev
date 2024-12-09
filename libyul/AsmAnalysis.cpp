@@ -773,6 +773,21 @@ bool AsmAnalyzer::validateInstructions(evmasm::Instruction _instr, SourceLocatio
 			"PC instruction is a low-level EVM feature. "
 			"Because of that PC is disallowed in strict assembly."
 		);
+	else if (!m_eofVersion.has_value() && (
+		_instr == evmasm::Instruction::EXTCALL ||
+		_instr == evmasm::Instruction::EXTDELEGATECALL ||
+		_instr == evmasm::Instruction::EXTSTATICCALL
+	))
+	{
+		m_errorReporter.typeError(
+			4328_error,
+			_location,
+			fmt::format(
+				"The \"{}\" instruction is only available on EOF.",
+				fmt::arg("instruction", boost::to_lower_copy(instructionInfo(_instr, m_evmVersion).name))
+			)
+		);
+	}
 	else if (m_eofVersion.has_value() && (
 		_instr == evmasm::Instruction::CALL ||
 		_instr == evmasm::Instruction::CALLCODE ||

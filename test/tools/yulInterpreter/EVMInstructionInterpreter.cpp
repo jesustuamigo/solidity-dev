@@ -495,6 +495,9 @@ u256 EVMInstructionInterpreter::eval(
 	case Instruction::RETURNCONTRACT:
 	case Instruction::RJUMP:
 	case Instruction::RJUMPI:
+	case Instruction::EXTCALL:
+	case Instruction::EXTSTATICCALL:
+	case Instruction::EXTDELEGATECALL:
 		solUnimplemented("EOF not yet supported by Yul interpreter.");
 	}
 

@@ -153,6 +153,18 @@ std::set<std::string, std::less<>> createReservedIdentifiers(langutil::EVMVersio
 			(_instr == evmasm::Instruction::TSTORE || _instr == evmasm::Instruction::TLOAD);
 	};
 
+	auto eofIdentifiersException = [&](evmasm::Instruction _instr) -> bool
+	{
+		solAssert(!_eofVersion.has_value() || _evmVersion >= langutil::EVMVersion::prague());
+		return
+			!_eofVersion.has_value() &&
+			(
+				_instr == evmasm::Instruction::EXTCALL ||
+				_instr == evmasm::Instruction::EXTSTATICCALL ||
+				_instr == evmasm::Instruction::EXTDELEGATECALL
+			);
+	};
+
 	std::set<std::string, std::less<>> reserved;
 	for (auto const& instr: evmasm::c_instructions)
 	{
@@ -163,7 +175,8 @@ std::set<std::string, std::less<>> createReservedIdentifiers(langutil::EVMVersio
 			!blobHashException(instr.second) &&
 			!blobBaseFeeException(instr.second) &&
 			!mcopyException(instr.second) &&
-			!transientStorageException(instr.second)
+			!transientStorageException(instr.second) &&
+			!eofIdentifiersException(instr.second)
 		)
 			reserved.emplace(name);
 	}
