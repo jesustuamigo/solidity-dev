@@ -58,6 +58,7 @@ evmc::VM& EVMHost::getVM(std::string const& _path)
 				std::cerr << ":" << std::endl << errorMsg;
 			std::cerr << std::endl;
 		}
+		vms[_path]->set_option("validate_eof", "1");
 	}
 
 	if (vms.count(_path) > 0)
