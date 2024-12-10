@@ -165,6 +165,19 @@ public:
 
 	langutil::DebugInfoSelection debugInfoSelection() const { return m_debugInfoSelection; }
 	langutil::CharStreamProvider const* soliditySourceProvider() const { return m_soliditySourceProvider; }
+	std::map<VariableDeclaration const*, size_t> const& immutableVariables() const { return m_immutableVariables; }
+	void setImmutableVariables(std::map<VariableDeclaration const*, size_t> _immutableVariables)
+	{
+		solAssert(m_eofVersion.has_value());
+		solAssert(m_executionContext == ExecutionContext::Deployed);
+		m_immutableVariables = std::move(_immutableVariables);
+	}
+	void setLibraryAddressImmutableOffset(size_t _libraryAddressImmutableOffset)
+	{
+		solAssert(m_eofVersion.has_value());
+		solAssert(m_executionContext == ExecutionContext::Deployed);
+		m_libraryAddressImmutableOffset = _libraryAddressImmutableOffset;
+	}
 
 private:
 	langutil::EVMVersion m_evmVersion;
@@ -176,7 +189,7 @@ private:
 	ContractDefinition const* m_mostDerivedContract = nullptr;
 	std::map<VariableDeclaration const*, IRVariable> m_localVariables;
 	/// Memory offsets reserved for the values of immutable variables during contract creation.
-	/// This map is empty in the runtime context.
+	/// This map is empty in the legacy runtime context and may be not empty in EOF runtime context.
 	std::map<VariableDeclaration const*, size_t> m_immutableVariables;
 	std::optional<size_t> m_libraryAddressImmutableOffset;
 	/// Total amount of reserved memory. Reserved memory is used to store
