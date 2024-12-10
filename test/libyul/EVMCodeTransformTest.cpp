@@ -53,6 +53,8 @@ TestCase::TestResult EVMCodeTransformTest::run(std::ostream& _stream, std::strin
 	solidity::frontend::OptimiserSettings settings = solidity::frontend::OptimiserSettings::none();
 	settings.runYulOptimiser = false;
 	settings.optimizeStackAllocation = m_stackOpt;
+	// Restrict to a single EVM/EOF version combination (the default one) as code generation
+	// can be different from version to version.
 	YulStack stack(
 		EVMVersion{},
 		std::nullopt,
@@ -73,7 +75,7 @@ TestCase::TestResult EVMCodeTransformTest::run(std::ostream& _stream, std::strin
 	EVMObjectCompiler::compile(
 		*stack.parserResult(),
 		adapter,
-		CommonOptions::get().evmDialect(),
+		*dynamic_cast<EVMDialect const*>(stack.parserResult()->dialect()),
 		m_stackOpt,
 		std::nullopt
 	);
