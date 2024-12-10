@@ -374,33 +374,6 @@ Json formatImmutableReferences(std::map<u256, evmasm::LinkerObject::ImmutableRef
 	return ret;
 }
 
-Json collectEVMObject(
-	langutil::EVMVersion _evmVersion,
-	evmasm::LinkerObject const& _object,
-	std::string const* _sourceMap,
-	Json _generatedSources,
-	bool _runtimeObject,
-	std::function<bool(std::string)> const& _artifactRequested
-)
-{
-	Json output;
-	if (_artifactRequested("object"))
-		output["object"] = _object.toHex();
-	if (_artifactRequested("opcodes"))
-		output["opcodes"] = evmasm::disassemble(_object.bytecode, _evmVersion);
-	if (_artifactRequested("sourceMap"))
-		output["sourceMap"] = _sourceMap ? *_sourceMap : "";
-	if (_artifactRequested("functionDebugData"))
-		output["functionDebugData"] = StandardCompiler::formatFunctionDebugData(_object.functionDebugData);
-	if (_artifactRequested("linkReferences"))
-		output["linkReferences"] = formatLinkReferences(_object.linkReferences);
-	if (_runtimeObject && _artifactRequested("immutableReferences"))
-		output["immutableReferences"] = formatImmutableReferences(_object.immutableReferences);
-	if (_artifactRequested("generatedSources"))
-		output["generatedSources"] = std::move(_generatedSources);
-	return output;
-}
-
 std::optional<Json> checkKeys(Json const& _input, std::set<std::string> const& _keys, std::string const& _name)
 {
 	if (!_input.empty() && !_input.is_object())
@@ -1246,22 +1219,24 @@ Json StandardCompiler::importEVMAssembly(StandardCompiler::InputsAndSettings _in
 		evmObjectComponents("bytecode"),
 		wildcardMatchesExperimental
 	))
-		evmData["bytecode"] = collectEVMObject(
-			_inputsAndSettings.evmVersion,
-			stack.object(sourceName),
-			stack.sourceMapping(sourceName),
-			{},
-			false, // _runtimeObject
-			[&](std::string const& _element) {
-				return isArtifactRequested(
-					_inputsAndSettings.outputSelection,
-					sourceName,
-					"",
-					"evm.bytecode." + _element,
-					wildcardMatchesExperimental
-				);
-			}
-		);
+	{
+		auto const evmCreationArtifactRequested = [&](std::string const& _element) {
+			return isArtifactRequested(_inputsAndSettings.outputSelection, sourceName, "", "evm.bytecode." + _element, wildcardMatchesExperimental);
+		};
+
+		Json creationJSON;
+		if (evmCreationArtifactRequested("object"))
+			creationJSON["object"] = stack.object(sourceName).toHex();
+		if (evmCreationArtifactRequested("opcodes"))
+			creationJSON["opcodes"] = evmasm::disassemble(stack.object(sourceName).bytecode, _inputsAndSettings.evmVersion);
+		if (evmCreationArtifactRequested("sourceMap"))
+			creationJSON["sourceMap"] = stack.sourceMapping(sourceName) ? *stack.sourceMapping(sourceName) : "";
+		if (evmCreationArtifactRequested("functionDebugData"))
+			creationJSON["functionDebugData"] = formatFunctionDebugData(stack.object(sourceName).functionDebugData);
+		if (evmCreationArtifactRequested("linkReferences"))
+			creationJSON["linkReferences"] = formatLinkReferences(stack.object(sourceName).linkReferences);
+		evmData["bytecode"] = creationJSON;
+	}
 
 	if (isArtifactRequested(
 		_inputsAndSettings.outputSelection,
@@ -1270,22 +1245,26 @@ Json StandardCompiler::importEVMAssembly(StandardCompiler::InputsAndSettings _in
 		evmObjectComponents("deployedBytecode"),
 		wildcardMatchesExperimental
 	))
-		evmData["deployedBytecode"] = collectEVMObject(
-			_inputsAndSettings.evmVersion,
-			stack.runtimeObject(sourceName),
-			stack.runtimeSourceMapping(sourceName),
-			{},
-			true, // _runtimeObject
-			[&](std::string const& _element) {
-				return isArtifactRequested(
-					_inputsAndSettings.outputSelection,
-					sourceName,
-					"",
-					"evm.deployedBytecode." + _element,
-					wildcardMatchesExperimental
-				);
-			}
-		);
+	{
+		auto const evmDeployedArtifactRequested = [&](std::string const& _element) {
+			return isArtifactRequested(_inputsAndSettings.outputSelection, sourceName, "", "evm.deployedBytecode." + _element, wildcardMatchesExperimental);
+		};
+
+		Json deployedJSON;
+		if (evmDeployedArtifactRequested("object"))
+			deployedJSON["object"] = stack.runtimeObject(sourceName).toHex();
+		if (evmDeployedArtifactRequested("opcodes"))
+			deployedJSON["opcodes"] = evmasm::disassemble(stack.runtimeObject(sourceName).bytecode, _inputsAndSettings.evmVersion);
+		if (evmDeployedArtifactRequested("sourceMap"))
+			deployedJSON["sourceMap"] = stack.runtimeSourceMapping(sourceName) ? *stack.runtimeSourceMapping(sourceName) : "";
+		if (evmDeployedArtifactRequested("functionDebugData"))
+			deployedJSON["functionDebugData"] = formatFunctionDebugData(stack.runtimeObject(sourceName).functionDebugData);
+		if (evmDeployedArtifactRequested("linkReferences"))
+			deployedJSON["linkReferences"] = formatLinkReferences(stack.runtimeObject(sourceName).linkReferences);
+		if (evmDeployedArtifactRequested("immutableReferences"))
+			deployedJSON["immutableReferences"] = formatImmutableReferences(stack.runtimeObject(sourceName).immutableReferences);
+		evmData["deployedBytecode"] = deployedJSON;
+	}
 
 	Json contractData;
 	if (!evmData.empty())
@@ -1506,20 +1485,26 @@ Json StandardCompiler::compileSolidity(StandardCompiler::InputsAndSettings _inpu
 			evmObjectComponents("bytecode"),
 			wildcardMatchesExperimental
 		))
-			evmData["bytecode"] = collectEVMObject(
-				_inputsAndSettings.evmVersion,
-				compilerStack.object(contractName),
-				compilerStack.sourceMapping(contractName),
-				compilerStack.generatedSources(contractName),
-				false,
-				[&](std::string const& _element) { return isArtifactRequested(
-					_inputsAndSettings.outputSelection,
-					file,
-					name,
-					"evm.bytecode." + _element,
-					wildcardMatchesExperimental
-				); }
-			);
+		{
+			auto const evmCreationArtifactRequested = [&](std::string const& _element) {
+				return isArtifactRequested(_inputsAndSettings.outputSelection, file, name, "evm.bytecode." + _element, wildcardMatchesExperimental);
+			};
+
+			Json creationJSON;
+			if (evmCreationArtifactRequested("object"))
+				creationJSON["object"] = compilerStack.object(contractName).toHex();
+			if (evmCreationArtifactRequested("opcodes"))
+				creationJSON["opcodes"] = evmasm::disassemble(compilerStack.object(contractName).bytecode, _inputsAndSettings.evmVersion);
+			if (evmCreationArtifactRequested("sourceMap"))
+				creationJSON["sourceMap"] = compilerStack.sourceMapping(contractName) ? *compilerStack.sourceMapping(contractName) : "";
+			if (evmCreationArtifactRequested("functionDebugData"))
+				creationJSON["functionDebugData"] = formatFunctionDebugData(compilerStack.object(contractName).functionDebugData);
+			if (evmCreationArtifactRequested("linkReferences"))
+				creationJSON["linkReferences"] = formatLinkReferences(compilerStack.object(contractName).linkReferences);
+			if (evmCreationArtifactRequested("generatedSources"))
+				creationJSON["generatedSources"] = compilerStack.generatedSources(contractName, /* _runtime */ false);
+			evmData["bytecode"] = creationJSON;
+		}
 
 		if (compilationSuccess && isArtifactRequested(
 			_inputsAndSettings.outputSelection,
@@ -1528,20 +1513,28 @@ Json StandardCompiler::compileSolidity(StandardCompiler::InputsAndSettings _inpu
 			evmObjectComponents("deployedBytecode"),
 			wildcardMatchesExperimental
 		))
-			evmData["deployedBytecode"] = collectEVMObject(
-				_inputsAndSettings.evmVersion,
-				compilerStack.runtimeObject(contractName),
-				compilerStack.runtimeSourceMapping(contractName),
-				compilerStack.generatedSources(contractName, true),
-				true,
-				[&](std::string const& _element) { return isArtifactRequested(
-					_inputsAndSettings.outputSelection,
-					file,
-					name,
-					"evm.deployedBytecode." + _element,
-					wildcardMatchesExperimental
-				); }
-			);
+		{
+			auto const evmDeployedArtifactRequested = [&](std::string const& _element) {
+				return isArtifactRequested(_inputsAndSettings.outputSelection, file, name, "evm.deployedBytecode." + _element, wildcardMatchesExperimental);
+			};
+
+			Json deployedJSON;
+			if (evmDeployedArtifactRequested("object"))
+				deployedJSON["object"] = compilerStack.runtimeObject(contractName).toHex();
+			if (evmDeployedArtifactRequested("opcodes"))
+				deployedJSON["opcodes"] = evmasm::disassemble(compilerStack.runtimeObject(contractName).bytecode, _inputsAndSettings.evmVersion);
+			if (evmDeployedArtifactRequested("sourceMap"))
+				deployedJSON["sourceMap"] = compilerStack.runtimeSourceMapping(contractName) ? *compilerStack.runtimeSourceMapping(contractName) : "";
+			if (evmDeployedArtifactRequested("functionDebugData"))
+				deployedJSON["functionDebugData"] = formatFunctionDebugData(compilerStack.runtimeObject(contractName).functionDebugData);
+			if (evmDeployedArtifactRequested("linkReferences"))
+				deployedJSON["linkReferences"] = formatLinkReferences(compilerStack.runtimeObject(contractName).linkReferences);
+			if (evmDeployedArtifactRequested("immutableReferences"))
+				deployedJSON["immutableReferences"] = formatImmutableReferences(compilerStack.runtimeObject(contractName).immutableReferences);
+			if (evmDeployedArtifactRequested("generatedSources"))
+				deployedJSON["generatedSources"] = compilerStack.generatedSources(contractName, /* _runtime */ true);
+			evmData["deployedBytecode"] = deployedJSON;
+		}
 
 		if (!evmData.empty())
 			contractData["evm"] = evmData;
@@ -1668,23 +1661,34 @@ Json StandardCompiler::compileYul(InputsAndSettings _inputsAndSettings)
 			wildcardMatchesExperimental
 		))
 		{
-			MachineAssemblyObject const& o = isDeployed ? deployedObject : object;
-			if (o.bytecode)
-				output["contracts"][sourceName][contractName]["evm"][kind] =
-					collectEVMObject(
-						_inputsAndSettings.evmVersion,
-						*o.bytecode,
-						o.sourceMappings.get(),
-						Json::array(),
-						isDeployed,
-						[&, kind = kind](std::string const& _element) { return isArtifactRequested(
-							_inputsAndSettings.outputSelection,
-							sourceName,
-							contractName,
-							"evm." + kind + "." + _element,
-							wildcardMatchesExperimental
-						); }
-					);
+			auto const evmArtifactRequested = [&](std::string const& _kind, std::string const& _element) {
+				return isArtifactRequested(
+					_inputsAndSettings.outputSelection,
+					sourceName,
+					contractName,
+					"evm." + _kind + "." + _element,
+					wildcardMatchesExperimental
+				);
+			};
+
+			MachineAssemblyObject const& selectedObject = isDeployed ? deployedObject : object;
+			if (selectedObject.bytecode)
+			{
+				Json bytecodeJSON;
+				if (evmArtifactRequested(kind, "object"))
+					bytecodeJSON["object"] = selectedObject.bytecode->toHex();
+				if (evmArtifactRequested(kind, "opcodes"))
+					bytecodeJSON["opcodes"] = evmasm::disassemble(selectedObject.bytecode->bytecode, _inputsAndSettings.evmVersion);
+				if (evmArtifactRequested(kind, "sourceMap"))
+					bytecodeJSON["sourceMap"] = selectedObject.sourceMappings ? *selectedObject.sourceMappings : "";
+				if (evmArtifactRequested(kind, "functionDebugData"))
+					bytecodeJSON["functionDebugData"] = formatFunctionDebugData(selectedObject.bytecode->functionDebugData);
+				if (evmArtifactRequested(kind, "linkReferences"))
+					bytecodeJSON["linkReferences"] = formatLinkReferences(selectedObject.bytecode->linkReferences);
+				if (isDeployed && evmArtifactRequested(kind, "immutableReferences"))
+					bytecodeJSON["immutableReferences"] = formatImmutableReferences(selectedObject.bytecode->immutableReferences);
+				output["contracts"][sourceName][contractName]["evm"][kind] = bytecodeJSON;
+			}
 		}
 
 	if (isArtifactRequested(_inputsAndSettings.outputSelection, sourceName, contractName, "irOptimized", wildcardMatchesExperimental))
