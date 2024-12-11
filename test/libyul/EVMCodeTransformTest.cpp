@@ -46,6 +46,7 @@ EVMCodeTransformTest::EVMCodeTransformTest(std::string const& _filename):
 	m_source = m_reader.source();
 	m_stackOpt = m_reader.boolSetting("stackOptimization", false);
 	m_expectation = m_reader.simpleExpectations();
+	m_shouldRun = CommonOptions::get().evmDialect().evmVersion() == EVMVersion{};
 }
 
 TestCase::TestResult EVMCodeTransformTest::run(std::ostream& _stream, std::string const& _linePrefix, bool const _formatted)
