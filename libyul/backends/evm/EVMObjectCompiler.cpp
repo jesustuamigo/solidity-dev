@@ -37,17 +37,19 @@ using namespace solidity::yul;
 void EVMObjectCompiler::compile(
 	Object const& _object,
 	AbstractAssembly& _assembly,
-	EVMDialect const& _dialect,
-	bool _optimize,
-	std::optional<uint8_t> _eofVersion
+	bool _optimize
 )
 {
-	EVMObjectCompiler compiler(_assembly, _dialect, _eofVersion);
+	EVMObjectCompiler compiler(_assembly);
 	compiler.run(_object, _optimize);
 }
 
 void EVMObjectCompiler::run(Object const& _object, bool _optimize)
 {
+	yulAssert(_object.dialect());
+	auto const* evmDialect = dynamic_cast<EVMDialect const*>(_object.dialect());
+	yulAssert(evmDialect);
+
 	BuiltinContext context;
 	context.currentObject = &_object;
 
@@ -59,7 +61,7 @@ void EVMObjectCompiler::run(Object const& _object, bool _optimize)
 			auto subAssemblyAndID = m_assembly.createSubAssembly(isCreation, subObject->name);
 			context.subIDs[subObject->name] = subAssemblyAndID.second;
 			subObject->subId = subAssemblyAndID.second;
-			compile(*subObject, *subAssemblyAndID.first, m_dialect, _optimize, m_eofVersion);
+			compile(*subObject, *subAssemblyAndID.first, _optimize);
 		}
 		else
 		{
@@ -73,18 +75,18 @@ void EVMObjectCompiler::run(Object const& _object, bool _optimize)
 
 	yulAssert(_object.analysisInfo, "No analysis info.");
 	yulAssert(_object.hasCode(), "No code.");
-	if (m_eofVersion.has_value())
+	if (evmDialect->eofVersion().has_value())
 		yulAssert(
-			_optimize && (m_dialect.evmVersion() >= langutil::EVMVersion::prague()),
+			_optimize && (evmDialect->evmVersion() >= langutil::EVMVersion::prague()),
 			"Experimental EOF support is only available for optimized via-IR compilation and the most recent EVM version."
 		);
-	if (_optimize && m_dialect.evmVersion().canOverchargeGasForCall())
+	if (_optimize && evmDialect->evmVersion().canOverchargeGasForCall())
 	{
 		auto stackErrors = OptimizedEVMCodeTransform::run(
 			m_assembly,
 			*_object.analysisInfo,
 			_object.code()->root(),
-			m_dialect,
+			*evmDialect,
 			context,
 			OptimizedEVMCodeTransform::UseNamedLabels::ForFirstFunctionOfEachName
 		);
@@ -116,7 +118,7 @@ void EVMObjectCompiler::run(Object const& _object, bool _optimize)
 			m_assembly,
 			*_object.analysisInfo,
 			_object.code()->root(),
-			m_dialect,
+			*evmDialect,
 			context,
 			_optimize,
 			{},

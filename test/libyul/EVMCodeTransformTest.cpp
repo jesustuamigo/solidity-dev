@@ -75,9 +75,7 @@ TestCase::TestResult EVMCodeTransformTest::run(std::ostream& _stream, std::strin
 	EVMObjectCompiler::compile(
 		*stack.parserResult(),
 		adapter,
-		*dynamic_cast<EVMDialect const*>(stack.parserResult()->dialect()),
-		m_stackOpt,
-		std::nullopt
+		m_stackOpt
 	);
 
 	std::ostringstream output;

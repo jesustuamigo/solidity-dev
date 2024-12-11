@@ -192,19 +192,7 @@ bool YulStack::analyzeParsed(Object& _object)
 
 void YulStack::compileEVM(AbstractAssembly& _assembly, bool _optimize) const
 {
-	EVMDialect const* dialect = nullptr;
-	switch (m_language)
-	{
-		case Language::Assembly:
-		case Language::StrictAssembly:
-			dialect = &EVMDialect::strictAssemblyForEVMObjects(m_evmVersion, m_eofVersion);
-			break;
-		default:
-			yulAssert(false, "Invalid language.");
-			break;
-	}
-
-	EVMObjectCompiler::compile(*m_parserResult, _assembly, *dialect, _optimize, m_eofVersion);
+	EVMObjectCompiler::compile(*m_parserResult, _assembly, _optimize);
 }
 
 void YulStack::reparse()
