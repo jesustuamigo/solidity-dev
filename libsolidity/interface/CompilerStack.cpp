@@ -419,6 +419,7 @@ bool CompilerStack::parse()
 	catch (UnimplementedFeatureError const& _error)
 	{
 		reportUnimplementedFeatureError(_error);
+		return false;
 	}
 
 	return true;
@@ -783,14 +784,17 @@ bool CompilerStack::compile(State _stopAfter)
 						// but CodeGenerationError is one case where someone decided to just throw Error.
 						solAssert(_error.type() == Error::Type::CodeGenerationError);
 						m_errorReporter.error(_error.errorId(), _error.type(), SourceLocation(), _error.what());
-						return false;
 					}
 					catch (UnimplementedFeatureError const& _error)
 					{
 						reportUnimplementedFeatureError(_error);
-						return false;
 					}
+
+					if (m_errorReporter.hasErrors())
+						return false;
 				}
+
+	solAssert(!m_errorReporter.hasErrors());
 	m_stackState = CompilationSuccessful;
 	this->link();
 	return true;
@@ -1610,6 +1614,14 @@ void CompilerStack::generateEVMFromIR(ContractDefinition const& _contract)
 	std::string deployedName = IRNames::deployedObject(_contract);
 	solAssert(!deployedName.empty(), "");
 	tie(compiledContract.evmAssembly, compiledContract.evmRuntimeAssembly) = stack.assembleEVMWithDeployed(deployedName);
+
+	if (stack.hasErrors())
+	{
+		for (std::shared_ptr<Error const> const& error: stack.errors())
+			reportIRPostAnalysisError(error.get());
+		return;
+	}
+
 	assembleYul(_contract, compiledContract.evmAssembly, compiledContract.evmRuntimeAssembly);
 }
 
@@ -2004,6 +2016,27 @@ experimental::Analysis const& CompilerStack::experimentalAnalysis() const
 
 void CompilerStack::reportUnimplementedFeatureError(UnimplementedFeatureError const& _error)
 {
-	solAssert(_error.comment(), "Unimplemented feature errors must include a message for the user");
+	solAssert(_error.comment(), "Errors must include a message for the user.");
+
 	m_errorReporter.unimplementedFeatureError(1834_error, _error.sourceLocation(), *_error.comment());
+}
+
+void CompilerStack::reportIRPostAnalysisError(Error const* _error)
+{
+	solAssert(_error);
+	solAssert(_error->comment(), "Errors must include a message for the user.");
+	solAssert(!_error->secondarySourceLocation());
+
+	// Do not report Yul warnings and infos. These are only reported in pure Yul compilation.
+	if (!Error::isError(_error->severity()))
+		return;
+
+	m_errorReporter.error(
+		_error->errorId(),
+		_error->type(),
+		// Ignore the original location. It's likely missing, but even if not, it points at Yul source.
+		// CompilerStack can only point at locations in Solidity sources.
+		SourceLocation{},
+		*_error->comment()
+	);
 }
