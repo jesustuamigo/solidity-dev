@@ -126,7 +126,6 @@ Representation const& RepresentationFinder::findRepresentation(u256 const& _valu
 		return m_cache.at(_value);
 
 	yulAssert(m_dialect.auxiliaryBuiltinHandles().not_);
-	yulAssert(m_dialect.auxiliaryBuiltinHandles().shl);
 	yulAssert(m_dialect.auxiliaryBuiltinHandles().exp);
 	yulAssert(m_dialect.auxiliaryBuiltinHandles().mul);
 	yulAssert(m_dialect.auxiliaryBuiltinHandles().add);

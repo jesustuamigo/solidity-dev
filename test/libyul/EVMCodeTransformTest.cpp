@@ -46,6 +46,7 @@ EVMCodeTransformTest::EVMCodeTransformTest(std::string const& _filename):
 	m_source = m_reader.source();
 	m_stackOpt = m_reader.boolSetting("stackOptimization", false);
 	m_expectation = m_reader.simpleExpectations();
+	m_shouldRun = CommonOptions::get().evmDialect().evmVersion() == EVMVersion{};
 }
 
 TestCase::TestResult EVMCodeTransformTest::run(std::ostream& _stream, std::string const& _linePrefix, bool const _formatted)
@@ -53,6 +54,8 @@ TestCase::TestResult EVMCodeTransformTest::run(std::ostream& _stream, std::strin
 	solidity::frontend::OptimiserSettings settings = solidity::frontend::OptimiserSettings::none();
 	settings.runYulOptimiser = false;
 	settings.optimizeStackAllocation = m_stackOpt;
+	// Restrict to a single EVM/EOF version combination (the default one) as code generation
+	// can be different from version to version.
 	YulStack stack(
 		EVMVersion{},
 		std::nullopt,
@@ -73,9 +76,7 @@ TestCase::TestResult EVMCodeTransformTest::run(std::ostream& _stream, std::strin
 	EVMObjectCompiler::compile(
 		*stack.parserResult(),
 		adapter,
-		CommonOptions::get().evmDialect(),
-		m_stackOpt,
-		std::nullopt
+		m_stackOpt
 	);
 
 	std::ostringstream output;
