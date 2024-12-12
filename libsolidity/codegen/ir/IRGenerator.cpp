@@ -197,7 +197,20 @@ std::string IRGenerator::generate(
 	t("memoryInitCreation", memoryInit(!creationInvolvesMemoryUnsafeAssembly));
 	t("useSrcMapCreation", formatUseSrcMap(m_context));
 
+	auto const immutableVariables = m_context.immutableVariables();
+	auto const libraryAddressImmutableOffset = (_contract.isLibrary() && eof) ?
+		m_context.libraryAddressImmutableOffset() : 0;
+
 	resetContext(_contract, ExecutionContext::Deployed);
+
+	// When generating to EOF we have to initialize these two members, because they store offsets in EOF data section
+	// which is used during deployed container generation
+	if (m_eofVersion.has_value())
+	{
+		m_context.setImmutableVariables(std::move(immutableVariables));
+		if (_contract.isLibrary())
+			m_context.setLibraryAddressImmutableOffset(libraryAddressImmutableOffset);
+	}
 
 	// NOTE: Function pointers can be passed from creation code via storage variables. We need to
 	// get all the functions they could point to into the dispatch functions even if they're never
@@ -1153,6 +1166,7 @@ void IRGenerator::resetContext(ContractDefinition const& _contract, ExecutionCon
 		m_context.debugInfoSelection(),
 		m_context.soliditySourceProvider()
 	);
+
 	m_context = std::move(newContext);
 
 	m_context.setMostDerivedContract(_contract);

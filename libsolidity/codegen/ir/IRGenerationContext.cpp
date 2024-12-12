@@ -87,6 +87,7 @@ void IRGenerationContext::resetLocalVariables()
 
 void IRGenerationContext::registerImmutableVariable(VariableDeclaration const& _variable)
 {
+	solAssert(m_executionContext != ExecutionContext::Deployed);
 	solAssert(_variable.immutable(), "Attempted to register a non-immutable variable as immutable.");
 	solUnimplementedAssert(
 		_variable.annotation().type->isValueType(),
@@ -122,6 +123,7 @@ size_t IRGenerationContext::reservedMemorySize() const
 
 void IRGenerationContext::registerLibraryAddressImmutable()
 {
+	solAssert(m_executionContext != ExecutionContext::Deployed);
 	solAssert(m_reservedMemory.has_value(), "Reserved memory has already been reset.");
 	solAssert(!m_libraryAddressImmutableOffset.has_value());
 	m_libraryAddressImmutableOffset = CompilerUtils::generalPurposeMemoryStart + *m_reservedMemory;
@@ -156,7 +158,13 @@ size_t IRGenerationContext::reservedMemory()
 		immutableVariablesSize += var->type()->sizeOnStack() * 32;
 	}
 
-	solAssert(immutableVariablesSize == reservedMemory);
+	// In Creation context check that only immutable variables or library address are stored in the reserved memory.
+	// In Deployed context (for EOF) m_immutableVariables contains offsets in EOF data section.
+	solAssert(
+		(m_executionContext == ExecutionContext::Creation &&
+			reservedMemory == immutableVariablesSize + (m_libraryAddressImmutableOffset.has_value() ? 32 : 0)) ||
+		(m_executionContext == ExecutionContext::Deployed && reservedMemory == 0)
+	);
 
 	m_reservedMemory = std::nullopt;
 	return reservedMemory;
