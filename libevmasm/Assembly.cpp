@@ -1657,7 +1657,16 @@ LinkerObject const& Assembly::assembleEOF() const
 	}
 
 	for (auto i: referencedSubIds)
-		ret.bytecode += m_subs[i]->assemble().bytecode;
+	{
+		size_t const subAssemblyPostionInParentObject = ret.bytecode.size();
+		auto const& subAssemblyLinkerObject = m_subs[i]->assemble();
+		// Append subassembly bytecode to the parent assembly result bytecode
+		ret.bytecode += subAssemblyLinkerObject.bytecode;
+		// Add subassembly link references to parent linker object.
+		// Offset accordingly to subassembly position in parent object bytecode
+		for (auto const& [subAssemblyLinkRefPosition, linkRef]: subAssemblyLinkerObject.linkReferences)
+			ret.linkReferences[subAssemblyPostionInParentObject + subAssemblyLinkRefPosition] = linkRef;
+	}
 
 	// TODO: Fill functionDebugData for EOF. It probably should be handled for new code section in the loop above.
 	solRequire(m_namedTags.empty(), AssemblyException, "Named tags must be empty in EOF context.");
