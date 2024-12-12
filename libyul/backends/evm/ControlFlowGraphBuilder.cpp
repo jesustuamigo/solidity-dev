@@ -364,7 +364,7 @@ void ControlFlowGraphBuilder::operator()(Switch const& _switch)
 	auto makeValueCompare = [&](Case const& _case) {
 		yul::FunctionCall const& ghostCall = m_graph.ghostCalls.emplace_back(yul::FunctionCall{
 			debugDataOf(_case),
-			yul::Identifier{{}, "eq"_yulname},
+			BuiltinName{{}, *equalityBuiltinHandle},
 			{*_case.value, Identifier{{}, ghostVariableName}}
 		});
 		BuiltinFunction const& equalityBuiltin = m_dialect.builtin(*equalityBuiltinHandle);
