@@ -25,6 +25,8 @@
 #include <liblangutil/DebugInfoSelection.h>
 #include <liblangutil/ErrorReporter.h>
 #include <liblangutil/EVMVersion.h>
+#include <liblangutil/Exceptions.h>
+
 #include <libsolutil/JSON.h>
 
 #include <libyul/Object.h>

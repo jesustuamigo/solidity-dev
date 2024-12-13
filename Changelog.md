@@ -10,6 +10,7 @@ Compiler Features:
 Bugfixes:
 * General: Fix internal compiler error when requesting IR AST outputs for interfaces and abstract contracts.
 * Standard JSON Interface: Fix ``generatedSources`` and ``sourceMap`` being generated internally even when not requested.
+* Yul: Fix internal compiler error when a code generation error should be reported instead.
 
 
 ### 0.8.28 (2024-10-09)
