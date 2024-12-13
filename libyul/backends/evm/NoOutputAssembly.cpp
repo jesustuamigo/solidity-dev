@@ -148,6 +148,7 @@ void NoOutputAssembly::appendFunctionCall(FunctionID _functionID)
 {
 	auto [args, rets] = m_context.functionSignatures.at(_functionID);
 	m_stackHeight += static_cast<int>(rets) - static_cast<int>(args);
+	solAssert(m_stackHeight >= 0);
 }
 
 void NoOutputAssembly::appendFunctionReturn()
