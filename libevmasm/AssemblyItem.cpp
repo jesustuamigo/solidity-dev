@@ -249,7 +249,7 @@ size_t AssemblyItem::returnValues() const
 		return 1;
 	case JumpF:
 	case CallF:
-		return functionSignature().canContinue() ? functionSignature().retsNum : 0;
+		return functionSignature().retsNum;
 	case AssignImmutable:
 	case UndefinedItem:
 		break;

@@ -105,7 +105,8 @@ public:
 
 	/// Registers a new function with given signature and returns its ID.
 	/// The function is initially empty and its body must be filled with instructions.
-	virtual FunctionID registerFunction(uint8_t _args, uint8_t _rets) = 0;
+	/// `_rets` even for non-returning function matters in case of stack height calculation.
+	virtual FunctionID registerFunction(uint8_t _args, uint8_t _rets, bool _nonReturning) = 0;
 	/// Selects a function as a target for newly appended instructions.
 	/// May only be called after the main code section is already filled and
 	/// must not be called when another function is already selected.
