@@ -1,10 +1,19 @@
 {
     function f() -> x { pop(address()) let y := callvalue() }
+
+     pop(f())
 }
 // ====
 // stackOptimization: true
 // ----
-//     /* "":0:65   */
+//     /* "":74:77   */
+//   tag_2
+//   tag_1
+//   jump	// in
+// tag_2:
+//     /* "":70:78   */
+//   pop
+//     /* "":0:80   */
 //   stop
 //     /* "":6:63   */
 // tag_1:
