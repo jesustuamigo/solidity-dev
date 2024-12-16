@@ -114,7 +114,11 @@ void EVMVersionRestrictedTestCase::processEVMVersionSetting()
 			break;
 
 	versionString = versionString.substr(versionBegin);
-	std::optional<langutil::EVMVersion> version = langutil::EVMVersion::fromString(versionString);
+	std::optional<langutil::EVMVersion> version;
+	if (versionString == "current")
+		version = std::make_optional<langutil::EVMVersion>();
+	else
+		version = langutil::EVMVersion::fromString(versionString);
 	if (!version)
 		BOOST_THROW_EXCEPTION(std::runtime_error{"Invalid EVM version: \"" + versionString + "\""});
 
