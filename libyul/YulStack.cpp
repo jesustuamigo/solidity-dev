@@ -430,6 +430,13 @@ std::shared_ptr<Object> YulStack::parserResult() const
 	return m_parserResult;
 }
 
+Dialect const& YulStack::dialect() const
+{
+	yulAssert(m_stackState >= AnalysisSuccessful);
+	yulAssert(m_parserResult && m_parserResult->dialect());
+	return *m_parserResult->dialect();
+}
+
 void YulStack::reportUnimplementedFeatureError(UnimplementedFeatureError const& _error)
 {
 	yulAssert(_error.comment(), "Errors must include a message for the user.");

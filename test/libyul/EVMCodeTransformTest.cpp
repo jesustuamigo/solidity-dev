@@ -27,9 +27,7 @@
 
 #include <libevmasm/Assembly.h>
 
-#include <liblangutil/SourceReferenceFormatter.h>
-
-#include <libsolutil/AnsiColorized.h>
+#include <libsolutil/CommonIO.h>
 
 using namespace solidity;
 using namespace solidity::test;
@@ -55,32 +53,29 @@ TestCase::TestResult EVMCodeTransformTest::run(std::ostream& _stream, std::strin
 	settings.optimizeStackAllocation = m_stackOpt;
 	// Restrict to a single EVM/EOF version combination (the default one) as code generation
 	// can be different from version to version.
-	YulStack stack(
+	YulStack yulStack(
 		CommonOptions::get().evmVersion(),
 		CommonOptions::get().eofVersion(),
 		YulStack::Language::StrictAssembly,
 		settings,
 		DebugInfoSelection::All()
 	);
-	if (!stack.parseAndAnalyze("", m_source))
+	yulStack.parseAndAnalyze("", m_source);
+	if (yulStack.hasErrors())
 	{
-		AnsiColorized(_stream, _formatted, {formatting::BOLD, formatting::RED}) << _linePrefix << "Error parsing source." << std::endl;
-		SourceReferenceFormatter{_stream, stack, true, false}
-			.printErrorInformation(stack.errors());
+		printYulErrors(yulStack, _stream, _linePrefix, _formatted);
 		return TestResult::FatalError;
 	}
 
 	evmasm::Assembly assembly{CommonOptions::get().evmVersion(), false, std::nullopt, {}};
 	EthAssemblyAdapter adapter(assembly);
 	EVMObjectCompiler::compile(
-		*stack.parserResult(),
+		*yulStack.parserResult(),
 		adapter,
 		m_stackOpt
 	);
 
-	std::ostringstream output;
-	output << assembly;
-	m_obtainedResult = output.str();
+	m_obtainedResult = toString(assembly);
 
 	return checkResult(_stream, _linePrefix, _formatted);
 }

@@ -20,11 +20,7 @@
 
 #include <test/TestCase.h>
 
-namespace solidity::yul
-{
-class Dialect;
-
-namespace test
+namespace solidity::yul::test
 {
 
 class StackLayoutGeneratorTest: public frontend::test::EVMVersionRestrictedTestCase
@@ -36,8 +32,6 @@ public:
 	}
 	explicit StackLayoutGeneratorTest(std::string const& _filename);
 	TestResult run(std::ostream& _stream, std::string const& _linePrefix = "", bool const _formatted = false) override;
-private:
-	Dialect const* m_dialect = nullptr;
 };
-}
+
 }
