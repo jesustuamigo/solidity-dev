@@ -17,6 +17,8 @@
     let x, y := i()
     h(x)
     h(y)
+    // This calla of g() is unreachable too as the one in h() but we wanna cover both cases.
+    g()
 }
 // ----
 // digraph CFG {
@@ -63,23 +65,10 @@
 // Block1Exit [label="FunctionReturn[f]"];
 // Block1 -> Block1Exit;
 //
-// FunctionEntry_g [label="function g()\l\
-// [ RET ]"];
-// FunctionEntry_g -> Block2;
-// Block2 [label="\
-// [ RET ]\l\
-// [ RET 0x0101 0x01 ]\l\
-// sstore\l\
-// [ RET ]\l\
-// [ RET ]\l\
-// "];
-// Block2Exit [label="FunctionReturn[g]"];
-// Block2 -> Block2Exit;
-//
 // FunctionEntry_h [label="function h(x)\l\
 // [ RET x ]"];
-// FunctionEntry_h -> Block3;
-// Block3 [label="\
+// FunctionEntry_h -> Block2;
+// Block2 [label="\
 // [ RET[f] 0x00 x ]\l\
 // [ RET[f] 0x00 x ]\l\
 // f\l\
@@ -89,13 +78,13 @@
 // [ ]\l\
 // [ ]\l\
 // "];
-// Block3Exit [label="Terminated"];
-// Block3 -> Block3Exit;
+// Block2Exit [label="Terminated"];
+// Block2 -> Block2Exit;
 //
 // FunctionEntry_i [label="function i() -> v, w\l\
 // [ RET ]"];
-// FunctionEntry_i -> Block4;
-// Block4 [label="\
+// FunctionEntry_i -> Block3;
+// Block3 [label="\
 // [ RET ]\l\
 // [ RET 0x0202 ]\l\
 // Assignment(v)\l\
@@ -105,7 +94,7 @@
 // [ v RET w ]\l\
 // [ v w RET ]\l\
 // "];
-// Block4Exit [label="FunctionReturn[i]"];
-// Block4 -> Block4Exit;
+// Block3Exit [label="FunctionReturn[i]"];
+// Block3 -> Block3Exit;
 //
 // }
