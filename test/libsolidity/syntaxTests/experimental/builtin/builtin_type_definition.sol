@@ -89,4 +89,4 @@ contract C {
 // Info 4164: (563-574): Inferred type: (bool, word) -> word
 // Info 4164: (563-567): Inferred type: (?bm:type, ?bn:type)
 // Info 4164: (575-576): Inferred type: (bool, word)
-// UnimplementedFeatureError 1834: No support for calling functions pointers yet.
+// UnimplementedFeatureError 1834: (267-586): No support for calling functions pointers yet.

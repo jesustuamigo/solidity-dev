@@ -4,6 +4,7 @@ Language Features:
 
 
 Compiler Features:
+ * Error Reporting: Errors reported during code generation now point at the location of the contract when more fine-grained location is not available.
  * SMTChecker: Z3 is now a runtime dependency, not a build dependency (except for emscripten build).
 
 

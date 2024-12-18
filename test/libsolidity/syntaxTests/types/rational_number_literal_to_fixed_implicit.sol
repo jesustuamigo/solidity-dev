@@ -13,4 +13,4 @@ contract C {
     }
 }
 // ----
-// UnimplementedFeatureError 1834: Not yet implemented - FixedPointType.
+// UnimplementedFeatureError 1834: (0-317): Not yet implemented - FixedPointType.

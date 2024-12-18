@@ -10,4 +10,4 @@ contract C {
 // ====
 // optimize-yul: true
 // ----
-// CodeGenerationError 1284: Some immutables were read from but never assigned, possibly because of optimization.
+// CodeGenerationError 1284: (0-168): Some immutables were read from but never assigned, possibly because of optimization.
