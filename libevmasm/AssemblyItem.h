@@ -120,7 +120,7 @@ public:
 	static AssemblyItem jumpToFunction(uint16_t _functionID, uint8_t _args, uint8_t _rets, langutil::DebugData::ConstPtr _debugData = langutil::DebugData::create())
 	{
 		AssemblyItem result(JumpF, Instruction::JUMPF, _functionID, _debugData);
-		solAssert(_args <= 127 && _rets <= 128);
+		solAssert(_args <= 127 && _rets <= 127);
 		result.m_functionSignature = {_args, _rets};
 		return result;
 	}
@@ -292,12 +292,10 @@ public:
 
 	struct FunctionSignature
 	{
-		/// Number of EOF function arguments. must be less than 127
+		/// Number of EOF function arguments. must be less than 128
 		uint8_t argsNum;
-		/// Number of EOF function return values. Must be less than 128. 128(0x80) means that it's non-returning.
+		/// Number of EOF function return values. Must be less than 128.
 		uint8_t retsNum;
-
-		bool canContinue() const { return retsNum != 0x80;}
 	};
 
 	FunctionSignature const& functionSignature() const

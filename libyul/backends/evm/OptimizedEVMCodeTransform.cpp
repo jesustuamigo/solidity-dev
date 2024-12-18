@@ -56,12 +56,12 @@ std::vector<StackTooDeepError> OptimizedEVMCodeTransform::run(
 		for (Scope::Function const* function: dfg->functions)
 		{
 			auto const& info = dfg->functionInfo.at(function);
-			yulAssert(info.parameters.size() <= 0x7f);
-			yulAssert(info.returnVariables.size() <= 0x7f);
-			// According to EOF spec function output num equals 0x80 means non-returning function
+			yulAssert(info.parameters.size() <= std::numeric_limits<uint8_t>::max());
+			yulAssert(info.returnVariables.size() <= std::numeric_limits<uint8_t>::max());
 			auto functionID = _assembly.registerFunction(
 				static_cast<uint8_t>(info.parameters.size()),
-				static_cast<uint8_t>(info.canContinue ? info.returnVariables.size() : 0x80)
+				static_cast<uint8_t>(info.returnVariables.size()),
+				!info.canContinue
 			);
 			_builtinContext.functionIDs[function] = functionID;
 		}
@@ -128,8 +128,6 @@ void OptimizedEVMCodeTransform::operator()(CFG::FunctionCall const& _call)
 		for (size_t i = 0; i < _call.function.get().numArguments + (useReturnLabel ? 1 : 0); ++i)
 			m_stack.pop_back();
 		// Push return values to m_stack.
-		if (!m_simulateFunctionsWithJumps)
-			yulAssert(_call.function.get().numReturns < 0x80, "Num of function output >= 128");
 		for (size_t index: ranges::views::iota(0u, _call.function.get().numReturns))
 			m_stack.emplace_back(TemporarySlot{_call.functionCall, index});
 		yulAssert(m_assembly.stackHeight() == static_cast<int>(m_stack.size()), "");

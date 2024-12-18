@@ -145,9 +145,9 @@ std::pair<std::shared_ptr<AbstractAssembly>, AbstractAssembly::SubID> EthAssembl
 	return {std::make_shared<EthAssemblyAdapter>(*assembly), static_cast<size_t>(sub.data())};
 }
 
-AbstractAssembly::FunctionID EthAssemblyAdapter::registerFunction(uint8_t _args, uint8_t _rets)
+AbstractAssembly::FunctionID EthAssemblyAdapter::registerFunction(uint8_t _args, uint8_t _rets, bool _nonReturning)
 {
-	return m_assembly.createFunction(_args, _rets);
+	return m_assembly.createFunction(_args, _rets, _nonReturning);
 }
 
 void EthAssemblyAdapter::beginFunction(AbstractAssembly::FunctionID _functionID)

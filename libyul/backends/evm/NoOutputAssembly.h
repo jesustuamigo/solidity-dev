@@ -73,7 +73,7 @@ public:
 
 	void appendAssemblySize() override;
 	std::pair<std::shared_ptr<AbstractAssembly>, SubID> createSubAssembly(bool _creation, std::string _name = "") override;
-	FunctionID registerFunction(uint8_t _args, uint8_t _rets) override;
+	FunctionID registerFunction(uint8_t _args, uint8_t _rets, bool _nonReturning) override;
 	void beginFunction(FunctionID) override;
 	void endFunction() override;
 	void appendFunctionCall(FunctionID _functionID) override;
