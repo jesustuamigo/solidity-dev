@@ -56,18 +56,6 @@ EOF_EXCLUDES=(
     --run_test='!SolidityInlineAssembly/Analysis/large_constant'
     --run_test='!SolidityInlineAssembly/Analysis/staticcall'
     --run_test='!ViewPureChecker/assembly_staticcall'
-    --run_test='!gasTests/abiv2'
-    --run_test='!gasTests/abiv2_optimised'
-    --run_test='!gasTests/data_storage'
-    --run_test='!gasTests/dispatch_large'
-    --run_test='!gasTests/dispatch_large_optimised'
-    --run_test='!gasTests/dispatch_medium'
-    --run_test='!gasTests/dispatch_medium_optimised'
-    --run_test='!gasTests/dispatch_small'
-    --run_test='!gasTests/dispatch_small_optimised'
-    --run_test='!gasTests/exp'
-    --run_test='!gasTests/exp_optimized'
-    --run_test='!gasTests/storage_costs'
     --run_test='!yulStackLayout/literal_loop'
 )
 
