@@ -75,7 +75,7 @@ std::string toString(SideEffects const& _sideEffects)
 }
 
 FunctionSideEffects::FunctionSideEffects(std::string const& _filename):
-	TestCase(_filename)
+	EVMVersionRestrictedTestCase(_filename)
 {
 	m_source = m_reader.source();
 	m_expectation = m_reader.simpleExpectations();
