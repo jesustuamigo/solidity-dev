@@ -1683,8 +1683,12 @@ LinkerObject const& Assembly::assembleEOF() const
 	// DATALOADN loads 32 bytes from EOF data section zero padded if reading out of data bounds.
 	// In our case we do not allow DATALOADN with offsets which reads out of data bounds.
 	auto const staticAuxDataSize = maxAuxDataLoadNOffset.has_value() ? (*maxAuxDataLoadNOffset + 32u) : 0u;
-	solRequire(preDeployDataSectionSize + staticAuxDataSize < std::numeric_limits<uint16_t>::max(), AssemblyException,
-		"Invalid DATALOADN offset.");
+	auto const preDeployAndStaticAuxDataSize = preDeployDataSectionSize + staticAuxDataSize;
+	solRequire(
+		preDeployAndStaticAuxDataSize <= std::numeric_limits<uint16_t>::max(),
+		AssemblyException,
+		"Invalid DATALOADN offset."
+	);
 
 	// If some data was already added to data section we need to update data section refs accordingly
 	if (preDeployDataSectionSize > 0)
@@ -1694,8 +1698,6 @@ LinkerObject const& Assembly::assembleEOF() const
 			// staticAuxDataOffset < staticAuxDataSize
 			setBigEndianUint16(ret.bytecode, refPosition, staticAuxDataOffset + preDeployDataSectionSize);
 		}
-
-	auto const preDeployAndStaticAuxDataSize = preDeployDataSectionSize + staticAuxDataSize;
 
 	setBigEndianUint16(ret.bytecode, dataSectionSizePosition, preDeployAndStaticAuxDataSize);
 
