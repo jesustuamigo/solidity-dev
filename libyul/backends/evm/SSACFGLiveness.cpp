@@ -18,6 +18,8 @@
 
 #include <libyul/backends/evm/SSACFGLiveness.h>
 
+#include <libsolutil/Visitor.h>
+
 #include <range/v3/range/conversion.hpp>
 #include <range/v3/view/filter.hpp>
 #include <range/v3/view/reverse.hpp>
@@ -87,9 +89,23 @@ void SSACFGLiveness::runDagDfs()
 				if (!m_topologicalSort.backEdge(blockId, _successor))
 					live += m_liveIns[_successor.value] - m_cfg.block(_successor).phis;
 			});
-		if (std::holds_alternative<SSACFG::BasicBlock::FunctionReturn>(block.exit))
-			live += std::get<SSACFG::BasicBlock::FunctionReturn>(block.exit).returnValues
-					| ranges::views::filter(literalsFilter(m_cfg));
+		util::GenericVisitor exitVisitor {
+			[](SSACFG::BasicBlock::MainExit const&) {},
+			[&](SSACFG::BasicBlock::FunctionReturn const& _functionReturn) {
+				live += _functionReturn.returnValues | ranges::views::filter(literalsFilter(m_cfg));
+			},
+			[&](SSACFG::BasicBlock::JumpTable const& _jt) {
+				if (literalsFilter(m_cfg)(_jt.value))
+					live.emplace(_jt.value);
+			},
+			[](SSACFG::BasicBlock::Jump const&) {},
+			[&](SSACFG::BasicBlock::ConditionalJump const& _conditionalJump) {
+				if (literalsFilter(m_cfg)(_conditionalJump.condition))
+					live.emplace(_conditionalJump.condition);
+			},
+			[](SSACFG::BasicBlock::Terminated const&) {}
+		};
+		std::visit(exitVisitor, block.exit);
 
 		// clean out unreachables
 		live = live | ranges::views::filter([&](auto const& valueId) { return !std::holds_alternative<SSACFG::UnreachableValue>(m_cfg.valueInfo(valueId)); }) | ranges::to<std::set>;

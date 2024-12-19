@@ -33,7 +33,7 @@
 // Block0_0Exit -> Block0_1 [style="solid"];
 // Block0_1 [label="\
 // Block 1; (1, max 24)\nLiveIn: v2\l\
-// LiveOut: v2\l\nv2 := φ(\l\
+// LiveOut: v2,v3\l\nv2 := φ(\l\
 // 	Block 0 => 0,\l\
 // 	Block 3 => v36\l\
 // )\l\
@@ -56,7 +56,7 @@
 // Block0_4 -> Block0_4Exit;
 // Block0_5 [label="\
 // Block 5; (3, max 23)\nLiveIn: v2,v4\l\
-// LiveOut: v2,v4\l\nv4 := φ(\l\
+// LiveOut: v2,v4,v5\l\nv4 := φ(\l\
 // 	Block 2 => 0,\l\
 // 	Block 7 => v35\l\
 // )\l\
@@ -80,7 +80,7 @@
 // Block0_8Exit -> Block0_3 [style="solid"];
 // Block0_9 [label="\
 // Block 9; (5, max 21)\nLiveIn: v2,v4,v6\l\
-// LiveOut: v2,v4,v6\l\nv6 := φ(\l\
+// LiveOut: v2,v4,v6,v7\l\nv6 := φ(\l\
 // 	Block 6 => 0,\l\
 // 	Block 11 => v31\l\
 // )\l\
@@ -132,7 +132,7 @@
 // Block0_7Exit -> Block0_5 [style="dashed"];
 // Block0_15 [label="\
 // Block 15; (8, max 19)\nLiveIn: v2,v4,v6,v8\l\
-// LiveOut: v2,v4,v6,v8\l\nv8 := φ(\l\
+// LiveOut: v2,v4,v6,v8,v9\l\nv8 := φ(\l\
 // 	Block 13 => 0,\l\
 // 	Block 17 => v16\l\
 // )\l\
@@ -171,7 +171,7 @@
 // Block0_18Exit -> Block0_14 [style="solid"];
 // Block0_21 [label="\
 // Block 21; (14, max 19)\nLiveIn: v2,v4,v6,v19\l\
-// LiveOut: v2,v4,v6,v19\l\nv19 := φ(\l\
+// LiveOut: v2,v4,v6,v19,v20\l\nv19 := φ(\l\
 // 	Block 19 => 0,\l\
 // 	Block 23 => v26\l\
 // )\l\

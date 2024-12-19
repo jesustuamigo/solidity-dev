@@ -69,7 +69,7 @@
 // Block1_0Exit -> Block1_1 [style="solid"];
 // Block1_1 [label="\
 // Block 1; (1, max 17)\nLiveIn: v0,v1,v5\l\
-// LiveOut: v0,v1,v5\l\nv5 := φ(\l\
+// LiveOut: v0,v1,v5,v6\l\nv5 := φ(\l\
 // 	Block 0 => 42,\l\
 // 	Block 21 => v43\l\
 // )\l\
@@ -81,7 +81,7 @@
 // Block1_1Exit:1 -> Block1_2 [style="solid"];
 // Block1_2 [label="\
 // Block 2; (2, max 17)\nLiveIn: v0,v1,v5\l\
-// LiveOut: v0,v1,v5,v7\l\nv7 := mload(v5)\l\
+// LiveOut: v0,v1,v5,v7,v8\l\nv7 := mload(v5)\l\
 // v8 := eq(0, v7)\l\
 // "];
 // Block1_2 -> Block1_2Exit;
@@ -103,7 +103,7 @@
 // Block1_6Exit -> Block1_4 [style="solid"];
 // Block1_7 [label="\
 // Block 7; (5, max 17)\nLiveIn: v0,v1,v5,v7\l\
-// LiveOut: v0,v1,v5,v7\l\nv13 := eq(1, v7)\l\
+// LiveOut: v0,v1,v5,v7,v13\l\nv13 := eq(1, v7)\l\
 // "];
 // Block1_7 -> Block1_7Exit;
 // Block1_7Exit [label="{ If v13 | { <0> Zero | <1> NonZero }}" shape=Mrecord];
@@ -117,7 +117,7 @@
 // Block1_9 -> Block1_9Exit;
 // Block1_10 [label="\
 // Block 10; (7, max 17)\nLiveIn: v0,v1,v5,v7\l\
-// LiveOut: v0,v1,v5,v7\l\nv20 := eq(2, v7)\l\
+// LiveOut: v0,v1,v5,v7,v20\l\nv20 := eq(2, v7)\l\
 // "];
 // Block1_10 -> Block1_10Exit;
 // Block1_10Exit [label="{ If v20 | { <0> Zero | <1> NonZero }}" shape=Mrecord];
@@ -132,7 +132,7 @@
 // Block1_12 -> Block1_12Exit;
 // Block1_13 [label="\
 // Block 13; (9, max 17)\nLiveIn: v0,v1,v5,v7\l\
-// LiveOut: v0,v1,v5\l\nv25 := eq(3, v7)\l\
+// LiveOut: v0,v1,v5,v25\l\nv25 := eq(3, v7)\l\
 // "];
 // Block1_13 -> Block1_13Exit;
 // Block1_13Exit [label="{ If v25 | { <0> Zero | <1> NonZero }}" shape=Mrecord];
@@ -147,7 +147,7 @@
 // Block1_15Exit -> Block1_5 [style="solid"];
 // Block1_16 [label="\
 // Block 16; (15, max 17)\nLiveIn: v0,v1,v5\l\
-// LiveOut: v0,v1,v5\l\nv29 := mload(v1)\l\
+// LiveOut: v0,v1,v5,v29\l\nv29 := mload(v1)\l\
 // "];
 // Block1_16 -> Block1_16Exit;
 // Block1_16Exit [label="{ If v29 | { <0> Zero | <1> NonZero }}" shape=Mrecord];
@@ -175,7 +175,7 @@
 // Block1_18Exit -> Block1_5 [style="solid"];
 // Block1_3 [label="\
 // Block 3; (12, max 14)\nLiveIn: v0,v1,v5\l\
-// LiveOut: v0,v1,v43\l\nv43 := add(1, v5)\l\
+// LiveOut: v0,v1,v43,v44\l\nv43 := add(1, v5)\l\
 // v44 := calldataload(v43)\l\
 // "];
 // Block1_3 -> Block1_3Exit;

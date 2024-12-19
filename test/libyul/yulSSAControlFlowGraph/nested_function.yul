@@ -103,7 +103,7 @@
 // FunctionEntry_cycle1_0 -> Block7_0;
 // Block7_0 [label="\
 // Block 0; (0, max 2)\nLiveIn: \l\
-// LiveOut: \l\nv2 := mload(3)\l\
+// LiveOut: v2\l\nv2 := mload(3)\l\
 // "];
 // Block7_0 -> Block7_0Exit;
 // Block7_0Exit [label="{ If v2 | { <0> Zero | <1> NonZero }}" shape=Mrecord];
@@ -130,7 +130,7 @@
 // FunctionEntry_cycle2_0 -> Block8_0;
 // Block8_0 [label="\
 // Block 0; (0, max 2)\nLiveIn: \l\
-// LiveOut: \l\nv2 := mload(4)\l\
+// LiveOut: v2\l\nv2 := mload(4)\l\
 // "];
 // Block8_0 -> Block8_0Exit;
 // Block8_0Exit [label="{ If v2 | { <0> Zero | <1> NonZero }}" shape=Mrecord];
