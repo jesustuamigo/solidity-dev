@@ -23,7 +23,7 @@
 // Entry0 -> Block0_0;
 // Block0_0 [label="\
 // Block 0; (0, max 5)\nLiveIn: \l\
-// LiveOut: v3\l\nv1 := calldataload(3)\l\
+// LiveOut: v3,v4\l\nv1 := calldataload(3)\l\
 // v3 := sload(0)\l\
 // v4 := eq(0, v3)\l\
 // "];
@@ -40,7 +40,7 @@
 // Block0_2Exit -> Block0_1 [style="solid"];
 // Block0_3 [label="\
 // Block 3; (3, max 5)\nLiveIn: v3\l\
-// LiveOut: \l\nv7 := eq(1, v3)\l\
+// LiveOut: v7\l\nv7 := eq(1, v3)\l\
 // "];
 // Block0_3 -> Block0_3Exit;
 // Block0_3Exit [label="{ If v7 | { <0> Zero | <1> NonZero }}" shape=Mrecord];
