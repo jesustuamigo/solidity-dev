@@ -175,7 +175,7 @@ private:
 	/// convertible to @a _expectedType.
 	bool expectType(Expression const& _expression, Type const& _expectedType);
 	/// Runs type checks on @a _expression to infer its type and then checks that it is an LValue.
-	void requireLValue(Expression const& _expression, bool _ordinaryAssignment);
+	void requireLValue(Expression const& _expression);
 
 	bool useABICoderV2() const;
 
