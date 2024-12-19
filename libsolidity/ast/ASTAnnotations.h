@@ -279,10 +279,6 @@ struct ExpressionAnnotation: ASTAnnotation
 	util::SetOnce<bool> isLValue;
 	/// Whether the expression is used in a context where the LValue is actually required.
 	bool willBeWrittenTo = false;
-	/// Whether the expression is an lvalue that is only assigned.
-	/// Would be false for --, ++, delete, +=, -=, ....
-	/// Only relevant if isLvalue == true
-	bool lValueOfOrdinaryAssignment = false;
 
 	/// Types and - if given - names of arguments if the expr. is a function
 	/// that is called, used for overload resolution
