@@ -45,17 +45,6 @@ IFS=" " read -r -a SOLTEST_FLAGS <<< "$SOLTEST_FLAGS"
 
 # TODO: [EOF] These won't pass on EOF yet. Reenable them when the implementation is complete.
 EOF_EXCLUDES=(
-    --run_test='!Assembler/all_assembly_items'
-    --run_test='!Assembler/immutable'
-    --run_test='!Assembler/immutables_and_its_source_maps'
-    --run_test='!Optimiser/jumpdest_removal_subassemblies'
-    --run_test='!Optimiser/jumpdest_removal_subassemblies/*'
-    --run_test='!SolidityCompiler/does_not_include_creation_time_only_internal_functions'
-    --run_test='!SolidityInlineAssembly/Analysis/create2'
-    --run_test='!SolidityInlineAssembly/Analysis/inline_assembly_shadowed_instruction_declaration'
-    --run_test='!SolidityInlineAssembly/Analysis/large_constant'
-    --run_test='!SolidityInlineAssembly/Analysis/staticcall'
-    --run_test='!ViewPureChecker/assembly_staticcall'
     --run_test='!yulStackLayout/literal_loop'
 )
 
