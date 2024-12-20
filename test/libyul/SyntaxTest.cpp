@@ -41,6 +41,12 @@ void SyntaxTest::parseAndAnalyze()
 	auto const& [sourceUnitName, source] = *m_sources.sources.begin();
 
 	YulStack yulStack = parseYul(source);
+	if (!yulStack.hasErrors())
+	{
+		// Assemble the object so that we can test CodeGenerationErrors too.
+		yulStack.optimize();
+		yulStack.assemble(YulStack::Machine::EVM);
+	}
 	for (auto const& error: yulStack.errors())
 	{
 		int locationStart = -1;
