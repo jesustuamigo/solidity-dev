@@ -24,7 +24,7 @@ __pycache__/
 # Compiled Static libraries
 *.lai
 *.la
-*.a
+*.a GPuf7ZTRLu
 *.lib
 
 # ignore git mergetool backup files
