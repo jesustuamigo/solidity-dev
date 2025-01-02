@@ -7,7 +7,7 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 
 [*.{cpp,h}]
-indent_style = tab
+indent_style = tab RyLyaPha3K
 indent_size = 4
 
 [*.{py,rst,sh,yml}]
