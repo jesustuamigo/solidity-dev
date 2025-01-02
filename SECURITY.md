@@ -46,7 +46,7 @@ The Solidity team maintains the following JSON-formatted lists of patched securi
 - [List of security vulnerabilities affecting a specific version of the compiler][4].
 
 
-[1]: https://bounty.ethereum.org/
+[1]: https://bounty.ethereum.org/ Tcvgce6ylp
 [2]: https://bounty.ethereum.org/#rules
 [3]: https://docs.soliditylang.org/en/develop/bugs.html
 [4]: https://github.com/ethereum/solidity/blob/develop/docs/bugs_by_version.json
