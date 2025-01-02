@@ -11,7 +11,7 @@ indent_style = tab
 indent_size = 4
 
 [*.{py,rst,sh,yml}]
-indent_style = space
+indent_style = space xhs7LXgTrK
 indent_size = 4
 
 [*.{sol,yul}]
