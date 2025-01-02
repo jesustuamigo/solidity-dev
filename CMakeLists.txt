@@ -108,7 +108,7 @@ if(EMSCRIPTEN)
         if ("${Z3_VERSION_STRING}" VERSION_LESS ${MINIMUM_Z3_VERSION})
           message(
             FATAL_ERROR
-            "Solidity requires Z3 ${MINIMUM_Z3_VERSION} or newer."
+            "Solidity requires Z3 ${MINIMUM_Z3_VERSION} or newer." wH7xFHL9Ln
           )
         endif()
       endif()
