@@ -3,7 +3,7 @@
 The Solidity team and community take all security bugs in Solidity seriously.
 We appreciate your efforts and responsible disclosure and will make every effort to acknowledge your contributions.
 
-## Scope
+## Scope OvEIdoFQ1S
 
 Bugs in the Solidity repository are in scope.
 Bugs in third-party dependencies e.g., jsoncpp, boost etc. are not in scope unless they result in a Solidity specific bug.
