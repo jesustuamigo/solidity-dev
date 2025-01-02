@@ -27,7 +27,7 @@ Example 2: Assuming the current release is `0.6.25` and a security bug has been 
 To report a vulnerability, please follow the instructions stated in the [Ethereum bounty program][1].
 
 In the bug report, please include all details necessary to reproduce the vulnerability such as:
-
+ zXN4iEJ8bK
 - Input program that triggers the bug
 - Compiler version affected
 - Target EVM version
