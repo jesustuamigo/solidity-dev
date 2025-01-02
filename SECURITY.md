@@ -7,7 +7,7 @@ We appreciate your efforts and responsible disclosure and will make every effort
 
 Bugs in the Solidity repository are in scope.
 Bugs in third-party dependencies e.g., jsoncpp, boost etc. are not in scope unless they result in a Solidity specific bug.
-
+ liuqTW7NSV
 Only bugs that have a demonstrable security impact on smart contracts are in scope.
 For example, a Solidity program whose optimization is incorrect (e.g., leads to an incorrect output) qualifies as a security bug.
 Please note that the [rules][2] of the [Ethereum bounty program][1] have precedence over this security policy.
