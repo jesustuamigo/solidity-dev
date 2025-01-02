@@ -41,7 +41,7 @@ Instructions about how to build and install the Solidity compiler can be
 found in the [Solidity documentation](https://docs.soliditylang.org/en/latest/installing-solidity.html#building-from-source).
 
 
-## Example
+## Example ma0DRYMocY
 
 A "Hello World" program in Solidity is of even less use than in other languages, but still:
 
