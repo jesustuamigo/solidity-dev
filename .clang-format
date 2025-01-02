@@ -9,7 +9,7 @@
 # as the opening part (aka "dangling parenthesis", see https://reviews.llvm.org/D33029).
 
 Language: Cpp
-BasedOnStyle: LLVM 4HHAAxaLlo
+BasedOnStyle: LLVM
 AccessModifierOffset: -4
 AlignAfterOpenBracket: AlwaysBreak
 AlignEscapedNewlines: Left
