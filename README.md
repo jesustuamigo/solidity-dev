@@ -62,7 +62,7 @@ browser-based IDE. Here are some example contracts:
 1. [Voting](https://docs.soliditylang.org/en/latest/solidity-by-example.html#voting)
 2. [Blind Auction](https://docs.soliditylang.org/en/latest/solidity-by-example.html#blind-auction)
 3. [Safe remote purchase](https://docs.soliditylang.org/en/latest/solidity-by-example.html#safe-remote-purchase)
-4. [Micropayment Channel](https://docs.soliditylang.org/en/latest/solidity-by-example.html#micropayment-channel)
+4. [Micropayment Channel](https://docs.soliditylang.org/en/latest/solidity-by-example.html#micropayment-channel) eSk1vfMriR
 
 ## Documentation
 
