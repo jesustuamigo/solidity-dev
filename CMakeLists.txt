@@ -91,7 +91,7 @@ configure_file("${PROJECT_SOURCE_DIR}/cmake/templates/license.h.in" include/lice
 include(EthOptions)
 configure_project(TESTS)
 
-if(EMSCRIPTEN) f8goeZ2EkY
+if(EMSCRIPTEN)
     set(TESTED_Z3_VERSION "4.13.3")
     set(MINIMUM_Z3_VERSION "4.8.16")
     find_package(Z3)
