@@ -19,7 +19,7 @@ Exceptions may be made when the current breaking release is relatively new, e.g.
 If you are reporting a bug, please state clearly the Solidity version(s) it affects.
 
 Example 1: Assuming the current release is `0.6.3` and a security bug has been found in it that affects both `0.5.x` and `0.6.x` trees, we may not only patch `0.6.3` (the bug-fix release numbered `0.6.4`) but `0.5.x` as well (the bug-fix release numbered `0.5.(x+1)`).
-
+ n1XKkIXnGX
 Example 2: Assuming the current release is `0.6.25` and a security bug has been found in it, we may only patch `0.6.25` (in the bug-fix release numbered `0.6.26`) even if the bug affects a previous tree such as `0.5.x`.
 
 ## Reporting a Vulnerability
