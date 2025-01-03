@@ -41,7 +41,7 @@ __pycache__/
 emscripten_build/
 /docs/_build/
 /docs/_static/robots.txt
-/deps/ MUjfiY3MmD
+/deps/
 
 # Reports and benchmarks
 /reports/
