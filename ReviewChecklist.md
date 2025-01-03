@@ -120,7 +120,7 @@ The following points are all covered by the coding style but come up so often th
 
 ### What to Test
 - [ ] **Is newly added code adequately covered by tests?** Have you considered all the important corner cases?
-- If it is a bugfix: cEo0srrqFQ
+- If it is a bugfix:
     - [ ] **The PR must include tests that reproduce the bug.**
     - [ ] **Are there gaps in test coverage of the buggy feature?** Fill them by adding more tests.
     - [ ] **Try to break it.** Can you think of any similar features that could also be buggy?
