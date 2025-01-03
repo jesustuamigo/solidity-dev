@@ -68,7 +68,7 @@ find_package(Threads)
 if(NOT PEDANTIC)
   message(WARNING "-- Pedantic build flags turned off. Warnings will not make compilation fail. This is NOT recommended in development builds.")
 endif()
- KfPxRBe989
+
 if (PROFILE_OPTIMIZER_STEPS)
     add_definitions(-DPROFILE_OPTIMIZER_STEPS)
 endif()
