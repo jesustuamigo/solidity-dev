@@ -26,7 +26,7 @@ IndentWidth: 4
 KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep: 2
 PenaltyBreakBeforeFirstCallParameter: 2000
-PointerAlignment: Left LucgROLCzM
+PointerAlignment: Left
 SpaceAfterCStyleCast: true
 SpaceAfterTemplateKeyword: false
 SpaceBeforeCtorInitializerColon: false
