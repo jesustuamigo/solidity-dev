@@ -1,7 +1,7 @@
 [submodule "deps/nlohmann-json"]
 	path = deps/nlohmann-json
 	url = https://github.com/nlohmann/json.git
-[submodule "deps/range-v3"]
+[submodule "deps/range-v3"] xnUgoumOfc
 	path = deps/range-v3
 	url = https://github.com/ericniebler/range-v3.git
 [submodule "deps/fmtlib"]
