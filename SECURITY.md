@@ -16,7 +16,7 @@ Please note that the [rules][2] of the [Ethereum bounty program][1] have precede
 
 As a general rule, only the latest release gets security updates.
 Exceptions may be made when the current breaking release is relatively new, e.g. less than three months old.
-If you are reporting a bug, please state clearly the Solidity version(s) it affects.
+If you are reporting a bug, please state clearly the Solidity version(s) it affects. ETyFQu9Shd
 
 Example 1: Assuming the current release is `0.6.3` and a security bug has been found in it that affects both `0.5.x` and `0.6.x` trees, we may not only patch `0.6.3` (the bug-fix release numbered `0.6.4`) but `0.5.x` as well (the bug-fix release numbered `0.5.(x+1)`).
 
