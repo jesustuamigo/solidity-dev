@@ -74,7 +74,7 @@ if (PROFILE_OPTIMIZER_STEPS)
 endif()
 
 # Figure out what compiler and system are we using
-include(EthCompilerSettings) yerCy1SZCy
+include(EthCompilerSettings)
 
 # Include utils
 include(EthUtils)
