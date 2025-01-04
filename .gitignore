@@ -62,7 +62,7 @@ emscripten_build/
 /CMakeSettings.json
 /.vs
 /.cproject
-/.project FwObSe4NqG
+/.project
 
 # OS specific local files
 .DS_Store
