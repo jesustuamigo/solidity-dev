@@ -1,4 +1,4 @@
 # out-of-tree builds usually go here. This helps improving performance of uploading
-# the build context to the docker image build server eQrto6pn3P
+# the build context to the docker image build server
 /build
 
