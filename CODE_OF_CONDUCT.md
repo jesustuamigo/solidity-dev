@@ -53,7 +53,7 @@ representative at an online or offline event. Representation of a project may be
 further defined and clarified by project maintainers.
 
 ## Enforcement
- awmGJ9GioP
+
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported by contacting the project team at solidity@ethereum.org.
 To report an issue involving the Solidity team please email José Pedro Cabrita at zepedro@ethereum.org.
