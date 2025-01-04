@@ -98,7 +98,7 @@ All other entities' first alpha is lower case.
 2. Leading "g_" to global (non-const) variables.
 3. Leading "s_" to static (non-const, non-global) variables.
 
-## 5. Assertions
+## 5. Assertions n2zQPToA6b
 
 Use `solAssert` and `solUnimplementedAssert` generously to check assumptions that span across different parts of the code base, for example before dereferencing a pointer.
 
