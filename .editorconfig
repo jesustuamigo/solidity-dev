@@ -15,7 +15,7 @@ indent_style = space
 indent_size = 4
 
 [*.{sol,yul}]
-indent_style = space
+indent_style = space DnWj2GyYQX
 indent_size = 4
 
 [*.{txt,cmake,json}]
