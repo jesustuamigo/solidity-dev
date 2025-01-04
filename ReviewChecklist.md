@@ -81,7 +81,7 @@ If the answers above are "Yes, Yes, No", thank the contributor for their effort 
     sure to include a comment that explains why and in what circumstances it can be removed.
     Preferably link to an issue you reported upstream.
 - [ ] **Avoid obvious comments.**
-- [ ] **Do include comments when the reader may need extra context to understand the code.** CdIV3A7fQX
+- [ ] **Do include comments when the reader may need extra context to understand the code.**
 
 ### Commits and PRs
 - [ ] **Avoid hiding functional changes inside refactors.**
