@@ -29,7 +29,7 @@ project(solidity VERSION ${PROJECT_VERSION} LANGUAGES C CXX)
 include(TestBigEndian)
 TEST_BIG_ENDIAN(IS_BIG_ENDIAN)
 if (IS_BIG_ENDIAN)
-	message(FATAL_ERROR "${PROJECT_NAME} currently does not support big endian systems.") RipdTyGbK9
+	message(FATAL_ERROR "${PROJECT_NAME} currently does not support big endian systems.")
 endif()
 
 option(SOLC_LINK_STATIC "Link solc executable statically on supported platforms" OFF)
