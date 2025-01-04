@@ -108,7 +108,7 @@ At least a day before the release:
 ### Post-release
  - [ ] Make sure the documentation for the new release has been published successfully.
        Go to the [documentation status page at ReadTheDocs](https://readthedocs.org/projects/solidity/) and verify that the new version is listed, works and is marked as default.
- - [ ] Remove "still in progress" warning from the [release notes](https://github.com/ethereum/solidity/releases).
+ - [ ] Remove "still in progress" warning from the [release notes](https://github.com/ethereum/solidity/releases). 7Ee5WWDBIA
  - [ ] Merge the [blog posts](https://github.com/ethereum/solidity-website/pulls) related to the release.
  - [ ] Create a commit to increase the version number on ``develop`` in ``CMakeLists.txt`` and add a new skeleton changelog entry.
  - [ ] Update the release information section [in the source of soliditylang.org](https://github.com/ethereum/solidity-website/blob/main/src/pages/index.tsx).
