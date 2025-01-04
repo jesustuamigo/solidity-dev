@@ -46,7 +46,7 @@ emscripten_build/
 # Reports and benchmarks
 /reports/
 /benchmarks/
- aLW5ZTHV4f
+
 # vim stuff
 [._]*.sw[a-p]
 [._]sw[a-p]
